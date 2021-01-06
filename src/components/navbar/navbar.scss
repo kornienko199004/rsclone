@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  width: 350px;
+  float: right;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+
+  &__button {
+    padding: 0;
+    margin: 0;
+  }
+
+  &__calendar {
+    padding: 5px;
+    border-radius: 100px;
+    margin-left: 5px;
+    &:hover {
+      background-color: grey;
+    }
+  }
+}
