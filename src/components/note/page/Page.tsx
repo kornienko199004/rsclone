@@ -1,120 +1,215 @@
-import React from 'react';
+/* eslint-disable import/no-unresolved */
+import React, { useState } from 'react';
+// import { update } from 'lodash';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { IPage } from '../Note';
 
-const newPage: IPage = {
-  pageId: 0,
-  pageLink: '',
-  pagePath: [],
-  content: 'some content',
-  neighbors: [],
-  nestedPages: [],
+// eslint-disable-next-line import/extensions
+import {
+  addNeighbor, becomeChild, removePage, levelUp, updateContent, // @ts-ignore
+} from '../../../store/actionsCreators/actionsCreators.ts';
+
+const mapStateToProps = (state: any, ownProps: any) => ({
+  body: state.body,
+  ...ownProps,
+});
+
+const mapDispatchToProps = {
+  addNeighbor, becomeChild, removePage, levelUp, updateContent,
 };
 
 function Page(props: any) {
-  console.log(props);
-  let {
-    nestedPages,
-  } = props;
   const {
-    content, onAddNeighbor, onAddChild, becomeChild,
+    content, body, pagePath, currentPage, list,
   } = props;
-  let childrenComponents = (<span>{}</span>);
 
-  // const addNeighbor = (page: any) => {
-  //   // const newPage: IPage = {
-  //   //   pageId: 0,
-  //   //   pageLink: '',
-  //   //   pagePath: [],
-  //   //   content: 'some content',
-  //   //   neighbors: [],
-  //   //   nestedPages: [],
-  //   // };
-  //   nestedPages.push(page);
-  // };
+  let childrenComponents = (<span>{ }</span>);
+  const [pageContent, setContent] = useState(content);
 
-  // const AddChild = (page: any) => {
-  //   // const newPage: IPage = {
-  //   //   pageId: 0,
-  //   //   pageLink: '',
-  //   //   pagePath: [],
-  //   //   content: 'some content',
-  //   //   neighbors: [],
-  //   //   nestedPages: [],
-  //   // };
-  //   nestedPages.push(page);
-  // };
+  const onAddNeighbor = () => {
+    // const newPageId: number = list.length;
+    // const newNeighborPath: (number | string)[] = [...pagePath.slice(0, -1), newPageId];
+    // const newNeighbor: IPage = {
+    //   pageId: newPageId,
+    //   pageLink: '',
+    //   pagePath: newNeighborPath,
+    //   content: '',
+    //   // content: `${newPageId} Inner page content`,
+    //   neighbors: [],
+    //   nestedPages: [],
+    // };
 
-  const updatePageIndex = (page: IPage) => ({
-    ...page,
-    pageId: page.pageId - 1,
-  });
+    // let pageParentList: any = body;
+    // console.log('pagePath', pagePath);
+    // for (let i = 0; i < pagePath.length - 1; i += 1) {
+    //   pageParentList = pageParentList[pagePath[i]];
+    // }
 
-  const onBecomeChild = (page: IPage, pagesList: IPage[]) => {
-    const pageIndex = page.pageId;
-    console.log(pageIndex);
-    if (pageIndex === 0) {
+    // // pageParentList.splice(currentPage.pageId + 1, 0, newNeighbor);
+    // pageParentList.push(newNeighbor);
+    // // for (let i = 0; i < pageParentList.length; i += 1) {
+    // //   pageParentList[i] = {
+    // //     ...pageParentList[i],
+    // //     pageId: i,
+    // //     content: `${i} Inner page content`,
+    // //     pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
+    // //   };
+    // // }
+    props.addNeighbor(body, { currentPage, list });
+  };
+
+  const onBecomeChild = () => {
+    if (currentPage.pageId === 0) {
       return;
     }
 
-    let parentPage: IPage = pagesList[pageIndex - 1];
-
-    // необходимо обновить pageId страницы, которая стала ребенком
-    const child: IPage = {
-      ...page,
-      pageId: parentPage.nestedPages.length,
-    };
-
-    parentPage = {
-      ...parentPage,
-      nestedPages: [...parentPage.nestedPages, child],
-    };
-
-    // eslint-disable-next-line no-debugger
-    // debugger;
-    // let newPage = body[pageIndex];
-    // newPage = {
-    //   ...newPage,
-    //   nestedPages: [...newPage.nestedPages, child],
-    // };
-
-    let newBody: IPage[];
-    if (pageIndex > 0) {
-      newBody = [
-        ...pagesList.slice(0, pageIndex - 1),
-        parentPage,
-        ...pagesList.slice(pageIndex + 1).map(updatePageIndex),
-      ];
-    } else {
-      newBody = [parentPage, ...pagesList.slice(2).map(updatePageIndex)];
+    let pageParentList: any = body;
+    for (let i = 0; i < pagePath.length - 1; i += 1) {
+      pageParentList = pageParentList[pagePath[i]];
     }
 
-    nestedPages = newBody;
-    console.log(nestedPages);
+    const newParentPageIndex: number = pagePath.slice(-1)[0] - 1;
+    const newParentPage: IPage = pageParentList[newParentPageIndex];
+
+    const newChildPageIndex: number = newParentPage.nestedPages.length;
+    const newChildPagePath: (string | number)[] = [...currentPage.pagePath.slice(0, -1), newParentPageIndex, 'nestedPages', newChildPageIndex];
+    const newChildPage: IPage = {
+      ...currentPage,
+      pageId: newChildPageIndex,
+      pagePath: newChildPagePath,
+      // content: `${newChildPageIndex} Inner page content`,
+    };
+
+    newParentPage.nestedPages.push(newChildPage);
+    pageParentList.splice(currentPage.pageId, 1);
+
+    for (let i = 0; i < pageParentList.length; i += 1) {
+      pageParentList[i] = {
+        ...pageParentList[i],
+        pageId: i,
+        // content: `${i} Inner page content`,
+        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
+      };
+    }
+    props.becomeChild(body);
   };
 
-  if (nestedPages && nestedPages.length > 0) {
+  const onLevelUp = () => {
+    if (currentPage.pagePath && currentPage.pagePath.length === 1) {
+      return;
+    }
+
+    let pageParentList: any = body;
+    for (let i = 0; i < pagePath.length - 1; i += 1) {
+      pageParentList = pageParentList[pagePath[i]];
+    }
+
+    let newPageParentList: any = body;
+    for (let i = 0; i < pagePath.length - 3; i += 1) {
+      newPageParentList = newPageParentList[pagePath[i]];
+    }
+
+    const newChildPageIndex: number = newPageParentList.length;
+    const newChildPagePath: (string | number)[] = [
+      ...currentPage.pagePath.slice(0, -3),
+      newChildPageIndex,
+    ];
+
+    const newChildPage: IPage = {
+      ...currentPage,
+      pageId: newChildPageIndex,
+      pagePath: newChildPagePath,
+      // content: `${newChildPageIndex} Inner page content`,
+    };
+
+    newPageParentList.push(newChildPage);
+    pageParentList.splice(currentPage.pageId, 1);
+
+    for (let i = 0; i < pageParentList.length; i += 1) {
+      pageParentList[i] = {
+        ...pageParentList[i],
+        pageId: i,
+        // content: `${i} Inner page content`,
+        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
+      };
+    }
+    props.levelUp(body);
+  };
+
+  const onRemove = () => {
+    if (currentPage.nestedPages && currentPage.nestedPages.length > 0) {
+      return;
+    }
+
+    let pageParentList: any = body;
+    for (let i = 0; i < pagePath.length - 1; i += 1) {
+      pageParentList = pageParentList[pagePath[i]];
+    }
+    pageParentList.splice(currentPage.pageId, 1);
+
+    for (let i = 0; i < pageParentList.length; i += 1) {
+      pageParentList[i] = {
+        ...pageParentList[i],
+        pageId: i,
+        // content: `${i} Inner page content`,
+        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
+      };
+    }
+    props.removePage(body);
+  };
+
+  if (currentPage.nestedPages && currentPage.nestedPages.length > 0) {
     // делаем из вложеннех страниц компоненты
-    childrenComponents = nestedPages.map((item: IPage) => (
-      <Page
-        key={shortid.generate()}
-        content={item.content}
-        nestedPages={item.nestedPages}
-        onAddNeighbor={() => onAddChild(newPage)}
-        becomeChild={() => onBecomeChild(item, nestedPages)}
-        // onAddChild={() => }
-      />
-    ));
+    childrenComponents = currentPage.nestedPages.map((item: IPage, index: number, arr: IPage[]) => {
+      const NewPage: any = connect(mapStateToProps, mapDispatchToProps)(Page);
+      // const mapStateToPropsForChild = (state: any, ownProps: any) => ({
+      //   body: state.body,
+      //   ...ownProps,
+      // });
+      return (
+        <NewPage
+          key={shortid.generate()}
+          content={item.content}
+          nestedPages={item.nestedPages}
+          pagePath={item.pagePath}
+          currentPage={item}
+          list={arr}
+        />
+      );
+    });
   }
+
+  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!e.target.value || e.target.value.length === 0) {
+      return;
+    }
+
+    if (e.target.value === content) {
+      return;
+    }
+
+    let currentPageLink: any = body;
+    for (let i = 0; i < pagePath.length; i += 1) {
+      currentPageLink = currentPageLink[pagePath[i]];
+    }
+
+    currentPageLink.content = e.target.value;
+    props.updateContent(body);
+    // console.log('textInput', textInput.current.value);
+  };
 
   return (
     <div>
-      <p>{content}</p>
-      <button type="button" onClick={() => onAddNeighbor(newPage)}>Add neighbor</button>
-      <button type="button" onClick={() => becomeChild()}>Become a child</button>
+      <input type="text" value={pageContent} onBlur={onBlur} onChange={(e) => setContent(e.target.value)} />
+      <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
+      <button type="button" onClick={onBecomeChild}>Become a child</button>
+      <button type="button" onClick={onRemove}>x</button>
+      <button type="button" onClick={onLevelUp}>up</button>
+      {/* <p>{content}</p> */}
       <div className="child">{childrenComponents}</div>
     </div>
   );
 }
 
-export default Page;
+export default connect(mapStateToProps, mapDispatchToProps)(Page);

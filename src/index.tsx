@@ -8,8 +8,19 @@ import App from './components/app/App';
 import reducer from './store/reducers/reducer.ts';
 // import store from './store';
 
-const initialState = {
-  value: 'some value',
+// const initialState = {
+//   value: 'some value',
+// };
+
+const initialState: { body: any[] } = {
+  body: [{
+    pageId: 0,
+    pageLink: '',
+    pagePath: [0],
+    content: '',
+    neighbors: [],
+    nestedPages: [],
+  }],
 };
 
 const store = createStore(reducer, initialState);
