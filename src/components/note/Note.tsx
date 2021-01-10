@@ -29,6 +29,7 @@ export interface IPage {
   content: string;
   nestedPages: IPage[];
   neighbors: IPage[];
+  textInputHeight: number;
 }
 
 // const body: IPage = {
@@ -63,6 +64,7 @@ class Note extends React.Component {
         pagePath={page.pagePath}
         currentPage={page}
         list={arr}
+        textInputHeight={page.textInputHeight}
       />
     );
   }

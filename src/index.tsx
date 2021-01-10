@@ -12,7 +12,7 @@ import reducer from './store/reducers/reducer.ts';
 //   value: 'some value',
 // };
 
-const initialState: { body: any[] } = {
+const initialState: { body: any[]; focusComponentPath: (string | number)[] } = {
   body: [{
     pageId: 0,
     pageLink: '',
@@ -20,7 +20,9 @@ const initialState: { body: any[] } = {
     content: '',
     neighbors: [],
     nestedPages: [],
+    textInputHeight: 24,
   }],
+  focusComponentPath: [0],
 };
 
 const store = createStore(reducer, initialState);

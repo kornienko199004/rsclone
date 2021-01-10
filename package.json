@@ -14,6 +14,7 @@
     "@types/react-redux": "^7.1.15",
     "@types/shortid": "0.0.29",
     "@uiw/react-markdown-editor": "^2.0.3",
+    "autosize": "^4.0.2",
     "axios": "^0.21.1",
     "babel-plugin-root-import": "^6.6.0",
     "husky": "^4.3.6",
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@types/autosize": "^3.0.7",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "@typescript-eslint/eslint-plugin": "^4.0.1",

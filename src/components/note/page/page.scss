@@ -1,0 +1,44 @@
+.content {
+  border: 1px solid black;
+}
+
+.nestedPages {
+  position: relative;
+  padding-left: 25px;
+  margin-left: 5px;
+  border-left: 1px solid #BFCCD6;
+}
+
+.open-page {
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  background-clip: content-box;
+  border: 4px solid transparent;
+  background-color: #394b59;
+}
+
+.current-page__controls {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.open-page__wrapper {
+  padding-top: 6px;
+}
+
+.text-input {
+  padding: 0;
+  height: 24px;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+}

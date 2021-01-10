@@ -1,140 +1,65 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
+import autosize from 'autosize';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { IPage } from '../Note';
+import './page.scss';
 
 // eslint-disable-next-line import/extensions
 import {
-  addNeighbor, becomeChild, removePage, levelUp, updateContent, // @ts-ignore
+  addNeighbor, becomeChild,
+  removePage, levelUp, updateContent, addChild, changeFocusElement, // @ts-ignore
 } from '../../../store/actionsCreators/actionsCreators.ts';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   body: state.body,
+  focusComponentPath: state.focusComponentPath,
   ...ownProps,
 });
 
 const mapDispatchToProps = {
-  addNeighbor, becomeChild, removePage, levelUp, updateContent,
+  addNeighbor, becomeChild, removePage, levelUp, updateContent, addChild, changeFocusElement,
 };
 
 function Page(props: any) {
   const {
-    content, body, pagePath, currentPage, list,
+    content, body, pagePath, currentPage, list, focusComponentPath, textInputHeight,
   } = props;
 
   let childrenComponents = (<span>{ }</span>);
   const [pageContent, setContent] = useState(content);
 
+  let textInput: HTMLTextAreaElement | null = null;
+
+  useEffect(() => {
+    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath)) {
+      (textInput as HTMLTextAreaElement).focus();
+    }
+    autosize(textInput as HTMLTextAreaElement);
+  });
+
   const onAddNeighbor = () => {
-    // const newPageId: number = list.length;
-    // const newNeighborPath: (number | string)[] = [...pagePath.slice(0, -1), newPageId];
-    // const newNeighbor: IPage = {
-    //   pageId: newPageId,
-    //   pageLink: '',
-    //   pagePath: newNeighborPath,
-    //   content: '',
-    //   // content: `${newPageId} Inner page content`,
-    //   neighbors: [],
-    //   nestedPages: [],
-    // };
-
-    // let pageParentList: any = body;
-    // console.log('pagePath', pagePath);
-    // for (let i = 0; i < pagePath.length - 1; i += 1) {
-    //   pageParentList = pageParentList[pagePath[i]];
-    // }
-
-    // // pageParentList.splice(currentPage.pageId + 1, 0, newNeighbor);
-    // pageParentList.push(newNeighbor);
-    // // for (let i = 0; i < pageParentList.length; i += 1) {
-    // //   pageParentList[i] = {
-    // //     ...pageParentList[i],
-    // //     pageId: i,
-    // //     content: `${i} Inner page content`,
-    // //     pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
-    // //   };
-    // // }
     props.addNeighbor(body, { currentPage, list });
   };
+
+  // const onAddChild = () => {
+  //   props.addChild(body, { currentPage });
+  // };
 
   const onBecomeChild = () => {
     if (currentPage.pageId === 0) {
       return;
     }
-
-    let pageParentList: any = body;
-    for (let i = 0; i < pagePath.length - 1; i += 1) {
-      pageParentList = pageParentList[pagePath[i]];
-    }
-
-    const newParentPageIndex: number = pagePath.slice(-1)[0] - 1;
-    const newParentPage: IPage = pageParentList[newParentPageIndex];
-
-    const newChildPageIndex: number = newParentPage.nestedPages.length;
-    const newChildPagePath: (string | number)[] = [...currentPage.pagePath.slice(0, -1), newParentPageIndex, 'nestedPages', newChildPageIndex];
-    const newChildPage: IPage = {
-      ...currentPage,
-      pageId: newChildPageIndex,
-      pagePath: newChildPagePath,
-      // content: `${newChildPageIndex} Inner page content`,
-    };
-
-    newParentPage.nestedPages.push(newChildPage);
-    pageParentList.splice(currentPage.pageId, 1);
-
-    for (let i = 0; i < pageParentList.length; i += 1) {
-      pageParentList[i] = {
-        ...pageParentList[i],
-        pageId: i,
-        // content: `${i} Inner page content`,
-        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
-      };
-    }
-    props.becomeChild(body);
+    props.becomeChild(body, { currentPage });
   };
 
   const onLevelUp = () => {
     if (currentPage.pagePath && currentPage.pagePath.length === 1) {
       return;
     }
-
-    let pageParentList: any = body;
-    for (let i = 0; i < pagePath.length - 1; i += 1) {
-      pageParentList = pageParentList[pagePath[i]];
-    }
-
-    let newPageParentList: any = body;
-    for (let i = 0; i < pagePath.length - 3; i += 1) {
-      newPageParentList = newPageParentList[pagePath[i]];
-    }
-
-    const newChildPageIndex: number = newPageParentList.length;
-    const newChildPagePath: (string | number)[] = [
-      ...currentPage.pagePath.slice(0, -3),
-      newChildPageIndex,
-    ];
-
-    const newChildPage: IPage = {
-      ...currentPage,
-      pageId: newChildPageIndex,
-      pagePath: newChildPagePath,
-      // content: `${newChildPageIndex} Inner page content`,
-    };
-
-    newPageParentList.push(newChildPage);
-    pageParentList.splice(currentPage.pageId, 1);
-
-    for (let i = 0; i < pageParentList.length; i += 1) {
-      pageParentList[i] = {
-        ...pageParentList[i],
-        pageId: i,
-        // content: `${i} Inner page content`,
-        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
-      };
-    }
-    props.levelUp(body);
+    props.levelUp(body, { currentPage });
   };
 
   const onRemove = () => {
@@ -142,31 +67,21 @@ function Page(props: any) {
       return;
     }
 
-    let pageParentList: any = body;
-    for (let i = 0; i < pagePath.length - 1; i += 1) {
-      pageParentList = pageParentList[pagePath[i]];
+    if (pageContent && pageContent.length > 0) {
+      return;
     }
-    pageParentList.splice(currentPage.pageId, 1);
 
-    for (let i = 0; i < pageParentList.length; i += 1) {
-      pageParentList[i] = {
-        ...pageParentList[i],
-        pageId: i,
-        // content: `${i} Inner page content`,
-        pagePath: [...pageParentList[i].pagePath.slice(0, -1), i],
-      };
-    }
-    props.removePage(body);
+    props.removePage(body, { currentPage });
+  };
+
+  const onChangeFocusElement = (direction: string = 'down') => {
+    props.changeFocusElement(direction, body, { currentPage, list });
   };
 
   if (currentPage.nestedPages && currentPage.nestedPages.length > 0) {
     // делаем из вложеннех страниц компоненты
     childrenComponents = currentPage.nestedPages.map((item: IPage, index: number, arr: IPage[]) => {
       const NewPage: any = connect(mapStateToProps, mapDispatchToProps)(Page);
-      // const mapStateToPropsForChild = (state: any, ownProps: any) => ({
-      //   body: state.body,
-      //   ...ownProps,
-      // });
       return (
         <NewPage
           key={shortid.generate()}
@@ -175,12 +90,23 @@ function Page(props: any) {
           pagePath={item.pagePath}
           currentPage={item}
           list={arr}
+          textInputHeight={item.textInputHeight}
         />
       );
     });
   }
 
-  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const onUpdateContent = (value: string) => {
+    let currentPageLink: any = body;
+    for (let i = 0; i < pagePath.length; i += 1) {
+      currentPageLink = currentPageLink[pagePath[i]];
+    }
+
+    currentPageLink.content = value;
+    currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
+  };
+
+  const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     if (!e.target.value || e.target.value.length === 0) {
       return;
     }
@@ -189,25 +115,80 @@ function Page(props: any) {
       return;
     }
 
-    let currentPageLink: any = body;
-    for (let i = 0; i < pagePath.length; i += 1) {
-      currentPageLink = currentPageLink[pagePath[i]];
+    onUpdateContent(e.target.value);
+    props.updateContent(body);
+  };
+
+  const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    autosize(textInput as HTMLTextAreaElement);
+  };
+
+  const onEnterPressHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const contentValue: string = (e.target as HTMLTextAreaElement).value;
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      onUpdateContent(contentValue);
+      onBecomeChild();
+    }
+    if (e.key === 'Enter') {
+      if ((contentValue && contentValue.length > 0) || currentPage.pagePath.length === 1) {
+        onUpdateContent(contentValue);
+        // if (currentPage.nestedPages.length > 0) {
+        //   onAddChild();
+        //   return;
+        // }
+        onAddNeighbor();
+        return;
+      }
+      onUpdateContent('');
+      onLevelUp();
     }
 
-    currentPageLink.content = e.target.value;
-    props.updateContent(body);
-    // console.log('textInput', textInput.current.value);
+    if (e.key === 'Backspace') {
+      onRemove();
+    }
+
+    if (e.key === 'ArrowUp') {
+      onUpdateContent(contentValue);
+      onChangeFocusElement('up');
+    }
+
+    if (e.key === 'ArrowDown') {
+      onUpdateContent(contentValue);
+      onChangeFocusElement();
+    }
   };
 
   return (
     <div>
-      <input type="text" value={pageContent} onBlur={onBlur} onChange={(e) => setContent(e.target.value)} />
-      <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
-      <button type="button" onClick={onBecomeChild}>Become a child</button>
-      <button type="button" onClick={onRemove}>x</button>
-      <button type="button" onClick={onLevelUp}>up</button>
-      {/* <p>{content}</p> */}
-      <div className="child">{childrenComponents}</div>
+      <div className="current-page__controls">
+        <span className="open-page__wrapper">
+          <span className="open-page">Open</span>
+        </span>
+        <textarea
+          className="text-input"
+          style={{ height: `${textInputHeight}px` }}
+          ref={(textarea: HTMLTextAreaElement) => { textInput = textarea; }}
+          value={pageContent}
+          onBlur={onBlur}
+          onChange={onChangeContent}
+          onKeyDown={onEnterPressHandler}
+        />
+        {/* <input
+          type="text"
+          ref={(input: HTMLInputElement) => { textInput = input; }}
+          value={pageContent}
+          onBlur={onBlur}
+          onChange={onChangeContent}
+          onKeyDown={onEnterPressHandler}
+        /> */}
+        {/* <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
+        <button type="button" onClick={onBecomeChild}>Become a child</button>
+        <button type="button" onClick={onRemove}>x</button>
+        <button type="button" onClick={onLevelUp}>up</button> */}
+      </div>
+      <div className="nestedPages">{childrenComponents}</div>
     </div>
   );
 }

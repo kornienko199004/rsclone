@@ -13,14 +13,6 @@ code {
 }
 
 .main {
-  margin-left: 250px;
+  margin-left: 290px;
   padding-top: 120px;
-}
-
-.content {
-  border: 1px solid black;
-}
-
-.child {
-  margin-left: 50px;
 }
