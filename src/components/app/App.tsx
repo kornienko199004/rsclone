@@ -5,9 +5,10 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
+import Note from '../note/Note';
 import Navbar from '../navbar/Navbar';
 import Sidebar from '../sidebar/Sidebar';
-import DailyNotes from '../pages/daily-notes/Daily-notes';
+// import DailyNotes from '../pages/daily-notes/Daily-notes';
 import AllPages from '../pages/all-pages/All-pages';
 import Graph from '../pages/graph-overview/Graph-overview';
 
@@ -18,7 +19,7 @@ function App() {
         <Navbar />
 
         <Switch>
-          <Route path="/" component={DailyNotes} exact />
+          <Route path="/" component={Note} exact />
           <Route
             path="/graph"
             component={Graph}

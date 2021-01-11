@@ -1,17 +1,10 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable react/prop-types */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable react/prefer-stateless-function */
 import React, { KeyboardEvent } from 'react';
 // import axios from 'axios';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
-// import shortid from 'shortid';
-// import TemplateReadOnly from './pageReadOnly/PageReadOnly';
+import Button from '@material-ui/core/Button';
 // @ts-ignore
-// eslint-disable-next-line import/extensions
 import { addNeighbor } from '../../store/actionsCreators/actionsCreators.ts';
 import Page from './page/Page';
 
@@ -28,15 +21,8 @@ export interface IPage {
   pagePath: (number | string)[];
   content: string;
   nestedPages: IPage[];
-  neighbors: IPage[];
   textInputHeight: number;
 }
-
-// const body: IPage = {
-//   pageLink: 'level 0',
-//   pagePath: [],
-//   children: [],
-// };
 
 export interface IState {
   title: string;
@@ -53,9 +39,14 @@ export interface IInputHandler {
 }
 
 class Note extends React.Component {
-  // eslint-disable-next-line react/sort-comp
+  getPagesComponents() {
+    const { body } = this.props as any;
+    const content: any[] = body.map(this.renderPage.bind(this));
+    return content;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   renderPage(page: IPage, index: number, arr: IPage[]) {
-    // console.log(this);
     return (
       <Page
         key={shortid.generate()}
@@ -69,12 +60,6 @@ class Note extends React.Component {
     );
   }
 
-  getPagesComponents() {
-    const { body } = this.props as any;
-    const content: any[] = body.map(this.renderPage.bind(this));
-    return content;
-  }
-
   render() {
     console.log('render');
 
@@ -85,7 +70,7 @@ class Note extends React.Component {
       <div className="main">
         <h1>Title</h1>
         {contentFromRedux}
-        <button type="button" onClick={() => console.log(body)}>Save the note</button>
+        <Button variant="contained" color="primary" onClick={() => console.log(body)}>Save the note</Button>
       </div>
     );
   }
