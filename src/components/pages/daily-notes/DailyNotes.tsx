@@ -1,5 +1,5 @@
 import React from 'react';
-import './daily-notes.scss';
+import './dailyNotes.scss';
 import { withRouter } from 'react-router-dom';
 import Note from '../../note/Note';
 
@@ -13,7 +13,7 @@ const testNotes = () => {
 };
 
 const DailyNotes = () => (
-  <div className="daily">
+  <div className="daily-container">
     {testNotes()}
   </div>
 );
