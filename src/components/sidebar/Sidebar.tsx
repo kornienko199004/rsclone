@@ -13,7 +13,7 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import MenuIcon from '@material-ui/icons/Menu';
 import './sidebar.scss';
 import { Link as RouterLink } from 'react-router-dom';
-import GraphNavigation from './Graph-navigation';
+import GraphNavigation from './GraphNavigation';
 
 const drawerWidth = 240;
 
