@@ -18,6 +18,9 @@ module.exports = {
         extensions: ['.js', '.jsx', '.tsx', '.json'],
       },
     },
+    'import/no-extraneous-dependencies': [
+      'error', { packageDir: './' },
+    ],
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {

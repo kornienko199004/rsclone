@@ -3,13 +3,17 @@ import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
 import {
-  List, ListItem, ListItemText, Button,
-  Drawer, ListItemIcon, Divider, fade,
+  List, ListItem, ListItemText,
+  Drawer, ListItemIcon, Divider, fade, Link,
 } from '@material-ui/core';
 import DateRange from '@material-ui/icons/DateRange';
 import BubbleChart from '@material-ui/icons/BubbleChart';
-import Menu from '@material-ui/icons/Menu';
 import Grade from '@material-ui/icons/Grade';
+import MenuOpenIcon from '@material-ui/icons/MenuOpen';
+import MenuIcon from '@material-ui/icons/Menu';
+import './sidebar.scss';
+import { Link as RouterLink } from 'react-router-dom';
+import GraphNavigation from './Graph-navigation';
 
 const drawerWidth = 240;
 
@@ -28,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   link: {
     color: '#5c7080',
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'none',
+    },
   },
   linkItem: {
     '&:hover': {
@@ -41,6 +49,38 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   drawerPaper: {
     width: drawerWidth,
     backgroundColor: '#182026',
+  },
+  showButton: {
+    position: 'absolute',
+    padding: '4px',
+    width: '28px',
+    height: '28px',
+    top: '15px',
+    left: '15px',
+    cursor: 'pointer',
+    borderRadius: '10px',
+    '&:hover': {
+      backgroundColor: fade('#565555', 0.15),
+    },
+  },
+  hideButton: {
+    position: 'absolute',
+    padding: '4px',
+    width: '28px',
+    height: '28px',
+    top: '15px',
+    left: '195px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: fade('#fff', 0.15),
+    },
+  },
+  listItemText: {
+    fontWeight: 600,
+  },
+  listIcon: {
+    minWidth: '44px',
   },
 }));
 
@@ -59,32 +99,83 @@ const Sidebar = () => {
 
   const drawer = (
     <div>
-      <Button onClick={toggleSidebar} variant="contained" color="primary">Hide</Button>
+
+      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} />
+      <GraphNavigation name="ALEKSEY" />
+
       <div className={classes.toolbar} />
       <List className={classes.link}>
-        <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-          <ListItemIcon><DateRange htmlColor="#5c7080" /></ListItemIcon>
-          <ListItemText primary="DAILY NOTES" />
-        </ListItem>
-        <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-          <ListItemIcon><BubbleChart htmlColor="#5c7080" /></ListItemIcon>
-          <ListItemText primary="GRAPH OVERVIEW" />
-        </ListItem>
-        <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-          <ListItemIcon><Menu htmlColor="#5c7080" /></ListItemIcon>
-          <ListItemText primary="ALL PAGES" />
-        </ListItem>
+        <Link component={RouterLink} to="/" className={classes.link}>
+          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
+            <ListItemIcon classes={{
+              root: classes.listIcon,
+            }}
+            >
+              <DateRange htmlColor="#5c7080" />
+            </ListItemIcon>
+            <ListItemText
+              primary="DAILY NOTES"
+              classes={{
+                primary: classes.listItemText,
+              }}
+            />
+          </ListItem>
+        </Link>
+        <Link component={RouterLink} to="/graph" className={classes.link}>
+          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
+            <ListItemIcon classes={{
+              root: classes.listIcon,
+            }}
+            >
+              <BubbleChart htmlColor="#5c7080" />
+            </ListItemIcon>
+            <ListItemText
+              primary="GRAPH OVERVIEW"
+              classes={{
+                primary: classes.listItemText,
+              }}
+            />
+          </ListItem>
+        </Link>
+        <Link component={RouterLink} to="/pages" className={classes.link}>
+          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
+            <ListItemIcon classes={{
+              root: classes.listIcon,
+            }}
+            >
+              <MenuIcon htmlColor="#5c7080" />
+            </ListItemIcon>
+            <ListItemText
+              primary="ALL PAGES"
+              classes={{
+                primary: classes.listItemText,
+              }}
+            />
+          </ListItem>
+        </Link>
         <Divider className={classes.divider} />
-        <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-          <ListItemIcon><Grade htmlColor="#5c7080" /></ListItemIcon>
-          <ListItemText primary="SHORTCUTS" />
-        </ListItem>
+        <Link component={RouterLink} to="/shortcut" className={classes.link}>
+          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
+            <ListItemIcon classes={{
+              root: classes.listIcon,
+            }}
+            >
+              <Grade htmlColor="#5c7080" />
+            </ListItemIcon>
+            <ListItemText
+              primary="SHORTCUTS"
+              classes={{
+                primary: classes.listItemText,
+              }}
+            />
+          </ListItem>
+        </Link>
       </List>
     </div>
   );
 
   if (!open) {
-    return <Button onClick={toggleSidebar} variant="contained" color="primary">Hide</Button>;
+    return <MenuIcon onClick={toggleSidebar} htmlColor="#5c7080" className={classes.showButton} />;
   }
   return (
     <nav className={classes.drawer} aria-label="mailbox folders">
