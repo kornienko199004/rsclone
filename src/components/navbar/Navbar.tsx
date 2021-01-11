@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core/styles';
 
 import TodayTwoToneIcon from '@material-ui/icons/TodayTwoTone';
-import SearchInput from '../search-input/Search-input';
+import SearchInput from '../search-input/SearchInput';
 
 const useStyles = makeStyles(() => createStyles({
   calendar: {
