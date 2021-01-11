@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
 import autosize from 'autosize';
+import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { IPage } from '../Note';
@@ -30,6 +31,10 @@ function Page(props: any) {
 
   let childrenComponents = (<span>{ }</span>);
   const [pageContent, setContent] = useState(content);
+  const [showNestedPages, setNestedPagesVisibility] = useState(true);
+
+  // setNestedPagesVisibility(true);
+  // let showNestedPages = true;
 
   let textInput: HTMLTextAreaElement | null = null;
 
@@ -107,10 +112,6 @@ function Page(props: any) {
   };
 
   const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    if (!e.target.value || e.target.value.length === 0) {
-      return;
-    }
-
     if (e.target.value === content) {
       return;
     }
@@ -160,10 +161,23 @@ function Page(props: any) {
     }
   };
 
+  const toggleNestedPagesVisibility = () => {
+    console.log('click');
+    // showNestedPages = !showNestedPages;
+    setNestedPagesVisibility(!showNestedPages);
+  };
+
   return (
     <div>
       <div className="current-page__controls">
         <span className="open-page__wrapper">
+          <button
+            type="button"
+            className={`nested-pages-button ${currentPage.nestedPages.length > 0 ? 'nested-pages-button--show' : 'nested-pages-button--hidden'}`}
+            onClick={toggleNestedPagesVisibility}
+          >
+            {showNestedPages ? <ArrowDropDown fontSize="small" htmlColor="#000" /> : <ArrowRight fontSize="small" htmlColor="#000" />}
+          </button>
           <span className="open-page">Open</span>
         </span>
         <textarea
@@ -188,7 +202,7 @@ function Page(props: any) {
         <button type="button" onClick={onRemove}>x</button>
         <button type="button" onClick={onLevelUp}>up</button> */}
       </div>
-      <div className="nestedPages">{childrenComponents}</div>
+      <div className={`nestedPages ${showNestedPages ? 'nestedPages--show' : 'nestedPages--hidden'}`}>{childrenComponents}</div>
     </div>
   );
 }

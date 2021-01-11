@@ -4,8 +4,8 @@
 
 .nestedPages {
   position: relative;
-  padding-left: 25px;
-  margin-left: 5px;
+  padding-left: 5px;
+  margin-left: 25px;
   border-left: 1px solid #BFCCD6;
 }
 
@@ -28,7 +28,10 @@
 }
 
 .open-page__wrapper {
-  padding-top: 6px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  // padding-top: 6px;
 }
 
 .text-input {
@@ -41,4 +44,30 @@
   font-family: inherit;
   font-size: 16px;
   line-height: 24px;
+}
+
+.nested-pages-button {
+  padding: 0;
+  padding-top: 3px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.nested-pages-button--hidden {
+  opacity: 0;
+  cursor: default;
+}
+
+.nested-pages-button--show {
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.nestedPages--hidden {
+  display: none;
 }
