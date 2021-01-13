@@ -22,10 +22,13 @@ const GraphNavigation = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <div className="graph-navigation">
-      <span>{name}</span>
-      <ExpandMoreIcon htmlColor="#5c7080" viewBox="0 0 20 20" className={classes.expandIcon} />
-    </div>
+    <>
+      <div className="graph-navigation">
+        <span>{name}</span>
+        <ExpandMoreIcon htmlColor="#5c7080" viewBox="0 0 20 20" className={classes.expandIcon} />
+      </div>
+
+    </>
   );
 };
 

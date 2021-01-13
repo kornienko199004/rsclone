@@ -18,7 +18,15 @@
     border-radius: 100px;
     margin-left: 5px;
     &:hover {
-      background-color: grey;
+      background-color: rgba(19, 19, 19, 0.1);
+    }
+  }
+
+  &__more {
+    padding: 5px;
+    border-radius: 100px;
+    &:hover {
+      background-color: rgba(19, 19, 19, 0.1);
     }
   }
 }

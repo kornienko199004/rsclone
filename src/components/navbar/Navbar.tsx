@@ -32,8 +32,8 @@ const Navbar = () => {
       <IconButton className={classes.calendar} onClick={onClickCalendar}>
         <TodayTwoToneIcon className="header__calendar" />
       </IconButton>
-      <IconButton onClick={onClickSetting}>
-        <MoreHorizIcon />
+      <IconButton className={classes.calendar} onClick={onClickSetting}>
+        <MoreHorizIcon className="header__more" />
       </IconButton>
     </div>
   );

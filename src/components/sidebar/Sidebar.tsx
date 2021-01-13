@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     backgroundColor: '#182026',
   },
   showButton: {
-    position: 'absolute',
+    position: 'fixed',
     padding: '4px',
     width: '28px',
     height: '28px',
