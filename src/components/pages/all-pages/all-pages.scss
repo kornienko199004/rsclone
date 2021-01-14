@@ -1,0 +1,26 @@
+.all-pages-container {
+  margin: 100px 30px;
+
+  .service {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+    font-size: 30px;
+    }
+
+    .r-group {
+      .btn {
+        opacity: .7;
+      }
+      display: flex;
+    }
+    .l-group {
+      .btn {
+        opacity: .4;
+      }
+    }
+  }
+
+
+}
