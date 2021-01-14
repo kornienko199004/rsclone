@@ -15,7 +15,8 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        extensions: ['.js', '.jsx', '.tsx', '.json', '.ts'],
+        paths: ['services'],
       },
     },
     'import/no-extraneous-dependencies': [

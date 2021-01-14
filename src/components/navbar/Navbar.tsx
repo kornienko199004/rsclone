@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core/styles';
 
 import TodayTwoToneIcon from '@material-ui/icons/TodayTwoTone';
-import SearchInput from '../search-input/Search-input';
+import SearchInput from '../search-input/SearchInput';
 
 const useStyles = makeStyles(() => createStyles({
   calendar: {
@@ -32,8 +32,8 @@ const Navbar = () => {
       <IconButton className={classes.calendar} onClick={onClickCalendar}>
         <TodayTwoToneIcon className="header__calendar" />
       </IconButton>
-      <IconButton onClick={onClickSetting}>
-        <MoreHorizIcon />
+      <IconButton className={classes.calendar} onClick={onClickSetting}>
+        <MoreHorizIcon className="header__more" />
       </IconButton>
     </div>
   );

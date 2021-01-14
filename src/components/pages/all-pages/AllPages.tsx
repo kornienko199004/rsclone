@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-boolean-value */
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
+import './allPages.scss';
 import { withRouter } from 'react-router-dom';
 import {
   DataGrid,
@@ -19,7 +20,6 @@ import {
 import allInfo from './all-info';
 import { NoteInfo } from './interfaces';
 import CustomizedMenus from './menu';
-import './all-pages.scss';
 
 const AllPages = () => {
   const [state, setState] = React.useState({

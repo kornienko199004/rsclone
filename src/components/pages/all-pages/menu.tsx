@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SwitchLabels from './switch';
 import { Columns } from './interfaces';
-import './all-pages.scss';
+import './allPages.scss';
 
 const StyledMenu = withStyles({
   paper: {
