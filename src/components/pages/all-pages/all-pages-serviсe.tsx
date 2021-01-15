@@ -31,6 +31,9 @@ export const getRows = (res: any[]): any => (res.map((note: Note) => {
 export const hideDailyNotes = (res: NoteInfo[]): any => (
   res.filter((note: NoteInfo) => note.title === note.created ? null : note));
 
+export const searchRows = (res: NoteInfo[], title: string): any => (
+  res.filter((note: NoteInfo) => note.title.includes(title) ? note : null));
+
 export const deleteRows = (selected: RowSelectedParams[]) => {
   console.log(selected);
   // eslint-disable-next-line spaced-comment
@@ -39,47 +42,42 @@ export const deleteRows = (selected: RowSelectedParams[]) => {
 };
 
 export const changeColumns = (columns: Columns) => {
-  const initialWidth: number = ((window.innerWidth
-    || document.documentElement.clientWidth
-    || document.body.clientWidth) - 130) / 15;
-  const widthS: number = initialWidth * 2;
-  const widthM: number = initialWidth * 3;
-  const widthL: number = initialWidth * 5;
-
   const initialColumns = [
     {
       field: 'wordCount',
       headerName: 'WORD COUNT',
-      width: widthS,
+      flex: 1.5,
     },
     {
       field: 'mentions',
       headerName: 'MENTIONS',
-      width: widthS,
+      flex: 1.5,
     },
     {
       field: 'updated',
       headerName: 'UPDATED',
-      width: widthM,
+      flex: 2,
     },
     {
       field: 'created',
       headerName: 'CREATED',
-      width: widthM,
+      flex: 2,
     },
   ];
   const updatedColumns: [any, any][] = Object.entries(columns);
 
   const updates = initialColumns.filter((col, ind) => updatedColumns[ind][1] ? col : null);
+
   const output = [
     {
       field: 'title',
       headerName: 'TITLE',
-      width: widthL,
+      flex: 3,
       sortable: true,
+      headerClassName: 'title',
       renderCell: (params: ValueFormatterParams) => (
         <strong>
-          { params.value }
+          { params.value}
         </strong>
       ),
     },
