@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
@@ -14,6 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import './sidebar.scss';
 import { Link as RouterLink } from 'react-router-dom';
 import GraphNavigation from './GraphNavigation';
+import withRSCloneService from '../hoc-helper/withRSCloneService';
 
 const drawerWidth = 240;
 
@@ -84,10 +85,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const Sidebar = () => {
+const Sidebar = (props:any) => {
   const [open, setOpen] = useState(true);
+  const { rsCloneService: service } = props;
 
   const classes = useStyles();
+
+  useEffect(() => {
+    const login = async () => {
+      await service.login('valigertt@gmail.com', 'Hertas12');
+      console.log(await service.getNotes().then((res: any) => res.DATA));
+    };
+
+    login();
+  });
 
   const toggleSidebar = (): void => {
     setOpen(!open);
@@ -192,4 +203,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default withRSCloneService(Sidebar);
