@@ -5,7 +5,7 @@ import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { IPage } from '../Note';
+import { IPage } from '../../../models/notes.model';
 import './page.scss';
 
 // eslint-disable-next-line import/extensions

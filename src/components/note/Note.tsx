@@ -1,42 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { KeyboardEvent } from 'react';
+import React from 'react';
 // import axios from 'axios';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
 import Button from '@material-ui/core/Button';
-// @ts-ignore
 import { addNeighbor } from '../../store/actionsCreators/actionsCreators';
 import Page from './page/Page';
-
-export interface INote {
-  _id?: string;
-  title: string;
-  parents?: any[];
-  body: any;
-}
-
-export interface IPage {
-  pageId: number;
-  pageLink: string;
-  pagePath: (number | string)[];
-  content: string;
-  nestedPages: IPage[];
-  textInputHeight: number;
-}
-
-export interface IState {
-  title: string;
-  input: string;
-  // children: any[];
-  body: IPage[];
-  content: any[];
-  pagesIdCount: number;
-}
-
-export interface IInputHandler {
-  // eslint-disable-next-line no-unused-vars
-  (e: KeyboardEvent<HTMLInputElement>): void;
-}
+import { IPage } from '../../models/notes.model';
 
 class Note extends React.Component {
   getPagesComponents() {
