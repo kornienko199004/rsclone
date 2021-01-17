@@ -93,7 +93,7 @@ const Sidebar = (props:any) => {
 
   useEffect(() => {
     const login = async () => {
-      await service.login('valigertt@gmail.com', 'Hertas12');
+      // await service.login('valigertt@gmail.com', 'Hertas12');
       console.log(await service.getNotes().then((res: any) => res.DATA));
     };
 

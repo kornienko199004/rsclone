@@ -123,3 +123,4 @@
 [0113/232429.707:ERROR:process_reader_win.cc(151)] SuspendThread: Отказано в доступе. (0x5)
 [0113/232429.707:ERROR:process_reader_win.cc(151)] SuspendThread: Отказано в доступе. (0x5)
 [0113/232429.707:ERROR:exception_snapshot_win.cc(99)] thread ID 15036 not found in process
+[0116/232059.022:ERROR:directory_reader_win.cc(43)] FindFirstFile: Системе не удается найти указанный путь. (0x3)

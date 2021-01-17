@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
-import { RowSelectedParams, ValueFormatterParams } from '@material-ui/data-grid';
+import { ValueFormatterParams } from '@material-ui/data-grid';
 import { Note, NoteInfo, Columns } from './interfaces';
 
 export const getRows = (res: any[]): any => (res.map((note: Note) => {
@@ -17,29 +17,48 @@ export const getRows = (res: any[]): any => (res.map((note: Note) => {
     month: 'long',
     day: 'numeric',
   };
+
+  const nth = (d: any) => {
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
+  };
+  const formatDate = (d: string) => {
+    const fortnightAway = new Date(d);
+    const date = fortnightAway.getDate();
+    const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][fortnightAway.getMonth()];
+
+    return `${month} ${date}${nth(date)}, ${fortnightAway.getFullYear()}`;
+  };
+
+  const countWords = (t: object) => {
+    let count = 0;
+    Object.entries(t).forEach((par: Array<string>) => {
+      count += par[1].split(' ').length;
+    });
+    return count;
+  };
+
   return ({
     id: note._id,
     title: note.title,
-    wordCount: 10,
+    wordCount: countWords(note.body),
     mentions: note.parents.length,
     updated: new Date(note.modification_notes[note.modification_notes.length - 1].modified_on).toLocaleDateString('en-US', options),
-    created: new Date(note.modification_notes[0].modified_on).toLocaleDateString('en-US', options),
+    created: formatDate(note.modification_notes[0].modified_on),
   }
   );
 }));
 
-export const hideDailyNotes = (res: NoteInfo[]): any => (
-  res.filter((note: NoteInfo) => note.title === note.created ? null : note));
+export const hideDailyNotes = (res: NoteInfo[] | null): any => (
+  res ? res.filter((note: NoteInfo) => note.title === note.created ? null : note) : null);
 
 export const searchRows = (res: NoteInfo[], title: string): any => (
   res.filter((note: NoteInfo) => note.title.includes(title) ? note : null));
-
-export const deleteRows = (selected: RowSelectedParams[]) => {
-  console.log(selected);
-  // eslint-disable-next-line spaced-comment
-  //!delete note from service
-  selected.forEach((el) => console.log(el.data.id));
-};
 
 export const changeColumns = (columns: Columns) => {
   const initialColumns = [
