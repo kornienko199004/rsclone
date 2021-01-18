@@ -173,7 +173,7 @@ function Page(props: any) {
   };
 
   return (
-    <div>
+    <div className="page-container">
       <div className="current-page__controls">
         <span className="open-page__wrapper">
           <button

@@ -8,3 +8,17 @@
   flex-direction: column;
 }
 
+.note-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.note__pages {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.note__title {
+  width: 100%;
+}

@@ -8,6 +8,7 @@ import Page from './page/Page';
 import { INote, IPage } from '../../models/notes.model';
 import { selectNote } from '../../store/utils';
 import RSCloneService from '../../services/RSClone.service';
+import './note.scss';
 
 class Note extends React.Component {
   service: RSCloneService;
@@ -63,9 +64,11 @@ class Note extends React.Component {
       : null;
 
     return (
-      <div className="main">
-        <h1>{title}</h1>
-        {contentFromRedux}
+      <div className="note-container">
+        <h1 className="note__title">{title}</h1>
+        <div className="note__pages">
+          {contentFromRedux}
+        </div>
         <Button
           variant="contained"
           color="primary"

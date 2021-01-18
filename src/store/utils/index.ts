@@ -5,9 +5,9 @@ const DEFAULT_PAGE_ID = 0;
 
 const selectNote = (title: string, list: INote[]): INote | null => {
   const note = list.find((item: INote) => item.title === title);
-  console.log('selectNote note', note)
-  console.log('selectNote list', list)
-  console.log('selectNote title', title)
+  console.log('selectNote note', note);
+  console.log('selectNote list', list);
+  console.log('selectNote title', title);
   return note || null;
 };
 
