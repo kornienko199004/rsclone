@@ -84,7 +84,7 @@ const AllPages = (props: any) => {
   const { rsCloneService: service } = props;
   useEffect(() => {
     const getInfo = async () => {
-      // await service.login('mary@gmail.com', 'marymary');
+      // await service.login('mary-jane@gmail.com', 'mary', 'marymary');
       const res = await service.getNotes();
       await setAllInfo(getRows(res.DATA));
       await setRows(getRows(res.DATA));

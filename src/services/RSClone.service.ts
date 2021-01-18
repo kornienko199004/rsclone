@@ -17,6 +17,7 @@ export interface UpdateNoteRequest {
 
 export interface UpdateUserRequest {
     email?: string,
+    name?: string,
     password?: string
 }
 
@@ -32,9 +33,10 @@ export default class RSCloneService {
       return response.json();
     }
 
-    login = async (email: string, password: string) => {
+    login = async (email: string, name: string, password: string) => {
       const body = {
         email,
+        name,
         password,
       };
       const options = {
@@ -62,9 +64,10 @@ export default class RSCloneService {
       return true;
     }
 
-    createUser = async (email: string, password: string) => {
+    createUser = async (email: string, name: string, password: string) => {
       const body = {
         email,
+        name,
         password,
       };
       const options = {

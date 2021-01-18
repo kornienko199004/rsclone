@@ -3,6 +3,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@material-ui/core';
 import { ValueFormatterParams } from '@material-ui/data-grid';
 import { Note, NoteInfo, Columns } from './interfaces';
 
@@ -96,7 +98,9 @@ export const changeColumns = (columns: Columns) => {
       headerClassName: 'title',
       renderCell: (params: ValueFormatterParams) => (
         <strong>
-          { params.value}
+          <Link component={RouterLink} to="/">
+            {params.value}
+          </Link>
         </strong>
       ),
     },
