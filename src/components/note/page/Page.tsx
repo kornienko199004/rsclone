@@ -13,9 +13,10 @@ import {
   addNeighbor, becomeChild,
   removePage, levelUp, updateContent, addChild, changeFocusElement, // @ts-ignore
 } from '../../../store/actionsCreators/actionsCreators';
+import { selectNote } from '../../../store/utils';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
-  body: state.body,
+  notes: state.notes,
   focusComponentPath: state.focusComponentPath,
   ...ownProps,
 });
@@ -26,8 +27,10 @@ const mapDispatchToProps = {
 
 function Page(props: any) {
   const {
-    content, body, pagePath, currentPage, list, focusComponentPath, textInputHeight,
+    content, notes, pagePath, currentPage, list, focusComponentPath, textInputHeight, noteTitle,
   } = props;
+
+  const body: IPage[] = selectNote(noteTitle, notes)?.body;
 
   let childrenComponents = (<span>{ }</span>);
   const [pageContent, setContent] = useState(content);
@@ -39,6 +42,7 @@ function Page(props: any) {
   let textInput: HTMLTextAreaElement | null = null;
 
   useEffect(() => {
+    console.log('focusComponentPath', focusComponentPath);
     if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath)) {
       (textInput as HTMLTextAreaElement).focus();
     }
@@ -46,7 +50,7 @@ function Page(props: any) {
   });
 
   const onAddNeighbor = () => {
-    props.addNeighbor(body, { currentPage, list });
+    props.addNeighbor(body, { currentPage, list, noteTitle });
   };
 
   // const onAddChild = () => {
@@ -57,14 +61,14 @@ function Page(props: any) {
     if (currentPage.pageId === 0) {
       return;
     }
-    props.becomeChild(body, { currentPage });
+    props.becomeChild(body, { currentPage, noteTitle });
   };
 
   const onLevelUp = () => {
     if (currentPage.pagePath && currentPage.pagePath.length === 1) {
       return;
     }
-    props.levelUp(body, { currentPage });
+    props.levelUp(body, { currentPage, noteTitle });
   };
 
   const onRemove = () => {
@@ -76,11 +80,11 @@ function Page(props: any) {
       return;
     }
 
-    props.removePage(body, { currentPage });
+    props.removePage(body, { currentPage, noteTitle });
   };
 
   const onChangeFocusElement = (direction: string = 'down') => {
-    props.changeFocusElement(direction, body, { currentPage, list });
+    props.changeFocusElement(direction, body, { currentPage, list, noteTitle });
   };
 
   if (currentPage.nestedPages && currentPage.nestedPages.length > 0) {
@@ -96,6 +100,7 @@ function Page(props: any) {
           currentPage={item}
           list={arr}
           textInputHeight={item.textInputHeight}
+          noteTitle={noteTitle}
         />
       );
     });
@@ -117,7 +122,7 @@ function Page(props: any) {
     }
 
     onUpdateContent(e.target.value);
-    props.updateContent(body);
+    props.updateContent(body, { noteTitle });
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -178,7 +183,7 @@ function Page(props: any) {
           >
             {showNestedPages ? <ArrowDropDown fontSize="small" htmlColor="#000" /> : <ArrowRight fontSize="small" htmlColor="#000" />}
           </button>
-          <span className="open-page">Open</span>
+          <span className="open-page" />
         </span>
         <textarea
           className="text-input"

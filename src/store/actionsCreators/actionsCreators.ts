@@ -1,17 +1,9 @@
-// @ts-ignore
-import { ADD_NEIGHBOR, CHANGE_FOCUS_ELEMENT } from '../actions/actions';
+import { INote, IPage } from '../../models/notes.model';
+import {
+  ADD_NOTE, CHANGE_FOCUS_ELEMENT, UPDATE_NOTE_BODY,
+} from '../actions/actions';
 
 export type PagePath = (number | string);
-
-export interface IPage {
-  pageId: number;
-  pageLink: string;
-  pagePath: PagePath[];
-  content: string;
-  nestedPages: IPage[];
-  neighbors: IPage[];
-  textInputHeight: number;
-}
 
 const TEXT_INPUT_HEIGHT = 24;
 
@@ -49,8 +41,8 @@ const updateIds = (nestedPages: IPage[]): void => {
   }
 };
 
-function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[] }) {
-  const { list, currentPage } = params;
+function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[], noteTitle: string }) {
+  const { list, currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   const newPageId: number = list.length;
   const newNeighborPath: PagePath[] = [
@@ -62,7 +54,6 @@ function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[] }) {
     pageLink: '',
     pagePath: newNeighborPath,
     content: '',
-    neighbors: [],
     nestedPages: [],
     textInputHeight: TEXT_INPUT_HEIGHT,
   };
@@ -83,14 +74,15 @@ function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[] }) {
   //   };
   // }
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
     body: [...body],
+    title: noteTitle,
     focusComponentPath: newNeighborPath,
   };
 }
 
-function becomeChild(body: any, params: { currentPage: IPage }) {
-  const { currentPage } = params;
+function becomeChild(body: any, params: { currentPage: IPage, noteTitle: string }) {
+  const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
   for (let i = 0; i < pagePath.length - 1; i += 1) {
@@ -125,15 +117,17 @@ function becomeChild(body: any, params: { currentPage: IPage }) {
     };
   }
 
+  console.log('becomeChild', body);
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
     body: [...body],
+    title: noteTitle,
     focusComponentPath: newChildPagePath,
   };
 }
 
-function removePage(body: any, params: { currentPage: IPage }) {
-  const { currentPage } = params;
+function removePage(body: any, params: { currentPage: IPage, noteTitle: string }) {
+  const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
   for (let i = 0; i < pagePath.length - 1; i += 1) {
@@ -151,14 +145,15 @@ function removePage(body: any, params: { currentPage: IPage }) {
 
   const newFocusComponentPath: (string | number)[] = getFocusPathOnRemove(pagePath);
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
     body: [...body],
+    title: noteTitle,
     focusComponentPath: newFocusComponentPath,
   };
 }
 
-function levelUp(body: any, params: { currentPage: IPage }) {
-  const { currentPage } = params;
+function levelUp(body: any, params: { currentPage: IPage, noteTitle: string }) {
+  const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
   for (let i = 0; i < pagePath.length - 1; i += 1) {
@@ -195,14 +190,15 @@ function levelUp(body: any, params: { currentPage: IPage }) {
     };
   }
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
     body: [...body],
+    title: noteTitle,
     focusComponentPath: newChildPagePath,
   };
 }
 
-function addChild(body: any, params: { currentPage: IPage }) {
-  const { currentPage } = params;
+function addChild(body: any, params: { currentPage: IPage, noteTitle: string }) {
+  const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
 
   const newPageId: number = 0;
@@ -216,7 +212,6 @@ function addChild(body: any, params: { currentPage: IPage }) {
     pageLink: '',
     pagePath: newChildPath,
     content: '',
-    neighbors: [],
     nestedPages: [],
     textInputHeight: TEXT_INPUT_HEIGHT,
   };
@@ -227,16 +222,17 @@ function addChild(body: any, params: { currentPage: IPage }) {
   updateNestedPagesPath(currentPage.pagePath, currentPage.nestedPages);
 
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
     body: [...body],
+    title: noteTitle,
     focusComponentPath: newChildPath,
   };
 }
 
 function changeFocusElement(
-  direction: string, body: any, params: { currentPage: IPage; list: IPage[] },
+  direction: string, body: any, params: { currentPage: IPage; list: IPage[], noteTitle: string },
 ) {
-  const { currentPage, list } = params;
+  const { currentPage, list, noteTitle } = params;
   const { pagePath, pageId } = currentPage;
 
   let newFocusPath: PagePath[];
@@ -255,17 +251,34 @@ function changeFocusElement(
 
   return {
     type: CHANGE_FOCUS_ELEMENT,
+    title: noteTitle,
     focusComponentPath: newFocusPath,
   };
 }
 
-function updateContent(body: any) {
+function updateContent(body: any, params: { noteTitle: string }) {
+  const { noteTitle } = params;
   return {
-    type: ADD_NEIGHBOR,
+    type: UPDATE_NOTE_BODY,
+    title: noteTitle,
     body: [...body],
   };
 }
 
+function addNote(note: INote) {
+  return {
+    type: ADD_NOTE,
+    note,
+  };
+}
+
 export {
-  removePage, addNeighbor, becomeChild, levelUp, updateContent, addChild, changeFocusElement,
+  removePage,
+  addNeighbor,
+  becomeChild,
+  levelUp,
+  updateContent,
+  addChild,
+  changeFocusElement,
+  addNote,
 };

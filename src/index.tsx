@@ -14,16 +14,21 @@ import reducer from './store/reducers/reducer';
 
 // const rsCloneService = new RSCloneService();
 
-const initialState: { body: any[]; focusComponentPath: (string | number)[] } = {
-  body: [{
-    pageId: 0,
-    pageLink: '',
-    pagePath: [0],
-    content: '',
-    neighbors: [],
-    nestedPages: [],
-    textInputHeight: 24,
-  }],
+// const initialState: { body: any[]; focusComponentPath: (string | number)[] } = {
+//   body: [{
+//     pageId: 0,
+//     pageLink: '',
+//     pagePath: [0],
+//     content: '',
+//     neighbors: [],
+//     nestedPages: [],
+//     textInputHeight: 24,
+//   }],
+//   focusComponentPath: [0],
+// };
+
+const initialState = {
+  notes: [],
   focusComponentPath: [0],
 };
 
