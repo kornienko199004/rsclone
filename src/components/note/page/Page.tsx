@@ -126,7 +126,16 @@ function Page(props: any) {
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
+    console.log(e);
+    console.log(e.target.value);
+    let str: string = e.target.value;
+    if (str && (e.nativeEvent as InputEvent).data === '[') {
+      str = `${str}]`;
+      setContent(str);
+      e.target.selectionEnd = str.length - 5;
+    } else {
+      setContent(str);
+    }
     autosize(textInput as HTMLTextAreaElement);
   };
 
