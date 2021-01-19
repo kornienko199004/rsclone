@@ -32,6 +32,14 @@ export interface LogInUserRequest {
     email: string,
 }
 
+const getAuthToken = (): string => {
+  const authToken = localStorage.getItem('auth-token');
+  if (!authToken) {
+    throw new Error('authToken is not defined or you are not authorized. Check localStorage');
+  }
+  return authToken;
+};
+
 export default class RSCloneService {
     getResource = async (url: string, options: object) => {
       const response = await fetch(`${url}`, options);
@@ -54,7 +62,7 @@ export default class RSCloneService {
       };
       const res = await this.getResource('/api/login', options);
       localStorage.setItem('auth-token', res.token);
-      return res.token;
+      return res.user.name;
     }
 
     logout = async () => {
@@ -62,7 +70,7 @@ export default class RSCloneService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       await this.getResource('api/logout', options);
@@ -85,7 +93,7 @@ export default class RSCloneService {
       const options = {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       await this.getResource('api/user/me', options);
@@ -97,7 +105,7 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource('api/user/me', options);
@@ -111,7 +119,7 @@ export default class RSCloneService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -123,7 +131,7 @@ export default class RSCloneService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -137,7 +145,7 @@ export default class RSCloneService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -148,7 +156,7 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource(`api/note/${id}`, options);
@@ -158,7 +166,7 @@ export default class RSCloneService {
       const options = {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource(`api/note/${id}`, options);
@@ -168,7 +176,7 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource('/api/notes', options);
@@ -178,7 +186,7 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource(`api/note/title/${title}`, options);
