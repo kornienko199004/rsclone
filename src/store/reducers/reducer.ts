@@ -7,6 +7,10 @@ function reducer(state: any, action: any) {
       return { ...state, focusComponentPath: action.focusComponentPath };
     case ADD_NEIGHBOR:
       return { ...state, body: action.body, focusComponentPath: action.focusComponentPath };
+    case 'USER_LOGGED_IN':
+      return { ...state, isLoggedIn: true };
+    case 'USER_LOGGED_OUT':
+      return { ...state, isLoggedIn: false };
 
     default:
       return state;
