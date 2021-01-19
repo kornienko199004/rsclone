@@ -1,9 +1,3 @@
-import {
-  RSCloneServiceProvider,
-  RSCloneServiceConsumer,
-} from './rsCloneServiceContext';
+import RSCloneServiceContext from './rsCloneServiceContext';
 
-export {
-  RSCloneServiceProvider,
-  RSCloneServiceConsumer,
-};
+export default RSCloneServiceContext;
