@@ -17,6 +17,7 @@ export interface UpdateNoteRequest {
 
 export interface UpdateUserRequest {
     email?: string,
+    name?: string,
     password?: string
 }
 
@@ -170,7 +171,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
         },
       };
-      return this.getResource('api/notes', options);
+      return this.getResource('/api/notes', options);
     }
 
     getNoteByTitle = async (title: string) => {
