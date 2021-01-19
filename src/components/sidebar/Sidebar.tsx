@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   // const { rsCloneService: service } = props;
-
   const classes = useStyles();
 
   // useEffect(() => {

@@ -2,11 +2,11 @@ import { Route, Switch } from 'react-router-dom';
 import React from 'react';
 import Navbar from '../../navbar/Navbar';
 import Main from '../../containers/main/Main';
-import Note from '../../note/Note';
 import Graph from './graph-overview/GraphOverview';
 import AllPages from './all-pages/AllPages';
 import ShortcutsList from './shorcuts/ShortcutList';
 import Sidebar from '../../sidebar/Sidebar';
+import DailyNotes from './daily-notes/DailyNotes';
 
 const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
@@ -15,7 +15,7 @@ const ApplicationPage = (match: any) => {
       <Navbar />
       <Main>
         <Switch>
-          <Route path={path} component={Note} exact />
+          <Route path={path} component={DailyNotes} exact />
           <Route
             path={`${path}/graph`}
             component={Graph}

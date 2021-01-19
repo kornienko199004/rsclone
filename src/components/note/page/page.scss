@@ -10,6 +10,7 @@
 }
 
 .open-page {
+  margin-top: 6px;
   box-sizing: content-box;
   display: flex;
   align-items: center;
@@ -30,8 +31,7 @@
 .open-page__wrapper {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-  // padding-top: 6px;
+  align-items: flex-start;
 }
 
 .text-input {
@@ -70,4 +70,8 @@
 
 .nestedPages--hidden {
   display: none;
+}
+
+.page-container {
+  width: 100%;
 }

@@ -6,19 +6,15 @@ import './index.css';
 import App from './components/app/App';
 import reducer from './store/reducers/reducer';
 
-const initialState: {
-    isLoggedIn: boolean, body: any[]; focusComponentPath: (string | number)[]
+// const rsCloneService = new RSCloneService();
+
+const initialState : {
+    isLoggedIn: boolean,
+    notes: [],
+    focusComponentPath: (string | number)[]
 } = {
   isLoggedIn: !!localStorage.getItem('auth-token'),
-  body: [{
-    pageId: 0,
-    pageLink: '',
-    pagePath: [0],
-    content: '',
-    neighbors: [],
-    nestedPages: [],
-    textInputHeight: 24,
-  }],
+  notes: [],
   focusComponentPath: [0],
 };
 

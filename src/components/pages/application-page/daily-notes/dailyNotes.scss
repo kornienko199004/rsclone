@@ -1,3 +1,7 @@
 .daily-container {
   margin: 0 auto;
+  width: calc(100% - 240px);
+  margin-left: 240px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
