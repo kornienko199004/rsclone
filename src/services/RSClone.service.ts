@@ -20,6 +20,17 @@ export interface UpdateUserRequest {
     password?: string
 }
 
+export interface CreateUserRequest {
+    name: string,
+    password: string,
+    email: string,
+}
+
+export interface LogInUserRequest {
+    password: string,
+    email: string,
+}
+
 export default class RSCloneService {
     getResource = async (url: string, options: object) => {
       const response = await fetch(`${url}`, options);
@@ -32,17 +43,13 @@ export default class RSCloneService {
       return response.json();
     }
 
-    login = async (email: string, password: string) => {
-      const body = {
-        email,
-        password,
-      };
+    login = async (data: LogInUserRequest) => {
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       };
       const res = await this.getResource('/api/login', options);
       localStorage.setItem('auth-token', res.token);
@@ -62,17 +69,13 @@ export default class RSCloneService {
       return true;
     }
 
-    createUser = async (email: string, password: string) => {
-      const body = {
-        email,
-        password,
-      };
+    createUser = async (data: CreateUserRequest) => {
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       };
       return this.getResource('/api/user', options);
     }
