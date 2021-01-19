@@ -37,18 +37,19 @@ export const getRows = (res: any[]): any => (res.map((note: Note) => {
     return `${month} ${date}${nth(date)}, ${fortnightAway.getFullYear()}`;
   };
 
-  // const countWords = (t: object) => {
-  //   let count = 0;
-  //   Object.entries(t).forEach((par: Array<string>) => {
-  //     count += par[1].split(' ').length;
-  //   });
-  //   return count;
-  // };
+  const countWords = (t: object) => {
+    let count = 0;
+    Object.entries(t).forEach((par: Array<any>) => {
+      console.log(par[1]);
+      count += par[1].content.split(' ').length;
+    });
+    return count;
+  };
 
   return ({
     id: note._id,
     title: note.title,
-    // wordCount: countWords(note.body),
+    wordCount: countWords(note.body),
     mentions: note.parents.length,
     updated: new Date(note.modification_notes[note.modification_notes.length - 1].modified_on).toLocaleDateString('en-US', options),
     created: formatDate(note.modification_notes[0].modified_on),

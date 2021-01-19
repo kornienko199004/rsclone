@@ -45,11 +45,11 @@ const RegistrationForm = (
   const onSubmitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    service.createUser(data).then(() => {
-      onUserLoggedIn();
+    service.createUser(data).then(async () => {
       console.log(isLoggedIn);
-      service.login(data)
-        .then(() => {
+      await service.login(data)
+        .then(async () => {
+          onUserLoggedIn();
           history.push('/app');
         });
     });

@@ -26,8 +26,8 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
       let note: INote | null = selectNote(todayTitle, props.notes);
 
       if (!note) {
+        console.log(localStorage.getItem('auth-token'));
         const noteByTitle: { DATA: INote } = await service.getNoteByTitle(todayTitle);
-
         if (noteByTitle.DATA) {
           note = noteByTitle.DATA;
         } else {
@@ -43,7 +43,7 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
     };
 
     getNote();
-  });
+  }, [notesList]);
 
   let list: any[] | null = null;
 
