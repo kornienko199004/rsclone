@@ -1,7 +1,7 @@
 import React from 'react';
 import './dailyNotes.scss';
 import { withRouter } from 'react-router-dom';
-import Note from '../../note/Note';
+import Note from '../../../note/Note';
 
 // Test notes
 const testNotes = () => {
