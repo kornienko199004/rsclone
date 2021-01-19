@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
@@ -85,20 +85,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const Sidebar = (props:any) => {
+const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  const { rsCloneService: service } = props;
+  // const { rsCloneService: service } = props;
 
   const classes = useStyles();
 
-  useEffect(() => {
-    const login = async () => {
-      await service.login('valigertt@gmail.com', 'Hertas12');
-      console.log(await service.getNotes().then((res: any) => res.DATA));
-    };
-
-    login();
-  });
+  // useEffect(() => {
+  //   const login = async () => {
+  //     await service.login('valigertt@gmail.com', 'Hertas12');
+  //     console.log(await service.getNotes().then((res: any) => res.DATA));
+  //   };
+  //
+  //   login();
+  // });
 
   const toggleSidebar = (): void => {
     setOpen(!open);
@@ -116,7 +116,7 @@ const Sidebar = (props:any) => {
 
       <div className={classes.toolbar} />
       <List className={classes.link}>
-        <Link component={RouterLink} to="/" className={classes.link}>
+        <Link component={RouterLink} to="/app" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -132,7 +132,7 @@ const Sidebar = (props:any) => {
             />
           </ListItem>
         </Link>
-        <Link component={RouterLink} to="/graph" className={classes.link}>
+        <Link component={RouterLink} to="/app/graph" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -148,7 +148,7 @@ const Sidebar = (props:any) => {
             />
           </ListItem>
         </Link>
-        <Link component={RouterLink} to="/pages" className={classes.link}>
+        <Link component={RouterLink} to="/app/pages" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -165,7 +165,7 @@ const Sidebar = (props:any) => {
           </ListItem>
         </Link>
         <Divider className={classes.divider} />
-        <Link component={RouterLink} to="/shortcut" className={classes.link}>
+        <Link component={RouterLink} to="/app/shortcut" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
