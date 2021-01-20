@@ -13,8 +13,10 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import MenuIcon from '@material-ui/icons/Menu';
 import './sidebar.scss';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import GraphNavigation from './GraphNavigation';
 import withRSCloneService from '../hoc-helper/withRSCloneService';
+// import RSCloneServiceContext from '../rsCloneServiceContext';
 
 const drawerWidth = 240;
 
@@ -87,17 +89,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  // const { rsCloneService: service } = props;
+  // const [username, setUserName] = useState<string | null>(null);
+  // const service = useContext(RSCloneServiceContext);
   const classes = useStyles();
+  const username = useSelector((state: any) => state.userData.username);
+  console.log(username);
 
   // useEffect(() => {
-  //   const login = async () => {
-  //     await service.login('valigertt@gmail.com', 'Hertas12');
-  //     console.log(await service.getNotes().then((res: any) => res.DATA));
-  //   };
-  //
-  //   login();
-  // });
+  //   (async () => {
+  //     const userData = await service.getUser();
+  //     console.log(username);
+  //     return setUserName(userData.name);
+  //   })();
+  // }, [username]);
 
   const toggleSidebar = (): void => {
     setOpen(!open);
@@ -107,11 +111,10 @@ const Sidebar = () => {
     console.log("Yep, i'm selected");
   };
 
-  const drawer = (
+  const ReDrawer = ({ name } : {name: string}) => (
     <div>
-
       <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} />
-      <GraphNavigation name="ALEKSEY" />
+      <GraphNavigation name={name} />
 
       <div className={classes.toolbar} />
       <List className={classes.link}>
@@ -196,7 +199,7 @@ const Sidebar = () => {
         variant="permanent"
         open
       >
-        {drawer}
+        <ReDrawer name={username} />
       </Drawer>
     </nav>
   );

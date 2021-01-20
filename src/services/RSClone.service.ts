@@ -32,6 +32,11 @@ export interface LogInUserRequest {
     email: string,
 }
 
+export type UserData = {
+    email: string,
+    username: string,
+}
+
 const getAuthToken = (): string => {
   const authToken = localStorage.getItem('auth-token');
   if (!authToken) {
@@ -53,6 +58,7 @@ export default class RSCloneService {
     }
 
     login = async (data: LogInUserRequest) => {
+      console.log('request');
       const options = {
         method: 'POST',
         headers: {
@@ -62,7 +68,7 @@ export default class RSCloneService {
       };
       const res = await this.getResource('/api/login', options);
       localStorage.setItem('auth-token', res.token);
-      return res.user.name;
+      return res;
     }
 
     logout = async () => {
@@ -101,14 +107,18 @@ export default class RSCloneService {
       return true;
     }
 
-    getUser = async () => {
+    getUser = async (): Promise<UserData> => {
       const options = {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource('api/user/me', options);
+      const res = await this.getResource('api/user/me', options);
+      return {
+        email: res.email,
+        username: res.name,
+      };
     }
 
     updateUser = async (data: UpdateUserRequest) => {

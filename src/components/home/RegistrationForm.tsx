@@ -6,7 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import RSCloneServiceContext from '../rsCloneServiceContext';
-import { userLoggedIn } from '../../store/actions/actions';
+import { userLoggedIn } from '../../store/actionsCreators/actionsCreators';
+// import { onUserLoggedInType } from './LoginFrom';
 
 const useStyles = makeStyles(() => createStyles({
   textField: {
@@ -21,7 +22,7 @@ interface IRegistrationForm {
 }
 
 const RegistrationForm = (
-  { isLoggedIn, onUserLoggedIn } : {isLoggedIn: boolean, onUserLoggedIn: () => object},
+  { isLoggedIn, onUserLoggedIn } : {isLoggedIn: boolean, onUserLoggedIn: any},
 ) => {
   const classes = useStyles();
   const [data, setData] = useState<IRegistrationForm>({
@@ -48,8 +49,8 @@ const RegistrationForm = (
     service.createUser(data).then(async () => {
       console.log(isLoggedIn);
       await service.login(data)
-        .then(async () => {
-          onUserLoggedIn();
+        .then(async (userData: object) => {
+          onUserLoggedIn(userData);
           history.push('/app');
         });
     });

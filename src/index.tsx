@@ -12,8 +12,13 @@ const initialState : {
     isLoggedIn: boolean,
     notes: [],
     focusComponentPath: (string | number)[]
+    userData: {username: string, email: string}
 } = {
   isLoggedIn: !!localStorage.getItem('auth-token'),
+  userData: {
+    username: '',
+    email: '',
+  },
   notes: [],
   focusComponentPath: [0],
 };

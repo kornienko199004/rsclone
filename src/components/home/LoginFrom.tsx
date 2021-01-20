@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import RSCloneServiceContext from '../rsCloneServiceContext';
-import { userLoggedIn } from '../../store/actions/actions';
+import { userLoggedIn } from '../../store/actionsCreators/actionsCreators';
 
 const useStyles = makeStyles(() => createStyles({
   textField: {
@@ -19,7 +19,18 @@ interface ILoginForm {
     password: string
 }
 
-const LoginForm = ({ onUserLoggedIn }: { onUserLoggedIn: () => object }) => {
+type userData = {
+    type: string,
+    userData: {
+        username: string,
+        email: string
+    }
+}
+
+// eslint-disable-next-line no-unused-vars
+export type onUserLoggedInType = (data: object) => userData
+
+const LoginForm = ({ onUserLoggedIn }: { onUserLoggedIn: any }) => {
   const classes = useStyles();
   const history = useHistory();
   const service = useContext(RSCloneServiceContext);
@@ -38,12 +49,11 @@ const LoginForm = ({ onUserLoggedIn }: { onUserLoggedIn: () => object }) => {
     });
   };
 
-  const onSubmitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
+  const onSubmitForm = async (event: any) => {
     event.preventDefault();
-
-    service.login(data)
-      .then(() => {
-        onUserLoggedIn();
+    await service.login(data)
+      .then((res: object) => {
+        onUserLoggedIn(res);
         history.push('/app');
       });
   };

@@ -5,10 +5,6 @@ import {
   makeStyles, createStyles,
 } from '@material-ui/core/styles';
 
-interface Props extends React.HTMLAttributes<HTMLDivElement>{
-    name: string;
-}
-
 const useStyles = makeStyles(() => createStyles({
   expandIcon: {
     width: '17px',
@@ -17,14 +13,14 @@ const useStyles = makeStyles(() => createStyles({
   },
 }));
 
-const GraphNavigation = (props: Props) => {
+const GraphNavigation = (props: { name: string | null }) => {
   const { name } = props;
   const classes = useStyles();
-
+  console.log(`${name}dasdas`);
   return (
     <>
       <div className="graph-navigation">
-        <span>{name}</span>
+        <span>{name || 'AKESEEY'}</span>
         <ExpandMoreIcon htmlColor="#5c7080" viewBox="0 0 20 20" className={classes.expandIcon} />
       </div>
 
