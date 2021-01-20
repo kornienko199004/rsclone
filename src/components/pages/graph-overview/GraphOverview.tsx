@@ -65,7 +65,7 @@ const Graph = (props: any) => {
       {notes && (
         <NoteGraph
           NodeComponent={Node}
-          nodeDistance={1000}
+          nodeDistance={2000}
           zoomDepth={3}
           hoverOpacity={0.3}
           enableDrag

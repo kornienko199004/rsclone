@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@material-ui/core';
 
-const fontSize = 18;
-const radius = 14;
+const fontSize = 22;
+const radius = 18;
 
 const Node = ({ node }: any) => {
   const sizes = {
@@ -11,24 +13,28 @@ const Node = ({ node }: any) => {
     textY: radius / 2,
   };
 
+  let link = '';
+  const handleDoubleClick = () => {
+    link = '/';
+  };
+
   return (
     <>
-      <circle
-        onContextMenu={(event) => {
-          alert(`You pressed button: ${event.button}`);
-        }}
-        fill="#240053"
-        stroke="#330033"
-        r={sizes.radius}
-      />
-      <g style={{ fontSize: `${sizes.textSize}px` }}>
-        <text
-          x={sizes.radius + 7}
-          y={sizes.radius / 2}
-        >
-          {node.title}
-        </text>
-      </g>
+      <Link component={RouterLink} to={link} onDoubleClick={() => { handleDoubleClick(); }}>
+        <circle
+          fill=" #3f51b5"
+          stroke=" #3f51b5"
+          r={sizes.radius}
+        />
+        <g style={{ fontSize: `${sizes.textSize}px` }}>
+          <text
+            x={sizes.radius + 7}
+            y={sizes.radius / 2}
+          >
+            {node.title}
+          </text>
+        </g>
+      </Link>
     </>
   );
 };
