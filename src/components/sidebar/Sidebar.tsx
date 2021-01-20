@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
@@ -85,20 +85,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const Sidebar = (props:any) => {
+const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  const { rsCloneService: service } = props;
+  // const { rsCloneService: service } = props;
 
   const classes = useStyles();
 
-  useEffect(() => {
-    const login = async () => {
-      // await service.login('valigertt@gmail.com', 'Hertas12');
-      console.log(await service.getNotes().then((res: any) => res.DATA));
-    };
+  // useEffect(() => {
+  //   const login = async () => {
+  //     // await service.login('valigertt@gmail.com', 'Hertas12');
+  //     console.log(await service.getNotes().then((res: any) => res.DATA));
+  //   };
 
-    login();
-  });
+  //   login();
+  // });
 
   const toggleSidebar = (): void => {
     setOpen(!open);

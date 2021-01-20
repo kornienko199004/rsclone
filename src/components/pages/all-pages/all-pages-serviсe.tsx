@@ -37,18 +37,21 @@ export const getRows = (res: any[]): any => (res.map((note: Note) => {
     return `${month} ${date}${nth(date)}, ${fortnightAway.getFullYear()}`;
   };
 
-  const countWords = (t: object) => {
+  const countWords = (t: any) => {
     let count = 0;
-    Object.entries(t).forEach((par: Array<string>) => {
-      count += par[1].split(' ').length;
-    });
+
+    if (Object.keys(t).length !== 0) {
+      Object.entries(t).forEach((par: any) => {
+        count += par[1].split(' ').length;
+      });
+    }
     return count;
   };
 
   return ({
     id: note._id,
     title: note.title,
-    wordCount: countWords(note.body),
+    wordCount: note.body ? countWords(note.body) : 0,
     mentions: note.parents.length,
     updated: new Date(note.modification_notes[note.modification_notes.length - 1].modified_on).toLocaleDateString('en-US', options),
     created: formatDate(note.modification_notes[0].modified_on),
@@ -60,7 +63,8 @@ export const hideDailyNotes = (res: NoteInfo[] | null): any => (
   res ? res.filter((note: NoteInfo) => note.title === note.created ? null : note) : null);
 
 export const searchRows = (res: NoteInfo[], title: string): any => (
-  res.filter((note: NoteInfo) => note.title.includes(title) ? note : null));
+  res.filter((note: NoteInfo) => note.title.toLowerCase().includes(title.toLowerCase())
+    ? note : null));
 
 export const changeColumns = (columns: Columns) => {
   const initialColumns = [
