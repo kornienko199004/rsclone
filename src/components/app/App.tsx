@@ -1,44 +1,36 @@
 import React from 'react';
 import './app.scss';
 import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
+  BrowserRouter as Router, Switch,
+  Route, Redirect,
 } from 'react-router-dom';
-import Navbar from '../navbar/Navbar';
-import Sidebar from '../sidebar/Sidebar';
-import DailyNotes from '../pages/daily-notes/Daily-notes';
-import AllPages from '../pages/all-pages/All-pages';
-import Graph from '../pages/graph-overview/Graph-overview';
+// import DailyNotes from '../pages/daily-notes/DailyNotes';
+import { useSelector } from 'react-redux';
+import MainPage from '../pages/main-page/MainPage';
+import RSCloneServiceContext from '../rsCloneServiceContext';
+import RSCloneService from '../../services/RSClone.service';
+import ApplicationPage from '../pages/application-page/ApplicationPage';
+import PrivateRoute from '../routes/PrivateRoute';
+
+const rsCloneService = new RSCloneService();
 
 function App() {
-  return (
-    <div className="app">
-      <Router>
-        <Navbar />
+  const isLoggedIn = useSelector((state: any) => state.isLoggedIn);
+  console.log(isLoggedIn);
 
-        <Switch>
-          <Route path="/" component={DailyNotes} exact />
-          <Route
-            path="/graph"
-            component={Graph}
-            exact
-          />
-          <Route
-            path="/pages"
-            component={AllPages}
-            exact
-          />
-          <Route
-            path="/shortcut"
-            render={() => <h2>Shortcut page</h2>}
-            exact
-          />
-          <Route render={() => <h1>Page not found</h1>} />
-        </Switch>
-        <Sidebar />
-      </Router>
-    </div>
+  return (
+    <RSCloneServiceContext.Provider value={rsCloneService}>
+      <div className="app">
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              {isLoggedIn ? <Redirect to="/app" /> : <MainPage />}
+            </Route>
+            <PrivateRoute path="/app" component={ApplicationPage} />
+          </Switch>
+        </Router>
+      </div>
+    </RSCloneServiceContext.Provider>
   );
 }
 export default App;

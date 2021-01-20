@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
@@ -11,9 +11,13 @@ import BubbleChart from '@material-ui/icons/BubbleChart';
 import Grade from '@material-ui/icons/Grade';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import MenuIcon from '@material-ui/icons/Menu';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import './sidebar.scss';
 import { Link as RouterLink } from 'react-router-dom';
-import GraphNavigation from './Graph-navigation';
+import GraphNavigation from './GraphNavigation';
+import withRSCloneService from '../hoc-helper/withRSCloneService';
+import RSCloneServiceContext from '../rsCloneServiceContext';
 
 const drawerWidth = 240;
 
@@ -51,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     backgroundColor: '#182026',
   },
   showButton: {
-    position: 'absolute',
+    position: 'fixed',
     padding: '4px',
     width: '28px',
     height: '28px',
@@ -86,8 +90,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [username, setUserName] = useState<string | null>(null);
+  const service = useContext(RSCloneServiceContext);
   const classes = useStyles();
+
+  useEffect(() => {
+    const fetchName = async () => {
+      const userData = await service.getUser();
+      setUserName(userData.username);
+    };
+    fetchName();
+  }, [username]);
 
   const toggleSidebar = (): void => {
     setOpen(!open);
@@ -97,15 +111,36 @@ const Sidebar = () => {
     console.log("Yep, i'm selected");
   };
 
-  const drawer = (
-    <div>
+  const onOpenMenu = (event: React.MouseEvent<any>) => {
+    console.log(event);
+    setAnchorEl(event.currentTarget);
+  };
+  const onCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
-      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} />
-      <GraphNavigation name="ALEKSEY" />
+  const ReDrawer = ({ name } : {name: string | null}) => (
+    <div>
+      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} aria-controls="simple-menu" aria-haspopup="true" />
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+      <div onClick={onOpenMenu} role="button" tabIndex={0}>
+        <GraphNavigation name={name} />
+      </div>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={onCloseMenu}
+      >
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+      </Menu>
 
       <div className={classes.toolbar} />
       <List className={classes.link}>
-        <Link component={RouterLink} to="/" className={classes.link}>
+        <Link component={RouterLink} to="/app" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -121,7 +156,7 @@ const Sidebar = () => {
             />
           </ListItem>
         </Link>
-        <Link component={RouterLink} to="/graph" className={classes.link}>
+        <Link component={RouterLink} to="/app/graph" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -137,7 +172,7 @@ const Sidebar = () => {
             />
           </ListItem>
         </Link>
-        <Link component={RouterLink} to="/pages" className={classes.link}>
+        <Link component={RouterLink} to="/app/pages" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -154,7 +189,7 @@ const Sidebar = () => {
           </ListItem>
         </Link>
         <Divider className={classes.divider} />
-        <Link component={RouterLink} to="/shortcut" className={classes.link}>
+        <Link component={RouterLink} to="/app/shortcut" className={classes.link}>
           <ListItem button onClick={onItemSelected} className={classes.linkItem}>
             <ListItemIcon classes={{
               root: classes.listIcon,
@@ -186,10 +221,10 @@ const Sidebar = () => {
         variant="permanent"
         open
       >
-        {drawer}
+        <ReDrawer name={username} />
       </Drawer>
     </nav>
   );
 };
 
-export default Sidebar;
+export default withRSCloneService(Sidebar);

@@ -4,22 +4,41 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.2",
+    "@material-ui/data-grid": "^4.0.0-alpha.17",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.2",
+    "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
+    "@types/lodash": "^4.14.167",
+    "@types/moment": "^2.13.0",
     "@types/node": "^12.0.0",
-    "@uiw/react-markdown-editor": "^2.0.3",
+    "@types/react-redux": "^7.1.15",
+    "@types/shortid": "0.0.29",
+    "autosize": "^4.0.2",
+    "axios": "^0.21.1",
+    "babel-plugin-root-import": "^6.6.0",
     "husky": "^4.3.6",
+    "lodash": "^4.17.20",
+    "material-design-icons": "^3.0.1",
+    "material-ui-popup-state": "^1.7.1",
+    "moment": "^2.29.1",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",
+    "react-app-rewired": "^2.1.8",
     "react-dom": "^17.0.1",
+    "react-export-excel": "^0.5.3",
+    "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "redux": "^4.0.5",
+    "shortid": "^2.2.16",
     "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "xlsx": "^0.16.9"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,7 +50,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint:fix && npm run lint"
+      "pre-commit": "npm run lint"
     }
   },
   "eslintConfig": {
@@ -56,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "@types/autosize": "^3.0.7",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "@types/react-router-dom": "^5.1.7",
@@ -66,6 +86,8 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0"
-  }
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "redux-devtools-extension": "^2.13.8"
+  },
+  "proxy": "https://rsclone-app.herokuapp.com"
 }

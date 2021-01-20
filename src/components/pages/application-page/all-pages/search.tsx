@@ -1,21 +1,26 @@
+/* eslint-disable no-confusing-arrow */
+/* eslint-disable no-unused-expressions */
 import React from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import {
-  fade, makeStyles,
-  Theme, InputBase,
+  makeStyles,
+  Theme,
+  InputBase,
 } from '@material-ui/core';
+import { searchRows } from './all-pages-serviсe';
 
 const useStyles = makeStyles((theme: Theme) => ({
   search: {
     position: 'relative',
     borderRadius: '100px',
-    backgroundColor: fade(theme.palette.common.black, 0.15),
+    backgroundColor: ' #BFCCD6',
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.black, 0.25),
+      opacity: 0.7,
     },
     marginRight: 2,
     width: 210,
     float: 'right',
+    opacity: 0.4,
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
       width: 'auto',
@@ -44,21 +49,28 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const SearchInput = () => {
-  const classes = useStyles();
+type Props = {
+  rowsInfo: any;
+  initialRows: any;
+};
 
+const SearchInput = ({ rowsInfo, initialRows }: Props) => {
+  const classes = useStyles();
+  const [rows, setRows] = rowsInfo;
   return (
     <div className={classes.search}>
       <div className={classes.searchIcon}>
         <SearchIcon />
       </div>
       <InputBase
-        placeholder="Search…"
+        placeholder="Search All Pages"
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
         inputProps={{ 'aria-label': 'search' }}
+        onChange={(event: any) => event.target.value !== ''
+          ? setRows(searchRows(rows, event.target.value)) : setRows(initialRows)}
       />
     </div>
   );
