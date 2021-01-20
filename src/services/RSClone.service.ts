@@ -114,7 +114,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      const res = await this.getResource('api/user/me', options);
+      const res = await this.getResource('/api/user/me', options);
       return {
         email: res.email,
         username: res.name,

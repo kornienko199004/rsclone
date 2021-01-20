@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
@@ -11,12 +11,13 @@ import BubbleChart from '@material-ui/icons/BubbleChart';
 import Grade from '@material-ui/icons/Grade';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import MenuIcon from '@material-ui/icons/Menu';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import './sidebar.scss';
 import { Link as RouterLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import GraphNavigation from './GraphNavigation';
 import withRSCloneService from '../hoc-helper/withRSCloneService';
-// import RSCloneServiceContext from '../rsCloneServiceContext';
+import RSCloneServiceContext from '../rsCloneServiceContext';
 
 const drawerWidth = 240;
 
@@ -89,19 +90,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
-  // const [username, setUserName] = useState<string | null>(null);
-  // const service = useContext(RSCloneServiceContext);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [username, setUserName] = useState<string | null>(null);
+  const service = useContext(RSCloneServiceContext);
   const classes = useStyles();
-  const username = useSelector((state: any) => state.userData.username);
-  console.log(username);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const userData = await service.getUser();
-  //     console.log(username);
-  //     return setUserName(userData.name);
-  //   })();
-  // }, [username]);
+  useEffect(() => {
+    const fetchName = async () => {
+      const userData = await service.getUser();
+      setUserName(userData.username);
+    };
+    fetchName();
+  }, [username]);
 
   const toggleSidebar = (): void => {
     setOpen(!open);
@@ -111,10 +111,32 @@ const Sidebar = () => {
     console.log("Yep, i'm selected");
   };
 
-  const ReDrawer = ({ name } : {name: string}) => (
+  const onOpenMenu = (event: React.MouseEvent<any>) => {
+    console.log(event);
+    setAnchorEl(event.currentTarget);
+  };
+  const onCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const ReDrawer = ({ name } : {name: string | null}) => (
     <div>
-      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} />
-      <GraphNavigation name={name} />
+      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} aria-controls="simple-menu" aria-haspopup="true" />
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+      <div onClick={onOpenMenu} role="button" tabIndex={0}>
+        <GraphNavigation name={name} />
+      </div>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={onCloseMenu}
+      >
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
+      </Menu>
 
       <div className={classes.toolbar} />
       <List className={classes.link}>

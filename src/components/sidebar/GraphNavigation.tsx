@@ -13,18 +13,16 @@ const useStyles = makeStyles(() => createStyles({
   },
 }));
 
-const GraphNavigation = (props: { name: string | null }) => {
-  const { name } = props;
+const GraphNavigation = (
+  { name }:
+      {name: string | null} & React.HTMLAttributes<HTMLDivElement>,
+) => {
   const classes = useStyles();
-  console.log(`${name}dasdas`);
   return (
-    <>
-      <div className="graph-navigation">
-        <span>{name || 'AKESEEY'}</span>
-        <ExpandMoreIcon htmlColor="#5c7080" viewBox="0 0 20 20" className={classes.expandIcon} />
-      </div>
-
-    </>
+    <div className="graph-navigation">
+      <span>{name}</span>
+      <ExpandMoreIcon htmlColor="#5c7080" viewBox="0 0 20 20" className={classes.expandIcon} />
+    </div>
   );
 };
 
