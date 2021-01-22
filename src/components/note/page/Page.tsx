@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
@@ -31,9 +32,11 @@ function Page(props: any) {
   } = props;
 
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
+  // console.log('body', body);
 
   let childrenComponents = (<span>{ }</span>);
   const [pageContent, setContent] = useState(content);
+  const [inputCursorPosition, setCursorPosition] = useState(0);
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
 
   // setNestedPagesVisibility(true);
@@ -42,12 +45,48 @@ function Page(props: any) {
   let textInput: HTMLTextAreaElement | null = null;
 
   useEffect(() => {
-    console.log('focusComponentPath', focusComponentPath);
+    // console.log('focusComponentPath', focusComponentPath);
     if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath)) {
       (textInput as HTMLTextAreaElement).focus();
+      (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
+        .value.length;
     }
     autosize(textInput as HTMLTextAreaElement);
   });
+
+  useEffect(() => {
+    console.dir('useEffect');
+    console.dir(inputCursorPosition);
+    if (textInput) {
+      textInput.selectionEnd = inputCursorPosition;
+    }
+    // if (textInput) {
+    //   console.log('textInput.selectionStart', textInput.selectionStart);
+    //   const str: string = textInput.value;
+    //   const { selectionStart, selectionEnd } = textInput;
+    //   if (str[selectionStart - 1] === '[') {
+    //     const newStrArr = str.split('');
+    //     newStrArr.splice(selectionStart, 0, ']');
+    //     setContent(newStrArr.join(''));
+    //     return;
+    //   }
+    //   console.log('textInput.selectionEnd', textInput.selectionEnd);
+    //   console.log('textInput.selectionStart', textInput.selectionStart);
+    //   console.log('str[selectionEnd - 1]', str[selectionEnd - 1]);
+    //   console.log('textInput.value.length', textInput.value.length);
+    //   // console.log('textInput.value', textInput.value);
+    //   if (str[selectionEnd - 1] === ']') {
+    //     // textInput.selectionEnd -= 1;
+    //   }
+    // }
+    // // if (pageContent.substr(-1) === ']' && textInput) {
+    // //   console.log('textInput.selectionEnd', textInput.selectionEnd);
+    // //   console.log('textInput.selectionStart', textInput.selectionStart);
+    // //   console.log('textInput.value', textInput.value);
+    // //   // textInput.selectionEnd -= 1;
+    // //   console.log(textInput.value.match(/\[\[(.*?)\]]/g));
+    // // }
+  }, [inputCursorPosition]);
 
   const onAddNeighbor = () => {
     props.addNeighbor(body, { currentPage, list, noteTitle });
@@ -128,11 +167,15 @@ function Page(props: any) {
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     console.log(e);
     console.log(e.target.value);
-    let str: string = e.target.value;
+    console.log(e.target.value.match(/\[\[(.*?)\]]/g));
+    const str: string = e.target.value;
+    const { selectionStart } = (e.nativeEvent.target as HTMLTextAreaElement);
     if (str && (e.nativeEvent as InputEvent).data === '[') {
-      str = `${str}]`;
-      setContent(str);
-      e.target.selectionEnd = str.length - 5;
+      // str = `${str}]`;
+      const newStrArr = str.split('');
+      newStrArr.splice(selectionStart, 0, ']');
+      setContent(newStrArr.join(''));
+      setCursorPosition(selectionStart);
     } else {
       setContent(str);
     }

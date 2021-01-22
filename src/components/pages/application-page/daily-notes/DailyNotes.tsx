@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react';
 import './dailyNotes.scss';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import RSCloneService from '../../../services/RSClone.service';
-import { INote } from '../../../models/notes.model';
-import { getDayTitle } from '../../../helpers/notes.helper';
-import { addNote } from '../../../store/actionsCreators/actionsCreators';
-import Note from '../../note/Note';
-import { getEmptyNote, selectNote } from '../../../store/utils';
+import RSCloneService from '../../../../services/RSClone.service';
+import { INote } from '../../../../models/notes.model';
+import { getDayTitle } from '../../../../helpers/notes.helper';
+import { addNote } from '../../../../store/actionsCreators/actionsCreators';
+import Note from '../../../note/Note';
+import { getEmptyNote, selectNote } from '../../../../store/utils';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
@@ -24,10 +24,12 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
     const getNote = async () => {
       const todayTitle: string = getDayTitle();
       let note: INote | null = selectNote(todayTitle, props.notes);
+      console.log(note);
 
       if (!note) {
+        console.log(localStorage.getItem('auth-token'));
         const noteByTitle: { DATA: INote } = await service.getNoteByTitle(todayTitle);
-
+        console.log(noteByTitle);
         if (noteByTitle.DATA) {
           note = noteByTitle.DATA;
         } else {
@@ -43,7 +45,7 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
     };
 
     getNote();
-  });
+  }, [notesList]);
 
   let list: any[] | null = null;
 

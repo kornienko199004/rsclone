@@ -1,7 +1,9 @@
 import { INote, IPage } from '../../models/notes.model';
 import {
-  ADD_NOTE, CHANGE_FOCUS_ELEMENT, UPDATE_NOTE_BODY,
+  ADD_NOTE, CHANGE_FOCUS_ELEMENT,
+  UPDATE_NOTE_BODY, USER_LOGGED_IN,
 } from '../actions/actions';
+// import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
 export type PagePath = (number | string);
 
@@ -272,6 +274,14 @@ function addNote(note: INote) {
   };
 }
 
+const userLoggedIn = (data: any) => ({
+  type: USER_LOGGED_IN,
+  userData: {
+    username: data.user.name,
+    email: data.user.email,
+  },
+});
+
 export {
   removePage,
   addNeighbor,
@@ -281,4 +291,5 @@ export {
   addChild,
   changeFocusElement,
   addNote,
+  userLoggedIn,
 };
