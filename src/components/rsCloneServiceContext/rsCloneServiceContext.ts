@@ -1,12 +1,5 @@
 import React from 'react';
 
-const {
-  Provider: RSCloneServiceProvider,
-  Consumer: RSCloneServiceConsumer,
-  // @ts-ignore
-} = React.createContext();
+const RSCloneServiceContext = React.createContext<any>({});
 
-export {
-  RSCloneServiceProvider,
-  RSCloneServiceConsumer,
-};
+export default RSCloneServiceContext;
