@@ -24,10 +24,12 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
     const getNote = async () => {
       const todayTitle: string = getDayTitle();
       let note: INote | null = selectNote(todayTitle, props.notes);
+      console.log(note);
 
       if (!note) {
         console.log(localStorage.getItem('auth-token'));
         const noteByTitle: { DATA: INote } = await service.getNoteByTitle(todayTitle);
+        console.log(noteByTitle);
         if (noteByTitle.DATA) {
           note = noteByTitle.DATA;
         } else {
