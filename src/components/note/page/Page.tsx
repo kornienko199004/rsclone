@@ -32,20 +32,15 @@ function Page(props: any) {
   } = props;
 
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
-  // console.log('body', body);
 
   let childrenComponents = (<span>{ }</span>);
   const [pageContent, setContent] = useState(content);
   const [inputCursorPosition, setCursorPosition] = useState(0);
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
 
-  // setNestedPagesVisibility(true);
-  // let showNestedPages = true;
-
   let textInput: HTMLTextAreaElement | null = null;
 
   useEffect(() => {
-    // console.log('focusComponentPath', focusComponentPath);
     if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath)) {
       (textInput as HTMLTextAreaElement).focus();
       (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
@@ -55,8 +50,6 @@ function Page(props: any) {
   });
 
   useEffect(() => {
-    console.dir('useEffect');
-    console.dir(inputCursorPosition);
     if (textInput) {
       textInput.selectionEnd = inputCursorPosition;
     }
@@ -165,9 +158,6 @@ function Page(props: any) {
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log(e);
-    console.log(e.target.value);
-    console.log(e.target.value.match(/\[\[(.*?)\]]/g));
     const str: string = e.target.value;
     const { selectionStart } = (e.nativeEvent.target as HTMLTextAreaElement);
     if (str && (e.nativeEvent as InputEvent).data === '[') {
@@ -219,8 +209,6 @@ function Page(props: any) {
   };
 
   const toggleNestedPagesVisibility = () => {
-    console.log('click');
-    // showNestedPages = !showNestedPages;
     setNestedPagesVisibility(!showNestedPages);
   };
 
