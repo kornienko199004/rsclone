@@ -4,8 +4,6 @@
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
 import autosize from 'autosize';
-import { Controlled as CodeMirror } from 'react-codemirror2';
-import ReactMarkdown from 'react-markdown';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';

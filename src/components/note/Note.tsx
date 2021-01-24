@@ -33,13 +33,11 @@ class Note extends React.Component {
   }
 
   async saveNote(currentNote: INote, id: string) {
-    // this.isSaving = true;
     this.setState({
       isSaving: true,
     });
     try {
       await this.service.updateNote(currentNote, id);
-      // this.isSaving = false;
     } catch (e) {
       // this.isSaving = false;
     }
@@ -66,7 +64,6 @@ class Note extends React.Component {
   }
 
   render() {
-    console.log('render');
     // eslint-disable-next-line react/prop-types
     const { notes, title, id } = (this.props as any);
     const { isSaving } = this.state;

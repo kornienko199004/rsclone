@@ -24,31 +24,19 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
 
   const [notesList, setNotes] = useState<INote[]>(notes.filter((note: INote) => note.isDaily));
   const [init, setInit] = useState<boolean>(false);
-  // const [scrollEnd, setScrollEnd] = useState<boolean>(false);
-  // eslint-disable-next-line react/destructuring-assignment
-  console.log('props.notes', notes.filter((note: INote) => note.isDaily));
   const todayNote = selectNote(todayTitle, notes);
-  console.log('todayNote', todayNote);
-  console.log('notes', notes);
-  // console.log('todayNote', todayNote);
 
   if (!todayNote && !init) {
     setInit(true);
-    // console.log(setInit);
   }
 
   useEffect(() => {
-    console.log('init');
     if (init) {
       const getNote = async () => {
-        // const todayTitle: string = getDayTitle();
         let note: INote | null = selectNote(todayTitle, props.notes);
-        console.log(note);
 
         if (!note) {
-          console.log(localStorage.getItem('auth-token'));
           const noteByTitle: { DATA: INote } = await service.getNoteByTitle(todayTitle);
-          console.log(noteByTitle);
           if (noteByTitle.DATA) {
             note = noteByTitle.DATA;
           } else {
@@ -62,43 +50,18 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
         }
 
         setNotes([...(notesList || []), note]);
-        // setNotes(props.notes);
       };
 
       getNote();
     }
   }, [init]);
 
-  // useEffect(() => {
-  //   if (scrollEnd) {
-  //     const onScrollEnd = async () => {
-  //       if (notesList && notesList.length > 0) {
-  //         // scrollEnd = true;
-  //         console.log('scrollEnd');
-  //         const lastPageId = notesList.slice(-1)[0]._id;
-  //         const res = await service.getPreviousDailyNote(lastPageId as string);
-  //         const note = res.DATA;
-  //         console.log(note);
-  //         if (note) {
-  //           setScrollEnd(false);
-  //           props.addNote(note);
-  //           setNotes([...(notesList || []), note]);
-  //         }
-  //       }
-  //     };
-
-  //     onScrollEnd();
-  //   }
-  // }, [scrollEnd]);
-
   const onScrollEnd = async () => {
     if (notesList && notesList.length > 0 && !scrollEnd) {
       scrollEnd = true;
-      console.log('scrollEnd');
       const lastPageId = notesList.slice(-1)[0]._id;
       const res = await service.getPreviousDailyNote(lastPageId as string);
       const note = res.DATA;
-      console.log(note);
       if (note) {
         scrollEnd = false;
         props.addNote(note);
@@ -106,21 +69,6 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
       }
     }
   };
-
-  // const handleUpdate = (values: any) => {
-  //   if (!scrollEnd) {
-  //     const { scrollTop, scrollHeight, clientHeight } = values;
-  //     console.log('values', values);
-  //     const pad = 1; // 100px of the bottom
-  //     // t will be greater than 1 if we are about to reach the bottom
-  //     const t = ((scrollTop + pad) / (scrollHeight - clientHeight));
-  //     if (t > 1) {
-  //       console.log('scrollEnd');
-  //       setScrollEnd(true);
-  //       // onScrollEnd();
-  //     }
-  //   }
-  // };
 
   const onScrollStop = (values: any) => {
     // console.log('values render view', values);
