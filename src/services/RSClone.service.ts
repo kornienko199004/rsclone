@@ -79,7 +79,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      await this.getResource('api/logout', options);
+      await this.getResource('/api/logout', options);
       localStorage.removeItem('auth-token');
       return true;
     }
@@ -102,7 +102,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      await this.getResource('api/user/me', options);
+      await this.getResource('/api/user/me', options);
       localStorage.removeItem('auth-token');
       return true;
     }
@@ -133,7 +133,7 @@ export default class RSCloneService {
         },
         body: JSON.stringify(data),
       };
-      return this.getResource('api/user/me', options);
+      return this.getResource('/api/user/me', options);
     }
 
     addNote = async (data: AddNoteRequest) => {
@@ -145,7 +145,7 @@ export default class RSCloneService {
         },
         body: JSON.stringify(data),
       };
-      const response = await this.getResource('api/note', options);
+      const response = await this.getResource('/api/note', options);
       // eslint-disable-next-line no-underscore-dangle
       return response.DATA._id;
     }
@@ -159,7 +159,7 @@ export default class RSCloneService {
         },
         body: JSON.stringify(data),
       };
-      return this.getResource(`api/note/${id}`, options);
+      return this.getResource(`/api/note/${id}`, options);
     }
 
     getNote = async (id: string) => {
@@ -169,7 +169,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource(`api/note/${id}`, options);
+      return this.getResource(`/api/note/${id}`, options);
     }
 
     deleteNote = async (id: string) => {
@@ -179,7 +179,7 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource(`api/note/${id}`, options);
+      return this.getResource(`/api/note/${id}`, options);
     }
 
     getNotes = async () => {
@@ -199,6 +199,16 @@ export default class RSCloneService {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource(`api/note/title/${title}`, options);
+      return this.getResource(`/api/note/title/${title}`, options);
+    }
+
+    getPreviousDailyNote = async (id: string) => {
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      };
+      return this.getResource(`/api/note/daily/${id}`, options);
     }
 }

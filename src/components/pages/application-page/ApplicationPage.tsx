@@ -7,6 +7,7 @@ import AllPages from './all-pages/AllPages';
 import ShortcutsList from './shorcuts/ShortcutList';
 import Sidebar from '../../sidebar/Sidebar';
 import DailyNotes from './daily-notes/DailyNotes';
+import SingleNote from './single-note/SingleNote';
 
 const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
@@ -27,6 +28,10 @@ const ApplicationPage = (match: any) => {
           <Route
             path={`${path}/shortcut`}
             component={ShortcutsList}
+          />
+          <Route
+            path={`${path}/note/:name`}
+            component={SingleNote}
           />
           <Route render={() => <h1>Page not found</h1>} />
         </Switch>

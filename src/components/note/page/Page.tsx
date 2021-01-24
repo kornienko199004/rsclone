@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
 import autosize from 'autosize';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import ReactMarkdown from 'react-markdown';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
@@ -26,6 +27,7 @@ import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
+  body: state.body,
   focusComponentPath: state.focusComponentPath,
   ...ownProps,
 });
@@ -53,7 +55,6 @@ function Page(props: any) {
   } = props;
 
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
-  // console.log('body', body);
 
   let childrenComponents = <span>{}</span>;
   const [pageContent, setContent] = useState(content);
@@ -61,10 +62,7 @@ function Page(props: any) {
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
   const [editorMode, setEditorMode] = useState(false);
 
-  // setNestedPagesVisibility(true);
-  // let showNestedPages = true;
-
-  const textInput: HTMLTextAreaElement | null = null;
+  let textInput: HTMLTextAreaElement | null = null;
 
   if (
     JSON.stringify(currentPage.pagePath)
@@ -75,62 +73,27 @@ function Page(props: any) {
   }
 
   useEffect(() => {
-    // console.log('focusComponentPath', focusComponentPath);
-    console.log('textInput', textInput);
-    // if (JSON.stringify(currentPage.pagePath) ===
-    // JSON.stringify(focusComponentPath) && textInput) {
-    //   (textInput as HTMLTextAreaElement).focus();
-    //   (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
-    //     .value.length;
-    // }
-    if (editorMode && textInput) {
-      // textInput.focus();
-      // textInput.selectionStart = textInput.value.length;
+    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath) && textInput) {
+      (textInput as HTMLTextAreaElement).focus();
+      (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
+        .value.length;
     }
-    // autosize(textInput as HTMLTextAreaElement);
+    if (editorMode && textInput) {
+      textInput.focus();
+    }
+    autosize(textInput as HTMLTextAreaElement);
   }, [editorMode]);
 
   useEffect(() => {
-    // console.dir('useEffect');
-    // console.dir(inputCursorPosition);
     if (textInput) {
-      // textInput.selectionEnd = inputCursorPosition;
+      textInput.selectionStart = inputCursorPosition;
+      textInput.selectionEnd = inputCursorPosition;
     }
-    // if (textInput) {
-    //   console.log('textInput.selectionStart', textInput.selectionStart);
-    //   const str: string = textInput.value;
-    //   const { selectionStart, selectionEnd } = textInput;
-    //   if (str[selectionStart - 1] === '[') {
-    //     const newStrArr = str.split('');
-    //     newStrArr.splice(selectionStart, 0, ']');
-    //     setContent(newStrArr.join(''));
-    //     return;
-    //   }
-    //   console.log('textInput.selectionEnd', textInput.selectionEnd);
-    //   console.log('textInput.selectionStart', textInput.selectionStart);
-    //   console.log('str[selectionEnd - 1]', str[selectionEnd - 1]);
-    //   console.log('textInput.value.length', textInput.value.length);
-    //   // console.log('textInput.value', textInput.value);
-    //   if (str[selectionEnd - 1] === ']') {
-    //     // textInput.selectionEnd -= 1;
-    //   }
-    // }
-    // // if (pageContent.substr(-1) === ']' && textInput) {
-    // //   console.log('textInput.selectionEnd', textInput.selectionEnd);
-    // //   console.log('textInput.selectionStart', textInput.selectionStart);
-    // //   console.log('textInput.value', textInput.value);
-    // //   // textInput.selectionEnd -= 1;
-    // //   console.log(textInput.value.match(/\[\[(.*?)\]]/g));
-    // // }
   }, [inputCursorPosition]);
 
   const onAddNeighbor = () => {
     props.addNeighbor(body, { currentPage, list, noteTitle });
   };
-
-  // const onAddChild = () => {
-  //   props.addChild(body, { currentPage });
-  // };
 
   const onBecomeChild = () => {
     if (currentPage.pageId === 0) {
@@ -190,45 +153,35 @@ function Page(props: any) {
     }
 
     currentPageLink.content = value;
-    // currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
+    currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
   };
 
-  const onBlur = (editor: any, e: React.FocusEvent<HTMLTextAreaElement>) => {
-    console.log('on blur');
-    console.log(editor);
-    console.log(editor.doc.getValue());
-    console.log(e);
-    // setEditorMode(false);
-    if (editor.doc.getValue() === content) {
+  const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    setEditorMode(false);
+    if (e.target.value === content) {
       return;
     }
-    // console.log('blur', e.target.value.match(/\[\[(.*?)\]]/g));
 
-    onUpdateContent(editor.doc.getValue());
-    // props.updateContent(body, { noteTitle });
-    console.log(props);
+    onUpdateContent(e.target.value);
+    const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
+    props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
   };
 
-  const onChangeContent = (value: any) => {
-    // console.log(args);
-    // console.log(e);
-    // console.log(e.target.value);
-    // console.log(e.target.value.match(/\[\[(.*?)\]]/g));
-    // const str: string = e.target.value;
-    // const { selectionStart } = e.nativeEvent.target as HTMLTextAreaElement;
-    // if (str && (e.nativeEvent as InputEvent).data === '[') {
-    //   // str = `${str}]`;
-    //   const newStrArr = str.split('');
-    //   newStrArr.splice(selectionStart, 0, ']');
-    //   setContent(newStrArr.join(''));
-    //   setCursorPosition(selectionStart);
-    // } else {
-    setContent(value);
-    // }
-    // // autosize(textInput as HTMLTextAreaElement);
+  const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const str: string = (e.target as HTMLTextAreaElement).value;
+    const { selectionStart } = e.nativeEvent.target as HTMLTextAreaElement;
+    if (str && (e.nativeEvent as InputEvent).data === '[') {
+      const newStrArr = str.split('');
+      newStrArr.splice(selectionStart, 0, ']');
+      setContent(newStrArr.join(''));
+      setCursorPosition(selectionStart);
+    } else {
+      setContent(str);
+    }
+    autosize(textInput as HTMLTextAreaElement);
   };
 
-  const onEnterPressHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onEnterPressHandler = (e: any) => {
     const contentValue: string = (e.target as HTMLTextAreaElement).value;
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -241,10 +194,6 @@ function Page(props: any) {
         || currentPage.pagePath.length === 1
       ) {
         onUpdateContent(contentValue);
-        // if (currentPage.nestedPages.length > 0) {
-        //   onAddChild();
-        //   return;
-        // }
         onAddNeighbor();
         return;
       }
@@ -268,22 +217,13 @@ function Page(props: any) {
   };
 
   const toggleNestedPagesVisibility = () => {
-    console.log('click');
-    // showNestedPages = !showNestedPages;
     setNestedPagesVisibility(!showNestedPages);
   };
 
   const getHtmlMarkup = (str: string) => {
-    // console.log(str);
-    // const links: string[] = str.match(/\[\[(.*?)\]]/g);
     function replacer(match: any, p1: any, offset: any, string: any) {
-      // console.log('match', match);
-      // console.log('p1', p1);
-      // console.log('offset', offset);
-      // console.log('string', string);
-      // console.log('string', string.replace(p1, `<a href="/">${p1}</a>`));
       const newString = string.replace(p1, `<a href="/">${p1}</a>`);
-      return `[[<a href="/">${p1}</a>]]`;
+      return `[[<a href="/app/note/${p1}">${p1}</a>]]`;
     }
     const newStr = str.replace(/\[\[(.*?)\]]/g, replacer);
     return newStr;
@@ -310,7 +250,7 @@ function Page(props: any) {
           </button>
           <span className="open-page" />
         </span>
-        {/* {editorMode ? (
+        {editorMode ? (
           <textarea
             className="text-input"
             style={{ height: `${textInputHeight}px` }}
@@ -324,38 +264,14 @@ function Page(props: any) {
           />
         ) : (
           <TemplateReadOnly
-            onClick={() => {
-              console.log('click');
+            onClick={(e: any) => {
+              const offset = e.clientX - e.target.getBoundingClientRect().x;
               setEditorMode(true);
+              setCursorPosition(offset / 7.5);
             }}
             content={getHtmlMarkup(pageContent)}
           />
-        )} */}
-
-        <CodeMirror
-          className="codemirror-markdown-editor"
-          value={pageContent}
-          options={{
-            mode: 'markdown',
-            theme: 'material',
-            lineNumbers: false,
-          }}
-          // onChange={(editor, data, value) => { onChangeContent(editor, data, value); }}
-          onBeforeChange={(editor, data, value) => { onChangeContent(value); }}
-          onBlur={onBlur}
-        />
-        {/* <input
-          type="text"
-          ref={(input: HTMLInputElement) => { textInput = input; }}
-          value={pageContent}
-          onBlur={onBlur}
-          onChange={onChangeContent}
-          onKeyDown={onEnterPressHandler}
-        /> */}
-        {/* <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
-        <button type="button" onClick={onBecomeChild}>Become a child</button>
-        <button type="button" onClick={onRemove}>x</button>
-        <button type="button" onClick={onLevelUp}>up</button> */}
+        )}
       </div>
       <div
         className={`nestedPages ${

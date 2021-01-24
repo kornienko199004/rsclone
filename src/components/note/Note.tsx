@@ -13,11 +13,17 @@ import './note.scss';
 class Note extends React.Component {
   service: RSCloneService;
 
-  private isSaving = false;
+  // eslint-disable-next-line react/state-in-constructor
+  state: { isSaving: boolean };
+
+  // private isSaving = true;
 
   constructor(props: any) {
     super(props);
     this.service = new RSCloneService();
+    this.state = {
+      isSaving: false,
+    };
   }
 
   getPagesComponents() {
@@ -27,13 +33,19 @@ class Note extends React.Component {
   }
 
   async saveNote(currentNote: INote, id: string) {
-    this.isSaving = true;
+    // this.isSaving = true;
+    this.setState({
+      isSaving: true,
+    });
     try {
       await this.service.updateNote(currentNote, id);
-      this.isSaving = false;
+      // this.isSaving = false;
     } catch (e) {
-      this.isSaving = false;
+      // this.isSaving = false;
     }
+    this.setState({
+      isSaving: false,
+    });
     console.log('the note was saved');
   }
 
@@ -57,6 +69,7 @@ class Note extends React.Component {
     console.log('render');
     // eslint-disable-next-line react/prop-types
     const { notes, title, id } = (this.props as any);
+    const { isSaving } = this.state;
     const currentNote: INote | null = selectNote(title, notes);
 
     const contentFromRedux: any[] = currentNote
@@ -69,14 +82,16 @@ class Note extends React.Component {
         <div className="note__pages">
           {contentFromRedux}
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={this.isSaving}
-          onClick={() => this.saveNote((currentNote as INote), id)}
-        >
-          Save the note
-        </Button>
+        <div className="save-button-wrapper">
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={isSaving}
+            onClick={() => this.saveNote((currentNote as INote), id)}
+          >
+            Save the note
+          </Button>
+        </div>
       </div>
     );
   }
@@ -85,6 +100,7 @@ class Note extends React.Component {
 const mapStateToProps = (state: any, props: any) => ({
   ...props,
   notes: state.notes,
+  body: state.body,
 });
 
 export default connect(mapStateToProps)(Note);

@@ -1,15 +1,27 @@
+/* eslint-disable no-underscore-dangle */
+import { getEmptyNote, updateNoteParents } from '../utils';
+import RSCloneService from '../../services/RSClone.service';
 import { INote, IPage } from '../../models/notes.model';
 import {
-  ADD_NOTE, CHANGE_FOCUS_ELEMENT,
-  UPDATE_NOTE_BODY, USER_LOGGED_IN,
+  ADD_NOTE,
+  CHANGE_FOCUS_ELEMENT,
+  UPDATE_CONTENT_REQUESTED,
+  UPDATE_CONTENT_RECEIVED,
+  UPDATE_CONTENT_FAILED,
+  UPDATE_NOTE_BODY,
+  USER_LOGGED_IN,
+  UPDATE_CONTENT,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
-export type PagePath = (number | string);
+export type PagePath = number | string;
 
 const TEXT_INPUT_HEIGHT = 24;
 
-const updateNestedPagesPath = (newRootPath: PagePath[], nestedPages: IPage[]): void => {
+const updateNestedPagesPath = (
+  newRootPath: PagePath[],
+  nestedPages: IPage[],
+): void => {
   for (let i = 0; i < nestedPages.length; i += 1) {
     const childOldPath: (string | number)[] = nestedPages[i].pagePath;
     const childNewPath: (string | number)[] = [
@@ -26,7 +38,7 @@ const updateNestedPagesPath = (newRootPath: PagePath[], nestedPages: IPage[]): v
 };
 
 const getFocusPathOnRemove = (pagePath: PagePath[]) => {
-  const pageId: number = (pagePath.slice(-1)[0] as number);
+  const pageId: number = pagePath.slice(-1)[0] as number;
   if (pageId === 0) {
     return pagePath.slice(0, -2);
   }
@@ -43,14 +55,16 @@ const updateIds = (nestedPages: IPage[]): void => {
   }
 };
 
-function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[], noteTitle: string }) {
+function addNeighbor(
+  body: any,
+  params: { currentPage: IPage; list: IPage[]; noteTitle: string },
+) {
+  // eslint-disable-next-line no-debugger
+  // debugger;
   const { list, currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   const newPageId: number = list.length;
-  const newNeighborPath: PagePath[] = [
-    ...pagePath.slice(0, -1),
-    newPageId,
-  ];
+  const newNeighborPath: PagePath[] = [...pagePath.slice(0, -1), newPageId];
   const newNeighbor: IPage = {
     pageId: newPageId,
     pageLink: '',
@@ -83,7 +97,10 @@ function addNeighbor(body: any, params: { currentPage: IPage; list: IPage[], not
   };
 }
 
-function becomeChild(body: any, params: { currentPage: IPage, noteTitle: string }) {
+function becomeChild(
+  body: any,
+  params: { currentPage: IPage; noteTitle: string },
+) {
   const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
@@ -128,7 +145,10 @@ function becomeChild(body: any, params: { currentPage: IPage, noteTitle: string 
   };
 }
 
-function removePage(body: any, params: { currentPage: IPage, noteTitle: string }) {
+function removePage(
+  body: any,
+  params: { currentPage: IPage; noteTitle: string },
+) {
   const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
@@ -145,7 +165,9 @@ function removePage(body: any, params: { currentPage: IPage, noteTitle: string }
     };
   }
 
-  const newFocusComponentPath: (string | number)[] = getFocusPathOnRemove(pagePath);
+  const newFocusComponentPath: (string | number)[] = getFocusPathOnRemove(
+    pagePath,
+  );
   return {
     type: UPDATE_NOTE_BODY,
     body: [...body],
@@ -154,7 +176,7 @@ function removePage(body: any, params: { currentPage: IPage, noteTitle: string }
   };
 }
 
-function levelUp(body: any, params: { currentPage: IPage, noteTitle: string }) {
+function levelUp(body: any, params: { currentPage: IPage; noteTitle: string }) {
   const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
   let pageParentList: any = body;
@@ -199,16 +221,15 @@ function levelUp(body: any, params: { currentPage: IPage, noteTitle: string }) {
   };
 }
 
-function addChild(body: any, params: { currentPage: IPage, noteTitle: string }) {
+function addChild(
+  body: any,
+  params: { currentPage: IPage; noteTitle: string },
+) {
   const { currentPage, noteTitle } = params;
   const { pagePath } = currentPage;
 
   const newPageId: number = 0;
-  const newChildPath: PagePath[] = [
-    ...pagePath,
-    'nestedPages',
-    newPageId,
-  ];
+  const newChildPath: PagePath[] = [...pagePath, 'nestedPages', newPageId];
   const newChild: IPage = {
     pageId: newPageId,
     pageLink: '',
@@ -232,7 +253,9 @@ function addChild(body: any, params: { currentPage: IPage, noteTitle: string }) 
 }
 
 function changeFocusElement(
-  direction: string, body: any, params: { currentPage: IPage; list: IPage[], noteTitle: string },
+  direction: string,
+  body: any,
+  params: { currentPage: IPage; list: IPage[]; noteTitle: string },
 ) {
   const { currentPage, list, noteTitle } = params;
   const { pagePath, pageId } = currentPage;
@@ -258,12 +281,90 @@ function changeFocusElement(
   };
 }
 
-function updateContent(body: any, params: { noteTitle: string }) {
-  const { noteTitle } = params;
-  return {
-    type: UPDATE_NOTE_BODY,
-    title: noteTitle,
-    body: [...body],
+// function updateContent(body: any, params: { noteTitle: string }) {
+//   const { noteTitle } = params;
+//   return {
+//     type: UPDATE_NOTE_BODY,
+//     title: noteTitle,
+//     body: [...body],
+//   };
+// }
+
+function updateContent(
+  body: any,
+  params: { noteTitle: string; pageLinks: string[], content: string },
+) {
+  const { noteTitle, pageLinks, content } = params;
+  console.log(noteTitle);
+  console.log(pageLinks);
+  console.log(content);
+  // return {
+  //   type: UPDATE_CONTENT,
+  //   title: noteTitle,
+  //   body: [...body],
+  // };
+  // eslint-disable-next-line func-names
+  if (!pageLinks) {
+    return {
+      type: UPDATE_CONTENT,
+      title: noteTitle,
+      body: [...body],
+    };
+  }
+
+  const service = new RSCloneService();
+
+  const promises = pageLinks.map(async (item: string) => {
+    const link = item.replace(/\[/gi, '').replace(/\]/gi, '');
+    const res = await service.getNoteByTitle(link);
+    let note: INote = res.DATA;
+    let id: string;
+    if (!note) {
+      note = getEmptyNote(link);
+      id = await service.addNote(note);
+      // eslint-disable-next-line no-underscore-dangle
+      note._id = id;
+    }
+
+    // необходимо добавить в parents ссылку на эту страницу
+    // в виде { parentTitle: string; content: string[] }
+    // note.parents = [...(note.parents || []), { pageLink: noteTitle, content: [content] }];
+    note.parents = updateNoteParents(note, noteTitle, content);
+    await service.updateNote(note, (note._id as string));
+    return { id: note._id, title: link };
+  });
+  return function (dispatch: any) {
+    dispatch({
+      type: UPDATE_CONTENT_REQUESTED,
+    });
+
+    // fetch('https://ron-swanson-quotes.herokuapp.com/v2/quotes')
+    Promise.all(promises)
+    // new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve({ body, title: noteTitle });
+    //   }, 2000);
+    // })
+      // .then((response) => response.json())
+      // .then((data) => {
+      //   console.log('data', data);
+      //   return { pageLinks: data, title: noteTitle, body };
+      // })
+      .then((data) => {
+        console.log('data', data);
+        console.log('data', { pageLinks: data, title: noteTitle, body });
+        dispatch({
+          type: UPDATE_CONTENT_RECEIVED,
+          payload: { pageLinks: data, title: noteTitle, body },
+        });
+      })
+      .catch((error) => {
+        console.log('errro', error);
+        dispatch({
+          type: UPDATE_CONTENT_FAILED,
+          payload: error,
+        });
+      });
   };
 }
 

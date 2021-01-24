@@ -5,6 +5,7 @@ export interface INote {
   title: string;
   parents?: any[];
   body: any;
+  isDaily?: boolean;
 }
 
 export interface IPage {
@@ -28,4 +29,9 @@ export interface IState {
 export interface IInputHandler {
   // eslint-disable-next-line no-unused-vars
   (e: KeyboardEvent<HTMLInputElement>): void;
+}
+
+export interface IParent {
+  pageLink: string;
+  content: string[];
 }
