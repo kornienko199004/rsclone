@@ -1,7 +1,7 @@
 import { INote, IPage } from '../../models/notes.model';
 import {
   ADD_NOTE, CHANGE_FOCUS_ELEMENT,
-  UPDATE_NOTE_BODY, USER_LOGGED_IN,
+  UPDATE_NOTE_BODY, USER_LOGGED_IN, USER_LOGGED_OUT,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -274,13 +274,29 @@ function addNote(note: INote) {
   };
 }
 
-const userLoggedIn = (data: any) => ({
-  type: USER_LOGGED_IN,
-  userData: {
-    username: data.user.name,
-    email: data.user.email,
-  },
-});
+const userLoggedIn = (data: any) => {
+  localStorage.setItem('username', data.user.name);
+  localStorage.setItem('email', data.user.email);
+
+  return {
+    type: USER_LOGGED_IN,
+    userData: {
+      username: data.user.name,
+      email: data.user.email,
+    },
+  };
+};
+
+const userLoggedOut = () => {
+  console.log('loogedout');
+  localStorage.removeItem('username');
+  localStorage.removeItem('email');
+  localStorage.removeItem('auth-token');
+  return {
+    type: USER_LOGGED_OUT,
+    isLoggedIn: false,
+  };
+};
 
 export {
   removePage,
@@ -292,4 +308,5 @@ export {
   changeFocusElement,
   addNote,
   userLoggedIn,
+  userLoggedOut,
 };

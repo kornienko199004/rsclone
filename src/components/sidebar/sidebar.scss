@@ -8,6 +8,62 @@
   top: 22px;
   left: 20px;
   cursor: pointer;
+  outline: none;
+}
+
+.user-settings {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFF;
+  width: 400px;
+  height: 650px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+
+
+  & > form {
+    padding: 10px;
+  }
+  &__title {
+    padding-top: 10px;
+    text-align: center;
+
+    &.privacy {
+      padding-top: 25px;
+      margin: 0;
+    }
+  }
+}
+
+.user-settings-form {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+
+  & > span {
+    padding-bottom: 5px;
+  }
+
+  &.password {
+    margin-top: 0;
+  }
+  & > .button {
+    text-transform: none;
+    font-weight: bold;
+    color: black;
+    align-self: center;
+    margin-top: 15px;
+    &:hover {
+      background-color: rgba(140, 127, 127, 0.3);
+    }
+  }
+}
+
+.MuiOutlinedInput-input {
+  padding: 10px!important;
 }
 
 

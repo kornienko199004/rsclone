@@ -37,6 +37,13 @@ export type UserData = {
     username: string,
 }
 
+export type PasswordData = {
+    // eslint-disable-next-line camelcase
+    old_password: string,
+    // eslint-disable-next-line camelcase
+    new_password: string,
+}
+
 const getAuthToken = (): string => {
   const authToken = localStorage.getItem('auth-token');
   if (!authToken) {
@@ -200,5 +207,17 @@ export default class RSCloneService {
         },
       };
       return this.getResource(`api/note/title/${title}`, options);
+    }
+
+    userUpdatePassword = async (data: PasswordData) => {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+        body: JSON.stringify(data),
+      };
+      return this.getResource('/api/user/me/password', options);
     }
 }

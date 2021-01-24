@@ -2,7 +2,7 @@
 // @ts-ignore
 import { updateNoteByTitle } from '../utils';
 import {
-  CHANGE_FOCUS_ELEMENT, UPDATE_NOTE_BODY, ADD_NOTE, USER_LOGGED_IN,
+  CHANGE_FOCUS_ELEMENT, UPDATE_NOTE_BODY, ADD_NOTE, USER_LOGGED_IN, USER_LOGGED_OUT,
 } from '../actions/actions';
 
 function reducer(state: any, action: any) {
@@ -20,9 +20,8 @@ function reducer(state: any, action: any) {
       return { ...state, notes: [...state.notes, action.note] };
     case USER_LOGGED_IN:
       return { ...state, isLoggedIn: true, userData: action.userData };
-    case 'USER_LOGGED_OUT':
-      return { ...state, isLoggedIn: false };
-
+    case USER_LOGGED_OUT:
+      return { ...state, isLoggedIn: action.isLoggedIn };
     default:
       return state;
   }

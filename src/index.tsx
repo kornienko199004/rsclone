@@ -8,16 +8,21 @@ import reducer from './store/reducers/reducer';
 
 // const rsCloneService = new RSCloneService();
 
-const initialState : {
+export interface IInitialState {
     isLoggedIn: boolean,
     notes: [],
     focusComponentPath: (string | number)[]
-    userData: {username: string, email: string}
-} = {
+    userData: {
+        username: string | null,
+        email: string | null
+    }
+}
+
+const initialState : IInitialState = {
   isLoggedIn: !!localStorage.getItem('auth-token'),
   userData: {
-    username: '',
-    email: '',
+    username: localStorage.getItem('username'),
+    email: localStorage.getItem('email'),
   },
   notes: [],
   focusComponentPath: [0],
