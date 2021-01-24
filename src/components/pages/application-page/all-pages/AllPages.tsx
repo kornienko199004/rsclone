@@ -2,7 +2,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react/jsx-boolean-value */
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './allPages.scss';
 import { withRouter } from 'react-router-dom';
 import {
@@ -26,7 +26,7 @@ import {
 } from './all-pages-serviсe';
 import CustomizedMenus from './menu';
 import SearchInput from './search';
-import withRSCloneService from '../../hoc-helper/withRSCloneService';
+import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
 
 const useStyles = makeStyles({
   root: {
@@ -70,7 +70,7 @@ function CustomLoadingOverlay() {
   );
 }
 
-const AllPages = (props: any) => {
+const AllPages = () => {
   const [state, setState] = useState({
     checkedA: true,
     checkedB: true,
@@ -81,10 +81,9 @@ const AllPages = (props: any) => {
   const [allInfo, setAllInfo] = useState(null);
   const [notBeingDeleted, setNotBeingDeleted] = useState(true);
   const [DisplayDailyNotes, setDisplayDailyNotes] = useState(true);
-  const { rsCloneService: service } = props;
+  const service = useContext(RSCloneServiceContext);
   useEffect(() => {
     const getInfo = async () => {
-      // await service.login('mary-jane@gmail.com', 'marymary');
       const res = await service.getNotes();
       await setAllInfo(getRows(res.DATA));
       await setRows(getRows(res.DATA));
@@ -155,6 +154,7 @@ const AllPages = (props: any) => {
           className={classes.root}
           disableColumnMenu={true}
           autoHeight={true}
+          // @ts-ignore
           rows={rows}
           columns={columns}
           pageSize={5}
@@ -193,4 +193,4 @@ const AllPages = (props: any) => {
     </div>
   );
 };
-export default withRouter(withRSCloneService(AllPages));
+export default withRouter(AllPages);

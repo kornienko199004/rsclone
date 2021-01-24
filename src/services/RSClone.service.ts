@@ -21,6 +21,30 @@ export interface UpdateUserRequest {
     password?: string
 }
 
+export interface CreateUserRequest {
+    name: string,
+    password: string,
+    email: string,
+}
+
+export interface LogInUserRequest {
+    password: string,
+    email: string,
+}
+
+export type UserData = {
+    email: string,
+    username: string,
+}
+
+const getAuthToken = (): string => {
+  const authToken = localStorage.getItem('auth-token');
+  if (!authToken) {
+    throw new Error('authToken is not defined or you are not authorized. Check localStorage');
+  }
+  return authToken;
+};
+
 export default class RSCloneService {
     getResource = async (url: string, options: object) => {
       const response = await fetch(`${url}`, options);
@@ -33,22 +57,18 @@ export default class RSCloneService {
       return response.json();
     }
 
-    login = async (email: string, name: string, password: string) => {
-      const body = {
-        email,
-        name,
-        password,
-      };
+    login = async (data: LogInUserRequest) => {
+      console.log('request');
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       };
       const res = await this.getResource('/api/login', options);
       localStorage.setItem('auth-token', res.token);
-      return res.token;
+      return res;
     }
 
     logout = async () => {
@@ -56,7 +76,7 @@ export default class RSCloneService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       await this.getResource('api/logout', options);
@@ -64,18 +84,13 @@ export default class RSCloneService {
       return true;
     }
 
-    createUser = async (email: string, name: string, password: string) => {
-      const body = {
-        email,
-        name,
-        password,
-      };
+    createUser = async (data: CreateUserRequest) => {
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
       };
       return this.getResource('/api/user', options);
     }
@@ -84,7 +99,7 @@ export default class RSCloneService {
       const options = {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       await this.getResource('api/user/me', options);
@@ -92,14 +107,18 @@ export default class RSCloneService {
       return true;
     }
 
-    getUser = async () => {
+    getUser = async (): Promise<UserData> => {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource('api/user/me', options);
+      const res = await this.getResource('/api/user/me', options);
+      return {
+        email: res.email,
+        username: res.name,
+      };
     }
 
     updateUser = async (data: UpdateUserRequest) => {
@@ -110,7 +129,7 @@ export default class RSCloneService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -122,7 +141,7 @@ export default class RSCloneService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -136,7 +155,7 @@ export default class RSCloneService {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
         body: JSON.stringify(data),
       };
@@ -147,7 +166,7 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource(`api/note/${id}`, options);
@@ -157,7 +176,7 @@ export default class RSCloneService {
       const options = {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
       return this.getResource(`api/note/${id}`, options);
@@ -167,19 +186,19 @@ export default class RSCloneService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource('api/notes', options);
+      return this.getResource('/api/notes', options);
     }
 
     getNoteByTitle = async (title: string) => {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-token')}`,
+          Authorization: `Bearer ${getAuthToken()}`,
         },
       };
-      return this.getResource(`api/note/title/${title}`, options);
+      return this.getResource(`/api/note/title/${title}`, options);
     }
 }

@@ -1,12 +1,11 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './graphOverview.scss';
 import NoteGraph from 'react-graph-network';
 import { withRouter } from 'react-router-dom';
-
+import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
 import Node from './Node';
-import withRSCloneService from '../../hoc-helper/withRSCloneService';
 
 export interface ModificationNote {
   _id: string;
@@ -24,35 +23,35 @@ export interface Note {
   __v: number;
 }
 
-const Graph = (props: any) => {
-  const { rsCloneService: service } = props;
-  const [notes, setNotes]: any = useState(null);
+export const getNodes = async (res: Note[]) => {
+  const nodes: {
+    id: string;
+    title: string;
+  }[] = await res.map((note: Note) => ({
+    id: note._id,
+    title: note.title,
+  }));
+  const links: any = [];
+  res.map((note: Note) => {
+    const thisId = note._id;
+    return note.parents.forEach((parent: any) => links.push({
+      source: thisId,
+      target: parent.id,
 
-  const getNodes = async (res: Note[]) => {
-    const nodes: {
-      id: string;
-      title: string;
-    }[] = await res.map((note: Note) => ({
-      id: note._id,
-      title: note.title,
     }));
-    const links: any = [];
-    res.map((note: Note) => {
-      const thisId = note._id;
-      return note.parents.forEach((parent: any) => links.push({
-        source: thisId,
-        target: parent.id,
-      }));
-    });
-    return ({
-      nodes,
-      links,
-    });
-  };
+  });
+  return ({
+    nodes,
+    links,
+  });
+};
+
+const Graph = () => {
+  const [notes, setNotes]: any = useState(null);
+  const service = useContext(RSCloneServiceContext);
 
   useEffect(() => {
     const getInfo = async () => {
-      // await service.login('mary1@gmail.com', 'marymary');
       const res = await service.getNotes();
       const graphData = await getNodes(res.DATA);
       setNotes(graphData);
@@ -65,8 +64,9 @@ const Graph = (props: any) => {
       {notes && (
         <NoteGraph
           NodeComponent={Node}
-          nodeDistance={2000}
-          zoomDepth={3}
+          nodeDistance={800}
+          distance={50}
+          zoomDepth={1}
           hoverOpacity={0.3}
           enableDrag
           pullIn={false}
@@ -77,4 +77,4 @@ const Graph = (props: any) => {
     </div>
   );
 };
-export default withRouter(withRSCloneService(Graph));
+export default withRouter(Graph);
