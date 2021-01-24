@@ -32,12 +32,9 @@ const SingleNote = (props: any) => {
     const getNote = async () => {
       // const todayTitle: string = getDayTitle();
       let note: INote | null = selectNote(name, props.notes);
-      console.log(note);
-      console.log(name);
 
       if (!note) {
         const noteByTitle: { DATA: INote } = await service.getNoteByTitle(name);
-        console.log(noteByTitle);
         if (noteByTitle.DATA) {
           note = noteByTitle.DATA;
         } else {
@@ -69,7 +66,7 @@ const SingleNote = (props: any) => {
       );
     });
   }
-  console.log(props);
+
   return (
     <Scrollbars
       autoHeight

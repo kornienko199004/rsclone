@@ -136,7 +136,6 @@ function becomeChild(
     };
   }
 
-  console.log('becomeChild', body);
   return {
     type: UPDATE_NOTE_BODY,
     body: [...body],
@@ -295,9 +294,6 @@ function updateContent(
   params: { noteTitle: string; pageLinks: string[], content: string },
 ) {
   const { noteTitle, pageLinks, content } = params;
-  console.log(noteTitle);
-  console.log(pageLinks);
-  console.log(content);
   // return {
   //   type: UPDATE_CONTENT,
   //   title: noteTitle,
@@ -328,38 +324,24 @@ function updateContent(
 
     // необходимо добавить в parents ссылку на эту страницу
     // в виде { parentTitle: string; content: string[] }
-    // note.parents = [...(note.parents || []), { pageLink: noteTitle, content: [content] }];
     note.parents = updateNoteParents(note, noteTitle, content);
     await service.updateNote(note, (note._id as string));
     return { id: note._id, title: link };
   });
+  // eslint-disable-next-line func-names
   return function (dispatch: any) {
     dispatch({
       type: UPDATE_CONTENT_REQUESTED,
     });
 
-    // fetch('https://ron-swanson-quotes.herokuapp.com/v2/quotes')
     Promise.all(promises)
-    // new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({ body, title: noteTitle });
-    //   }, 2000);
-    // })
-      // .then((response) => response.json())
-      // .then((data) => {
-      //   console.log('data', data);
-      //   return { pageLinks: data, title: noteTitle, body };
-      // })
       .then((data) => {
-        console.log('data', data);
-        console.log('data', { pageLinks: data, title: noteTitle, body });
         dispatch({
           type: UPDATE_CONTENT_RECEIVED,
           payload: { pageLinks: data, title: noteTitle, body },
         });
       })
       .catch((error) => {
-        console.log('errro', error);
         dispatch({
           type: UPDATE_CONTENT_FAILED,
           payload: error,

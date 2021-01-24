@@ -24,7 +24,6 @@ function reducer(state: any, action: any) {
         focusComponentPath: action.focusComponentPath,
       };
     case UPDATE_CONTENT_RECEIVED:
-      console.log('action', action);
       notes = updateNoteByTitle(
         state.notes, action.payload.title, action.payload.body, [],
       );

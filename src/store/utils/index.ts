@@ -29,9 +29,6 @@ const updateNoteByTitle = (
   updatedBody: IPage[],
   pageLinks: any[],
 ): INote[] => {
-  console.log('title', title);
-  console.log('updatedBody', updatedBody);
-  console.log('pageLinks', pageLinks);
   const notesCopy: INote[] = [...notes];
   const noteIndex = notesCopy.findIndex((item: INote) => item.title === title);
 
@@ -46,8 +43,6 @@ const updateNoteByTitle = (
   if (noteIndex > -1) {
     notesCopy.splice(noteIndex, 1, updatedNote);
   }
-
-  console.log('updatedNote', updatedNote);
 
   return notesCopy;
 };
