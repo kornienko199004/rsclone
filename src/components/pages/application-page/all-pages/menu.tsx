@@ -7,6 +7,7 @@ import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import { Tooltip } from '@material-ui/core';
 import SwitchLabels from './switch';
 import { Columns } from './interfaces';
 import './allPages.scss';
@@ -64,13 +65,15 @@ export default function CustomizedMenus({
 
   return (
     <div>
-      <Button
-        className="eye"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <VisibilityIcon className="btn" />
-      </Button>
+      <Tooltip title="Show/Hide columns" arrow>
+        <Button
+          className="eye"
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <VisibilityIcon className="btn" />
+        </Button>
+      </Tooltip>
       <StyledMenu
         id="customized-menu"
         style={{ width: 300 }}

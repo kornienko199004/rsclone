@@ -14,6 +14,9 @@
       .btn {
         color: #5c7080;
       }
+      .calendar {
+        color: rgb(168, 33, 33);
+      }
       display: flex;
     }
     .l-group {
@@ -22,4 +25,15 @@
       }
     }
   }
+}
+.dialog{
+  max-width: 450px;
+  margin: auto;
+  justify-content: center;
+}
+.list-item {
+  border-radius: 10px;
+  padding: 1px;
+  margin: 1px;
+  background-color:  #5c708025;
 }
