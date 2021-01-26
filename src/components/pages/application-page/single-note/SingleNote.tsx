@@ -24,9 +24,10 @@ const SingleNote = (props: any) => {
   const { params } = match;
   const { name } = params;
   const service = new RSCloneService();
+  console.log('single Note');
   // const service: RSCloneService = useContext(RSCloneServiceContext);
 
-  const [notesList, setNotes] = useState<INote[]>();
+  const [singleNote, setNote] = useState<INote>();
 
   useEffect(() => {
     const getNote = async () => {
@@ -46,25 +47,23 @@ const SingleNote = (props: any) => {
         props.addNote(note);
       }
 
-      setNotes(props.notes);
+      setNote(note);
     };
 
     getNote();
-  }, [notesList]);
+  }, [singleNote]);
 
-  let list: any[] | null = null;
+  let list: any | null = null;
 
-  if (notesList) {
-    list = notesList.map((item: INote) => {
-      const NewNote: any = connect(mapStateToProps)(Note);
-      return (
-        <NewNote
-          key={item._id}
-          id={item._id}
-          title={item.title}
-        />
-      );
-    });
+  if (singleNote) {
+    const NewNote: any = connect(mapStateToProps)(Note);
+    list = (
+      <NewNote
+        key={singleNote._id}
+        id={singleNote._id}
+        title={singleNote.title}
+      />
+    );
   }
 
   return (

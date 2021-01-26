@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-// import axios from 'axios';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Page from './page/Page';
 import { INote, IPage } from '../../models/notes.model';
@@ -47,6 +47,14 @@ class Note extends React.Component {
     console.log('the note was saved');
   }
 
+  titleClick(e: (React.MouseEvent | React.KeyboardEvent)) {
+    e.preventDefault();
+    console.log(e);
+    console.log(this);
+    const { title, history } = (this.props as any);
+    history.push(`/app/note/${title}`);
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderPage(title: string, page: IPage, index: number, arr: IPage[]) {
     return (
@@ -75,7 +83,16 @@ class Note extends React.Component {
 
     return (
       <div className="note-container">
-        <h1 className="note__title">{title}</h1>
+        <h1 className="note__title">
+          <a
+            className="note__title-link"
+            href="/"
+            onClick={this.titleClick.bind(this)}
+            onKeyDown={this.titleClick.bind(this)}
+          >
+            {title}
+          </a>
+        </h1>
         <div className="note__pages">
           {contentFromRedux}
         </div>
@@ -100,4 +117,4 @@ const mapStateToProps = (state: any, props: any) => ({
   body: state.body,
 });
 
-export default connect(mapStateToProps)(Note);
+export default withRouter(connect(mapStateToProps)(Note));

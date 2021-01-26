@@ -4,10 +4,12 @@ import React from 'react';
 // import shortid from 'shortid';
 
 function TemplateReadOnly(props: any) {
-  const { content, onClick } = props;
+  const { children, onClick } = props;
   return (
     // eslint-disable-next-line react/no-danger
-    <div className="readonly-wrapper" onClick={onClick} dangerouslySetInnerHTML={{ __html: content }} />
+    <div className="readonly-wrapper" onClick={onClick}>
+      {children}
+    </div>
   );
 }
 
