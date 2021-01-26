@@ -3,6 +3,7 @@
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
+import { Link } from 'react-router-dom';
 import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
@@ -220,11 +221,32 @@ function Page(props: any) {
 
   const getHtmlMarkup = (str: string) => {
     function replacer(match: any, p1: any, offset: any, string: any) {
-      const newString = string.replace(p1, `<a href="/">${p1}</a>`);
-      return `[[<a href="/app/note/${p1}">${p1}</a>]]`;
+      return `[[<Link to="/app/note/${p1}">${p1}</Link>]]`;
+      // return (<Link to={`/app/note/${p1}`}>{p1}</Link>) as string;
     }
     const newStr = str.replace(/\[\[(.*?)\]]/g, replacer);
     return newStr;
+  };
+
+  const generateAst = (str: string) => {
+    let ast: any = [];
+    // let content = '';
+    let linkIsOpen = false;
+
+    for (let i = 0; i < str.length; i += 1) {
+      const subStr = str.substr(i);
+
+      if (!linkIsOpen) {
+        const linkStart: number = subStr.search(/\[\[/);
+
+        if (linkStart > -1) {
+          if ((linkStart + subStr.length) !== i) {
+            ast = [...ast, { type: 'text', content: subStr }];
+          }
+          linkIsOpen = true;
+        }
+      }
+    }
   };
 
   return (
@@ -268,7 +290,9 @@ function Page(props: any) {
               setCursorPosition(offset / 7.5);
             }}
             content={getHtmlMarkup(pageContent)}
-          />
+          >
+            {getHtmlMarkup(pageContent)}
+          </TemplateReadOnly>
         )}
       </div>
       <div
