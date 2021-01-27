@@ -1,15 +1,13 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
-import shortid from 'shortid';
+// import shortid from 'shortid';
 
 function TemplateReadOnly(props: any) {
-  const { onAddNeighbor, onAddChild, content } = props;
+  const { content, onClick } = props;
   return (
-    <div key={shortid.generate()}>
-      <button type="button">Открыть</button>
-      <button type="button" onClick={onAddChild}>Add child</button>
-      <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
-      <p className="content">{content}</p>
-    </div>
+    // eslint-disable-next-line react/no-danger
+    <div className="readonly-wrapper" onClick={onClick} dangerouslySetInnerHTML={{ __html: content }} />
   );
 }
 

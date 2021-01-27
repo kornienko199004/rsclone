@@ -201,4 +201,14 @@ export default class RSCloneService {
       };
       return this.getResource(`/api/note/title/${title}`, options);
     }
+
+    getPreviousDailyNote = async (id: string) => {
+      const options = {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      };
+      return this.getResource(`/api/note/daily/${id}`, options);
+    }
 }
