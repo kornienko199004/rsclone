@@ -111,7 +111,7 @@ const AllPages = () => {
       await setRows(getRows(res.DATA));
     };
     getInfo();
-  }, []);
+  }, [allInfo, rows]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -130,12 +130,6 @@ const AllPages = () => {
 
   let selected: RowSelectedParams[] = [];
   const columns: ColDef[] = changeColumns(state);
-
-  const showNote = async (title: string) => {
-    const res = await service.getNoteByTitle(title);
-    const id = await res.DATA._id;
-    await setLink(`/note/${id}`);
-  };
 
   const classes = useStyles();
   return (
@@ -184,16 +178,15 @@ const AllPages = () => {
             : <DataGrid
                 density="compact"
                 className={classes.root}
-                disableColumnMenu={true}
-                autoHeight={true}
+                disableColumnMenu
+                autoHeight
               // @ts-ignore
                 rows={rows}
                 columns={columns}
                 disableSelectionOnClick
-                pageSize={5}
                 checkboxSelection
                 onRowClick={(param: RowParams) => {
-                  showNote(param.row.title);
+                  setLink(`/app/note/${param.row.title}`);
                 }}
                 onRowSelected={(param: RowSelectedParams) => {
                   selected = selectedValue;
@@ -218,7 +211,6 @@ const AllPages = () => {
               autoHeight={true}
               rows={[]}
               columns={columns}
-              pageSize={5}
               checkboxSelection
               components={{
                 loadingOverlay: CustomLoadingOverlay,
