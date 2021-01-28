@@ -47,6 +47,9 @@ const getNodes = async (res: Note[]) => {
   });
 };
 
+const height = (window.innerHeight || document.documentElement.clientHeight
+|| document.body.clientHeight) - 100;
+
 const myGraph = () => {
   const [notes, setNotes] = useState(null as any);
   const [link, setLink] = useState('');
@@ -63,8 +66,7 @@ const myGraph = () => {
 
   const options = {
     autoResize: true,
-    // height: '100%',
-    height: '500px',
+    height,
     width: '100%',
     locale: 'en',
     nodes: {
