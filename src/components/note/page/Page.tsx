@@ -24,6 +24,8 @@ import {
 import { selectNote } from '../../../store/utils';
 import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
 
+interface IAstElement { type: string; content: string }
+
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
   body: state.body,
@@ -219,34 +221,51 @@ function Page(props: any) {
     setNestedPagesVisibility(!showNestedPages);
   };
 
-  const getHtmlMarkup = (str: string) => {
-    function replacer(match: any, p1: any, offset: any, string: any) {
-      return `[[<Link to="/app/note/${p1}">${p1}</Link>]]`;
-      // return (<Link to={`/app/note/${p1}`}>{p1}</Link>) as string;
+  const getLinkContent = (str: string) => {
+    if (!str) {
+      return str;
     }
-    const newStr = str.replace(/\[\[(.*?)\]]/g, replacer);
-    return newStr;
+    return str.replace(/\[\[/, '').replace(/\]\]/, '');
   };
 
   const generateAst = (str: string) => {
-    let ast: any = [];
-    // let content = '';
-    let linkIsOpen = false;
-
-    for (let i = 0; i < str.length; i += 1) {
-      const subStr = str.substr(i);
-
-      if (!linkIsOpen) {
-        const linkStart: number = subStr.search(/\[\[/);
-
-        if (linkStart > -1) {
-          if ((linkStart + subStr.length) !== i) {
-            ast = [...ast, { type: 'text', content: subStr }];
-          }
-          linkIsOpen = true;
-        }
+    const iter = (subStr: string, acc: any[]): IAstElement[] => {
+      if (subStr.length === 0) {
+        return acc;
       }
+
+      const linkStart: number = subStr.search(/\[\[/);
+
+      if (linkStart === -1) {
+        return iter('', [...acc, { type: 'text', content: subStr }]);
+      }
+
+      const linkEnd: number = subStr.search(/\]\]/);
+      if (linkEnd === -1) {
+        return iter('', [...acc, { type: 'text', content: subStr }]);
+      }
+
+      let newAcc = [...acc];
+      if (linkStart !== 0) {
+        newAcc = [...acc, { type: 'text', content: subStr.substring(0, linkStart) }];
+      }
+
+      return iter(subStr.substring(linkEnd + 2), [...newAcc, { type: 'link', content: subStr.substring(linkStart, linkEnd + 2) }]);
+    };
+    return iter(str, []);
+  };
+
+  const getHtmlMarkup = (ast: IAstElement[]) => {
+    if (ast.length === 0) {
+      return (<span />);
     }
+    return ast.map((item: IAstElement) => {
+      if (item.type === 'text') {
+        return (<span key={shortid()}>{item.content}</span>);
+      }
+
+      return (<Link key={shortid()} to={`/app/note/${getLinkContent(item.content)}`}>{`[[${getLinkContent(item.content)}]]`}</Link>);
+    });
   };
 
   return (
@@ -289,9 +308,8 @@ function Page(props: any) {
               setEditorMode(true);
               setCursorPosition(offset / 7.5);
             }}
-            content={getHtmlMarkup(pageContent)}
           >
-            {getHtmlMarkup(pageContent)}
+            {getHtmlMarkup(generateAst(pageContent))}
           </TemplateReadOnly>
         )}
       </div>
