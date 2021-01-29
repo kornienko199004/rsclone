@@ -55,6 +55,8 @@ function Page(props: any) {
     noteTitle,
   } = props;
 
+  console.log('focusComponentPath', focusComponentPath);
+
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
 
   let childrenComponents = <span>{}</span>;
@@ -66,18 +68,36 @@ function Page(props: any) {
   let textInput: HTMLTextAreaElement | null = null;
 
   if (
-    JSON.stringify(currentPage.pagePath)
+    JSON.stringify({ [noteTitle]: currentPage.pagePath })
       === JSON.stringify(focusComponentPath)
     && !editorMode
   ) {
     setEditorMode(true);
   }
 
+  // console.log(
+  //   JSON.stringify({ [noteTitle]: currentPage.pagePath }) === JSON.stringify(focusComponentPath),
+  // );
+
+  // console.log(
+  //   JSON.stringify({ [noteTitle]: currentPage.pagePath }),
+  // );
+
+  // console.log(
+  //   JSON.stringify(focusComponentPath),
+  // );
+
   useEffect(() => {
-    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath) && textInput) {
+    if (
+      JSON.stringify({ [noteTitle]: currentPage.pagePath }) === JSON.stringify(focusComponentPath)
+      && textInput
+    ) {
       (textInput as HTMLTextAreaElement).focus();
       (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
         .value.length;
+      (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
+        .value.length;
+      return;
     }
     if (editorMode && textInput) {
       textInput.focus();
@@ -88,6 +108,7 @@ function Page(props: any) {
   useEffect(() => {
     if (textInput) {
       textInput.selectionStart = inputCursorPosition;
+      // textInput.focus();
       textInput.selectionEnd = inputCursorPosition;
     }
   }, [inputCursorPosition]);
@@ -306,7 +327,10 @@ function Page(props: any) {
             onClick={(e: any) => {
               const offset = e.clientX - e.target.getBoundingClientRect().x;
               setEditorMode(true);
-              setCursorPosition(offset / 7.5);
+              // setCursorPosition(offset / 7.5);
+              if (textInput) {
+                textInput.focus();
+              }
             }}
           >
             {getHtmlMarkup(generateAst(pageContent))}

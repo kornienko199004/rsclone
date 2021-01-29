@@ -14,7 +14,7 @@ const initialState : {
     isLoggedIn: boolean,
     notes: [],
     noteBody: IPage[],
-    focusComponentPath: (string | number)[]
+    focusComponentPath?: { [k: string]: (string | number)[] },
     userData: {username: string, email: string}
 } = {
   isLoggedIn: !!localStorage.getItem('auth-token'),
@@ -24,7 +24,6 @@ const initialState : {
   },
   notes: [],
   noteBody: [],
-  focusComponentPath: [0],
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);

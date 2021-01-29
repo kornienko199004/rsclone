@@ -273,10 +273,12 @@ function changeFocusElement(
     newFocusPath = [...pagePath.slice(0, -1), pageId + 1];
   }
 
+  console.log('newFocusPath', newFocusPath);
+
   return {
     type: CHANGE_FOCUS_ELEMENT,
     title: noteTitle,
-    focusComponentPath: newFocusPath,
+    focusComponentPath: { [noteTitle]: newFocusPath },
   };
 }
 
