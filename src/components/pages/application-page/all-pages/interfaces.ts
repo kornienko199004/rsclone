@@ -3,7 +3,7 @@
 export interface Note {
   _id: string;
   title: string;
-  body: object;
+  body: object[];
   parents: Array<object>;
   modification_notes: [ModificationNote];
   owner: string;
