@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger-with-children */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
@@ -164,7 +163,6 @@ function Page(props: any) {
     currentPageLink.content = value;
     currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
     const pageLinks = value.match(/\[\[(.*?)\]]/g);
-    console.log('props', props);
     props.updateContent(body, {
       noteTitle, pageLinks, content: value, currentNote: note, currentPage,
     });
