@@ -11,83 +11,92 @@ import './page.scss';
 
 // eslint-disable-next-line import/extensions
 import {
-  addNeighbor, becomeChild,
-  removePage, levelUp, updateContent, addChild, changeFocusElement, // @ts-ignore
+  addNeighbor,
+  becomeChild,
+  removePage,
+  levelUp,
+  updateContent,
+  addChild,
+  changeFocusElement, // @ts-ignore
 } from '../../../store/actionsCreators/actionsCreators';
 import { selectNote } from '../../../store/utils';
+import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
+  body: state.body,
   focusComponentPath: state.focusComponentPath,
   ...ownProps,
 });
 
 const mapDispatchToProps = {
-  addNeighbor, becomeChild, removePage, levelUp, updateContent, addChild, changeFocusElement,
+  addNeighbor,
+  becomeChild,
+  removePage,
+  levelUp,
+  updateContent,
+  addChild,
+  changeFocusElement,
 };
 
 function Page(props: any) {
   const {
-    content, notes, pagePath, currentPage, list, focusComponentPath, textInputHeight, noteTitle,
+    content,
+    notes,
+    pagePath,
+    currentPage,
+    list,
+    focusComponentPath,
+    textInputHeight,
+    noteTitle,
   } = props;
 
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
 
-  let childrenComponents = (<span>{ }</span>);
+  let childrenComponents = <span>{}</span>;
   const [pageContent, setContent] = useState(content);
   const [inputCursorPosition, setCursorPosition] = useState(0);
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
+  const [editorMode, setEditorMode] = useState(false);
 
   let textInput: HTMLTextAreaElement | null = null;
 
+  if (
+    JSON.stringify(currentPage.pagePath)
+      === JSON.stringify(focusComponentPath)
+    && !editorMode
+  ) {
+    setEditorMode(true);
+  }
+
   useEffect(() => {
-    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath)) {
+    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath) && textInput) {
       (textInput as HTMLTextAreaElement).focus();
-      (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
+      (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
         .value.length;
     }
+    if (editorMode && textInput) {
+      textInput.focus();
+    }
     autosize(textInput as HTMLTextAreaElement);
-  });
+  }, [editorMode]);
+
+  useEffect(() => {
+    if (textInput) {
+      textInput.selectionStart = inputCursorPosition;
+      textInput.selectionEnd = inputCursorPosition;
+    }
+  }, [inputCursorPosition]);
 
   useEffect(() => {
     if (textInput) {
       textInput.selectionEnd = inputCursorPosition;
     }
-    // if (textInput) {
-    //   console.log('textInput.selectionStart', textInput.selectionStart);
-    //   const str: string = textInput.value;
-    //   const { selectionStart, selectionEnd } = textInput;
-    //   if (str[selectionStart - 1] === '[') {
-    //     const newStrArr = str.split('');
-    //     newStrArr.splice(selectionStart, 0, ']');
-    //     setContent(newStrArr.join(''));
-    //     return;
-    //   }
-    //   console.log('textInput.selectionEnd', textInput.selectionEnd);
-    //   console.log('textInput.selectionStart', textInput.selectionStart);
-    //   console.log('str[selectionEnd - 1]', str[selectionEnd - 1]);
-    //   console.log('textInput.value.length', textInput.value.length);
-    //   // console.log('textInput.value', textInput.value);
-    //   if (str[selectionEnd - 1] === ']') {
-    //     // textInput.selectionEnd -= 1;
-    //   }
-    // }
-    // // if (pageContent.substr(-1) === ']' && textInput) {
-    // //   console.log('textInput.selectionEnd', textInput.selectionEnd);
-    // //   console.log('textInput.selectionStart', textInput.selectionStart);
-    // //   console.log('textInput.value', textInput.value);
-    // //   // textInput.selectionEnd -= 1;
-    // //   console.log(textInput.value.match(/\[\[(.*?)\]]/g));
-    // // }
   }, [inputCursorPosition]);
 
   const onAddNeighbor = () => {
     props.addNeighbor(body, { currentPage, list, noteTitle });
   };
-
-  // const onAddChild = () => {
-  //   props.addChild(body, { currentPage });
-  // };
 
   const onBecomeChild = () => {
     if (currentPage.pageId === 0) {
@@ -121,21 +130,23 @@ function Page(props: any) {
 
   if (currentPage.nestedPages && currentPage.nestedPages.length > 0) {
     // делаем из вложеннех страниц компоненты
-    childrenComponents = currentPage.nestedPages.map((item: IPage, index: number, arr: IPage[]) => {
-      const NewPage: any = connect(mapStateToProps, mapDispatchToProps)(Page);
-      return (
-        <NewPage
-          key={shortid.generate()}
-          content={item.content}
-          nestedPages={item.nestedPages}
-          pagePath={item.pagePath}
-          currentPage={item}
-          list={arr}
-          textInputHeight={item.textInputHeight}
-          noteTitle={noteTitle}
-        />
-      );
-    });
+    childrenComponents = currentPage.nestedPages.map(
+      (item: IPage, index: number, arr: IPage[]) => {
+        const NewPage: any = connect(mapStateToProps, mapDispatchToProps)(Page);
+        return (
+          <NewPage
+            key={shortid.generate()}
+            content={item.content}
+            nestedPages={item.nestedPages}
+            pagePath={item.pagePath}
+            currentPage={item}
+            list={arr}
+            textInputHeight={item.textInputHeight}
+            noteTitle={noteTitle}
+          />
+        );
+      },
+    );
   }
 
   const onUpdateContent = (value: string) => {
@@ -149,19 +160,20 @@ function Page(props: any) {
   };
 
   const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    setEditorMode(false);
     if (e.target.value === content) {
       return;
     }
 
     onUpdateContent(e.target.value);
-    props.updateContent(body, { noteTitle });
+    const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
+    props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const str: string = e.target.value;
-    const { selectionStart } = (e.nativeEvent.target as HTMLTextAreaElement);
+    const str: string = (e.target as HTMLTextAreaElement).value;
+    const { selectionStart } = e.nativeEvent.target as HTMLTextAreaElement;
     if (str && (e.nativeEvent as InputEvent).data === '[') {
-      // str = `${str}]`;
       const newStrArr = str.split('');
       newStrArr.splice(selectionStart, 0, ']');
       setContent(newStrArr.join(''));
@@ -172,7 +184,7 @@ function Page(props: any) {
     autosize(textInput as HTMLTextAreaElement);
   };
 
-  const onEnterPressHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const onEnterPressHandler = (e: any) => {
     const contentValue: string = (e.target as HTMLTextAreaElement).value;
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -180,12 +192,11 @@ function Page(props: any) {
       onBecomeChild();
     }
     if (e.key === 'Enter') {
-      if ((contentValue && contentValue.length > 0) || currentPage.pagePath.length === 1) {
+      if (
+        (contentValue && contentValue.length > 0)
+        || currentPage.pagePath.length === 1
+      ) {
         onUpdateContent(contentValue);
-        // if (currentPage.nestedPages.length > 0) {
-        //   onAddChild();
-        //   return;
-        // }
         onAddNeighbor();
         return;
       }
@@ -212,42 +223,66 @@ function Page(props: any) {
     setNestedPagesVisibility(!showNestedPages);
   };
 
+  const getHtmlMarkup = (str: string) => {
+    function replacer(match: any, p1: any, offset: any, string: any) {
+      const newString = string.replace(p1, `<a href="/">${p1}</a>`);
+      return `[[<a href="/app/note/${p1}">${p1}</a>]]`;
+    }
+    const newStr = str.replace(/\[\[(.*?)\]]/g, replacer);
+    return newStr;
+  };
+
   return (
     <div className="page-container">
       <div className="current-page__controls">
         <span className="open-page__wrapper">
           <button
             type="button"
-            className={`nested-pages-button ${currentPage.nestedPages.length > 0 ? 'nested-pages-button--show' : 'nested-pages-button--hidden'}`}
+            className={`nested-pages-button ${
+              currentPage.nestedPages.length > 0
+                ? 'nested-pages-button--show'
+                : 'nested-pages-button--hidden'
+            }`}
             onClick={toggleNestedPagesVisibility}
           >
-            {showNestedPages ? <ArrowDropDown fontSize="small" htmlColor="#000" /> : <ArrowRight fontSize="small" htmlColor="#000" />}
+            {showNestedPages ? (
+              <ArrowDropDown fontSize="small" htmlColor="#000" />
+            ) : (
+              <ArrowRight fontSize="small" htmlColor="#000" />
+            )}
           </button>
           <span className="open-page" />
         </span>
-        <textarea
-          className="text-input"
-          style={{ height: `${textInputHeight}px` }}
-          ref={(textarea: HTMLTextAreaElement) => { textInput = textarea; }}
-          value={pageContent}
-          onBlur={onBlur}
-          onChange={onChangeContent}
-          onKeyDown={onEnterPressHandler}
-        />
-        {/* <input
-          type="text"
-          ref={(input: HTMLInputElement) => { textInput = input; }}
-          value={pageContent}
-          onBlur={onBlur}
-          onChange={onChangeContent}
-          onKeyDown={onEnterPressHandler}
-        /> */}
-        {/* <button type="button" onClick={onAddNeighbor}>Add neighbor</button>
-        <button type="button" onClick={onBecomeChild}>Become a child</button>
-        <button type="button" onClick={onRemove}>x</button>
-        <button type="button" onClick={onLevelUp}>up</button> */}
+        {editorMode ? (
+          <textarea
+            className="text-input"
+            style={{ height: `${textInputHeight}px` }}
+            ref={(textarea: HTMLTextAreaElement) => {
+              textInput = textarea;
+            }}
+            value={pageContent}
+            onBlur={onBlur}
+            onChange={onChangeContent}
+            onKeyDown={onEnterPressHandler}
+          />
+        ) : (
+          <TemplateReadOnly
+            onClick={(e: any) => {
+              const offset = e.clientX - e.target.getBoundingClientRect().x;
+              setEditorMode(true);
+              setCursorPosition(offset / 7.5);
+            }}
+            content={getHtmlMarkup(pageContent)}
+          />
+        )}
       </div>
-      <div className={`nestedPages ${showNestedPages ? 'nestedPages--show' : 'nestedPages--hidden'}`}>{childrenComponents}</div>
+      <div
+        className={`nestedPages ${
+          showNestedPages ? 'nestedPages--show' : 'nestedPages--hidden'
+        }`}
+      >
+        {childrenComponents}
+      </div>
     </div>
   );
 }

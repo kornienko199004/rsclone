@@ -119,7 +119,7 @@ const Sidebar = () => {
     setAnchorEl(null);
   };
 
-  const ReDrawer = ({ name } : {name: string | null}) => (
+  const ReDrawer = ({ name }: { name: string | null; }) => (
     <div>
       <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} aria-controls="simple-menu" aria-haspopup="true" />
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
