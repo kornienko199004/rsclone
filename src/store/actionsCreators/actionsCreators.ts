@@ -93,7 +93,7 @@ function addNeighbor(
     type: UPDATE_NOTE_BODY,
     body: [...body],
     title: noteTitle,
-    focusComponentPath: newNeighborPath,
+    focusComponentPath: { [noteTitle]: newNeighborPath },
   };
 }
 
@@ -140,7 +140,7 @@ function becomeChild(
     type: UPDATE_NOTE_BODY,
     body: [...body],
     title: noteTitle,
-    focusComponentPath: newChildPagePath,
+    focusComponentPath: { [noteTitle]: newChildPagePath },
   };
 }
 
@@ -171,7 +171,7 @@ function removePage(
     type: UPDATE_NOTE_BODY,
     body: [...body],
     title: noteTitle,
-    focusComponentPath: newFocusComponentPath,
+    focusComponentPath: { [noteTitle]: newFocusComponentPath },
   };
 }
 
@@ -216,7 +216,7 @@ function levelUp(body: any, params: { currentPage: IPage; noteTitle: string }) {
     type: UPDATE_NOTE_BODY,
     body: [...body],
     title: noteTitle,
-    focusComponentPath: newChildPagePath,
+    focusComponentPath: { [noteTitle]: newChildPagePath },
   };
 }
 
@@ -247,7 +247,7 @@ function addChild(
     type: UPDATE_NOTE_BODY,
     body: [...body],
     title: noteTitle,
-    focusComponentPath: newChildPath,
+    focusComponentPath: { [noteTitle]: newChildPath },
   };
 }
 
@@ -273,8 +273,6 @@ function changeFocusElement(
     newFocusPath = [...pagePath.slice(0, -1), pageId + 1];
   }
 
-  console.log('newFocusPath', newFocusPath);
-
   return {
     type: CHANGE_FOCUS_ELEMENT,
     title: noteTitle,
@@ -293,9 +291,13 @@ function changeFocusElement(
 
 function updateContent(
   body: any,
-  params: { noteTitle: string; pageLinks: string[], content: string },
+  params: {
+    noteTitle: string; pageLinks: string[], content: string, currentNote: INote, currentPage: IPage
+  },
 ) {
-  const { noteTitle, pageLinks, content } = params;
+  const {
+    noteTitle, pageLinks, content, currentNote, currentPage,
+  } = params;
   // return {
   //   type: UPDATE_CONTENT,
   //   title: noteTitle,
@@ -326,7 +328,7 @@ function updateContent(
 
     // необходимо добавить в parents ссылку на эту страницу
     // в виде { parentTitle: string; content: string[] }
-    note.parents = updateNoteParents(note, noteTitle, content);
+    note.parents = updateNoteParents(note, noteTitle, content, currentPage);
     await service.updateNote(note, (note._id as string));
     return { id: note._id, title: link };
   });
@@ -336,7 +338,8 @@ function updateContent(
       type: UPDATE_CONTENT_REQUESTED,
     });
 
-    Promise.all(promises)
+    service.updateNote(currentNote, (currentNote._id as string))
+      .then(() => Promise.all(promises))
       .then((data) => {
         dispatch({
           type: UPDATE_CONTENT_RECEIVED,

@@ -8,7 +8,7 @@ import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { IPage } from '../../../models/notes.model';
+import { IAstElement, IPage } from '../../../models/notes.model';
 import './page.scss';
 
 // eslint-disable-next-line import/extensions
@@ -23,8 +23,7 @@ import {
 } from '../../../store/actionsCreators/actionsCreators';
 import { selectNote } from '../../../store/utils';
 import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
-
-interface IAstElement { type: string; content: string }
+import { generateAst, getHtmlMarkup, getLinkContent } from '../../../helpers/notes.helper';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
@@ -46,6 +45,7 @@ const mapDispatchToProps = {
 function Page(props: any) {
   const {
     content,
+    note,
     notes,
     pagePath,
     currentPage,
@@ -54,8 +54,6 @@ function Page(props: any) {
     textInputHeight,
     noteTitle,
   } = props;
-
-  console.log('focusComponentPath', focusComponentPath);
 
   const body: IPage[] = selectNote(noteTitle, notes)?.body;
 
@@ -74,18 +72,6 @@ function Page(props: any) {
   ) {
     setEditorMode(true);
   }
-
-  // console.log(
-  //   JSON.stringify({ [noteTitle]: currentPage.pagePath }) === JSON.stringify(focusComponentPath),
-  // );
-
-  // console.log(
-  //   JSON.stringify({ [noteTitle]: currentPage.pagePath }),
-  // );
-
-  // console.log(
-  //   JSON.stringify(focusComponentPath),
-  // );
 
   useEffect(() => {
     if (
@@ -160,6 +146,7 @@ function Page(props: any) {
             pagePath={item.pagePath}
             currentPage={item}
             list={arr}
+            note={note}
             textInputHeight={item.textInputHeight}
             noteTitle={noteTitle}
           />
@@ -176,6 +163,11 @@ function Page(props: any) {
 
     currentPageLink.content = value;
     currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
+    const pageLinks = value.match(/\[\[(.*?)\]]/g);
+    console.log('props', props);
+    props.updateContent(body, {
+      noteTitle, pageLinks, content: value, currentNote: note, currentPage,
+    });
   };
 
   const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -185,8 +177,8 @@ function Page(props: any) {
     }
 
     onUpdateContent(e.target.value);
-    const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
-    props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
+    // const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
+    // props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -240,53 +232,6 @@ function Page(props: any) {
 
   const toggleNestedPagesVisibility = () => {
     setNestedPagesVisibility(!showNestedPages);
-  };
-
-  const getLinkContent = (str: string) => {
-    if (!str) {
-      return str;
-    }
-    return str.replace(/\[\[/, '').replace(/\]\]/, '');
-  };
-
-  const generateAst = (str: string) => {
-    const iter = (subStr: string, acc: any[]): IAstElement[] => {
-      if (subStr.length === 0) {
-        return acc;
-      }
-
-      const linkStart: number = subStr.search(/\[\[/);
-
-      if (linkStart === -1) {
-        return iter('', [...acc, { type: 'text', content: subStr }]);
-      }
-
-      const linkEnd: number = subStr.search(/\]\]/);
-      if (linkEnd === -1) {
-        return iter('', [...acc, { type: 'text', content: subStr }]);
-      }
-
-      let newAcc = [...acc];
-      if (linkStart !== 0) {
-        newAcc = [...acc, { type: 'text', content: subStr.substring(0, linkStart) }];
-      }
-
-      return iter(subStr.substring(linkEnd + 2), [...newAcc, { type: 'link', content: subStr.substring(linkStart, linkEnd + 2) }]);
-    };
-    return iter(str, []);
-  };
-
-  const getHtmlMarkup = (ast: IAstElement[]) => {
-    if (ast.length === 0) {
-      return (<span />);
-    }
-    return ast.map((item: IAstElement) => {
-      if (item.type === 'text') {
-        return (<span key={shortid()}>{item.content}</span>);
-      }
-
-      return (<Link key={shortid()} to={`/app/note/${getLinkContent(item.content)}`}>{`[[${getLinkContent(item.content)}]]`}</Link>);
-    });
   };
 
   return (

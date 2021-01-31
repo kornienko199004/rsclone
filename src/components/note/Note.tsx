@@ -16,6 +16,8 @@ class Note extends React.Component {
   // eslint-disable-next-line react/state-in-constructor
   state: { isSaving: boolean };
 
+  currentNote: INote | null;
+
   // private isSaving = true;
 
   constructor(props: any) {
@@ -24,6 +26,9 @@ class Note extends React.Component {
     this.state = {
       isSaving: false,
     };
+
+    const { notes, title } = (this.props as any);
+    this.currentNote = selectNote(title, notes);
   }
 
   getPagesComponents() {
@@ -61,6 +66,7 @@ class Note extends React.Component {
       <Page
         key={shortid.generate()}
         noteTitle={title}
+        note={this.currentNote}
         content={page.content}
         nestedPages={page.nestedPages}
         pagePath={page.pagePath}
@@ -73,12 +79,12 @@ class Note extends React.Component {
 
   render() {
     // eslint-disable-next-line react/prop-types
-    const { notes, title, id } = (this.props as any);
+    const { title, id } = (this.props as any);
     const { isSaving } = this.state;
-    const currentNote: INote | null = selectNote(title, notes);
+    // const currentNote: INote | null = selectNote(title, notes);
 
-    const contentFromRedux: any[] = currentNote
-      ? currentNote.body.map(this.renderPage.bind(this, title))
+    const contentFromRedux: any[] = this.currentNote
+      ? this.currentNote.body.map(this.renderPage.bind(this, title))
       : null;
 
     return (
@@ -101,7 +107,7 @@ class Note extends React.Component {
             variant="contained"
             color="primary"
             disabled={isSaving}
-            onClick={() => this.saveNote((currentNote as INote), id)}
+            onClick={() => this.saveNote((this.currentNote as INote), id)}
           >
             Save the note
           </Button>

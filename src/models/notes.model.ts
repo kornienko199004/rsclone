@@ -31,7 +31,14 @@ export interface IInputHandler {
   (e: KeyboardEvent<HTMLInputElement>): void;
 }
 
+// export interface IParent {
+//   pageLink: string;
+//   content: string[];
+// }
+
 export interface IParent {
   pageLink: string;
-  content: string[];
+  content: { pagePath: string; value: string }[];
 }
+
+export interface IAstElement { type: string; content: string }

@@ -41,3 +41,16 @@
   text-decoration: none;
   color: inherit;
 }
+
+.page-link {
+  color: #106BA3;
+  text-decoration: none;
+}
+
+.page-link:hover {
+  text-decoration: underline;
+}
+
+.parents-list__children--hidden {
+  display: none;
+}
