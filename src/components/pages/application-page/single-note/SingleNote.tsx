@@ -4,6 +4,7 @@ import './singleNote.scss';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { CircularProgress } from '@material-ui/core';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
 import { addNote } from '../../../../store/actionsCreators/actionsCreators';
@@ -22,8 +23,10 @@ const SingleNote = (props: any) => {
   const service = new RSCloneService();
 
   const [singleNote, setNote] = useState<INote | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   if (singleNote && singleNote.title !== name) {
+    setLoading(true);
     setNote(null);
   }
 
@@ -43,6 +46,7 @@ const SingleNote = (props: any) => {
 
         setNote(note);
         props.addNote(note);
+        setLoading(false);
       }
     };
 
@@ -63,22 +67,32 @@ const SingleNote = (props: any) => {
   }
 
   return (
-    <Scrollbars
-      autoHeight
-      autoHeightMin={500}
-      autoHeightMax="80vh"
-      style={{
-        width: 'calc(100% - 240px)', marginLeft: '240px',
-      }}
-    >
-      <div className="daily-container">
-        {note || 'loading'}
-        {/* <h2>Single Note</h2> */}
-      </div>
-      <div>
-        <ParentsList note={singleNote} />
-      </div>
-    </Scrollbars>
+    <>
+      {isLoading && (
+        <div className="overlay">
+          <CircularProgress
+            size={100}
+            className="spinner"
+          />
+        </div>
+      )}
+      <Scrollbars
+        autoHeight
+        autoHeightMin={500}
+        autoHeightMax="80vh"
+        style={{
+          width: 'calc(100% - 240px)', marginLeft: '240px',
+        }}
+      >
+        <div className="daily-container">
+          {note}
+          {/* <h2>Single Note</h2> */}
+        </div>
+        <div>
+          <ParentsList note={singleNote} />
+        </div>
+      </Scrollbars>
+    </>
   );
 };
 

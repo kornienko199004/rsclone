@@ -125,6 +125,9 @@ function Page(props: any) {
       return;
     }
 
+    if (currentPage.pagePath.length === 1 && currentPage.pagePath[0] === 0) {
+      return;
+    }
     props.removePage(body, { currentPage, noteTitle });
   };
 

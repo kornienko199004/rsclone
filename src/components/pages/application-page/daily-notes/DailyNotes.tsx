@@ -30,6 +30,11 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
     setInit(true);
   }
 
+  if (todayNote
+      && notesList.findIndex((item: INote) => item.title === todayTitle) !== 0 && !init) {
+    setInit(true);
+  }
+
   useEffect(() => {
     if (init) {
       const getNote = async () => {
@@ -71,14 +76,11 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
   };
 
   const onScrollStop = (values: any) => {
-    // console.log('values render view', values);
     if (!scrollEnd) {
       const { scrollTop, scrollHeight, clientHeight } = values.srcElement;
-      const pad = 1; // 100px of the bottom
-      // t will be greater than 1 if we are about to reach the bottom
+      const pad = 1;
       const t = ((scrollTop + pad) / (scrollHeight - clientHeight));
       if (t > 1) {
-        // setScrollEnd(true);
         onScrollEnd();
       }
     }
