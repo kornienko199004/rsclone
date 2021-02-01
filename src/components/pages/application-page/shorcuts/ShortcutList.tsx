@@ -1,15 +1,22 @@
 import React from 'react';
 import './shortcutList.scss';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { IInitialState } from '../../../../index';
 
-const ShortcutsList = () => (
-  <div className="shortcut-container">
-    выфвыф
-  </div>
-);
+const ShortcutsList: React.FC = () => {
+  // @ts-ignore
+  const shortcuts: string[] = useSelector<IInitialState>((state) => state.shortcuts);
+  console.log(shortcuts);
 
-const mapStateToProps = (state: any) => ({
-  shortcuts: state.shortcuts,
-});
+  return (
+    <div className="shortcut-container">
 
-export default connect(mapStateToProps)(ShortcutsList);
+      {shortcuts
+        ? shortcuts.map((shortcut) => <Link to={{ pathname: `/app/note/${shortcut}` }} key={shortcut}>{shortcut}</Link>)
+        : null}
+    </div>
+  );
+};
+
+export default ShortcutsList;

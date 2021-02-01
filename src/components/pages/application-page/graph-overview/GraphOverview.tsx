@@ -1,20 +1,19 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './graphOverview.scss';
-import NoteGraph from 'react-graph-network';
-import { withRouter } from 'react-router-dom';
+import Graph from 'react-graph-vis';
+import { Redirect, withRouter } from 'react-router-dom';
+import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
 
-import Node from './Node';
-import withRSCloneService from '../../../hoc-helper/withRSCloneService';
-
-export interface ModificationNote {
+interface ModificationNote {
   _id: string;
   modified_on: string;
   modified_by: null | string;
   modification_note: null | string;
 }
-export interface Note {
+interface Note {
   _id: string;
   title: string;
   body: object;
@@ -24,35 +23,40 @@ export interface Note {
   __v: number;
 }
 
-const Graph = (props: any) => {
-  const { rsCloneService: service } = props;
-  const [notes, setNotes]: any = useState(null);
+const getNodes = async (res: Note[]) => {
+  const nodes: {
+    id: string;
+    label: string;
+  }[] = await res.map((note: Note) => ({
+    id: note.title,
+    label: note.title,
+  }));
+  const edges: {
+    from: string;
+    to: string;
+  }[] = [];
+  res.map((note: Note) => note.parents.forEach(async (parent: any) => {
+    edges.push({
+      from: note.title,
+      to: parent.pageLink,
+    });
+  }));
+  return ({
+    nodes,
+    edges,
+  });
+};
 
-  const getNodes = async (res: Note[]) => {
-    const nodes: {
-      id: string;
-      title: string;
-    }[] = await res.map((note: Note) => ({
-      id: note._id,
-      title: note.title,
-    }));
-    const links: any = [];
-    res.map((note: Note) => {
-      const thisId = note._id;
-      return note.parents.forEach((parent: any) => links.push({
-        source: thisId,
-        target: parent.id,
-      }));
-    });
-    return ({
-      nodes,
-      links,
-    });
-  };
+const height = (window.innerHeight || document.documentElement.clientHeight
+|| document.body.clientHeight) - 100;
+
+const myGraph = () => {
+  const [notes, setNotes] = useState(null as any);
+  const [link, setLink] = useState('');
+  const service = useContext(RSCloneServiceContext);
 
   useEffect(() => {
     const getInfo = async () => {
-      // await service.login('mary1@gmail.com', 'marymary');
       const res = await service.getNotes();
       const graphData = await getNodes(res.DATA);
       setNotes(graphData);
@@ -60,21 +64,53 @@ const Graph = (props: any) => {
     getInfo();
   }, []);
 
+  const options = {
+    autoResize: true,
+    height,
+    width: '100%',
+    locale: 'en',
+    nodes: {
+      color: '#3f51b5',
+      fixed: false,
+      font: '18px BlinkMacSystemFont #000000',
+      shape: 'dot',
+    },
+    edges: {
+      arrows: {
+        to: {
+          enabled: false,
+          type: 'bar',
+        },
+      },
+      color: 'black',
+      scaling: {
+        label: true,
+      },
+    },
+    layout: {
+      hierarchical: true,
+    },
+  };
+
   return (
-    <div className="graph-overview" style={{ height: '80vh' }}>
-      {notes && (
-        <NoteGraph
-          NodeComponent={Node}
-          nodeDistance={300}
-          zoomDepth={3}
-          hoverOpacity={0.3}
-          enableDrag
-          pullIn={false}
-          data={notes}
-          id="graph"
-        />
-      )}
-    </div>
+    (link)
+      ? <Redirect to={link} />
+      : (
+        notes && (
+          <Graph
+            graph={notes}
+            options={options}
+            events={{
+              click: (event: { nodes: any; edges: any; }) => {
+                const { nodes } = event;
+                if (nodes[0]) {
+                  setLink(`/app/note/${nodes[0]}`);
+                }
+              },
+            }}
+          />
+        )
+      )
   );
 };
-export default withRouter(withRSCloneService(Graph));
+export default withRouter(myGraph);

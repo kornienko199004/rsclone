@@ -1,39 +1,37 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-// import React, { useEffect, useState } from 'react';
 import './singleNote.scss';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
-// import RSCloneServiceContext from '../../../rsCloneServiceContext';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
-// import { getDayTitle } from '../../../../helpers/notes.helper';
 import { addNote } from '../../../../store/actionsCreators/actionsCreators';
 import Note from '../../../note/Note';
-import { getEmptyNote, selectNote } from '../../../../store/utils';
+import { getEmptyNote } from '../../../../store/utils';
+import ParentsList from '../../../note/parentsLIst/ParentsList';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
 });
 
-// eslint-disable-next-line no-unused-vars
-// const SingleNote = (props: { notes: INote[], addNote(note: INote): void }) => {
 const SingleNote = (props: any) => {
-  const { match, notes } = props;
+  const { match } = props;
   const { params } = match;
   const { name } = params;
   const service = new RSCloneService();
-  // const service: RSCloneService = useContext(RSCloneServiceContext);
 
-  const [notesList, setNotes] = useState<INote[]>();
+  const [singleNote, setNote] = useState<INote | null>(null);
+
+  if (singleNote && singleNote.title !== name) {
+    setNote(null);
+  }
 
   useEffect(() => {
     const getNote = async () => {
-      // const todayTitle: string = getDayTitle();
-      let note: INote | null = selectNote(name, props.notes);
+      let note: INote | null = singleNote;
 
-      if (!note) {
+      if (!singleNote) {
         const noteByTitle: { DATA: INote } = await service.getNoteByTitle(name);
         if (noteByTitle.DATA) {
           note = noteByTitle.DATA;
@@ -43,28 +41,25 @@ const SingleNote = (props: any) => {
           note._id = id;
         }
 
+        setNote(note);
         props.addNote(note);
       }
-
-      setNotes(props.notes);
     };
 
     getNote();
-  }, [notesList, name, notes]);
+  }, [singleNote]);
 
-  let list: any[] | null = null;
+  let note: any | null = null;
 
-  if (notesList) {
-    list = notesList.map((item: INote) => {
-      const NewNote: any = connect(mapStateToProps)(Note);
-      return (
-        <NewNote
-          key={item._id}
-          id={item._id}
-          title={item.title}
-        />
-      );
-    });
+  if (singleNote) {
+    const NewNote: any = connect(mapStateToProps)(Note);
+    note = (
+      <NewNote
+        key={singleNote._id}
+        id={singleNote._id}
+        title={singleNote.title}
+      />
+    );
   }
 
   return (
@@ -77,8 +72,11 @@ const SingleNote = (props: any) => {
       }}
     >
       <div className="daily-container">
-        {list || 'loading'}
+        {note || 'loading'}
         {/* <h2>Single Note</h2> */}
+      </div>
+      <div>
+        <ParentsList note={singleNote} />
       </div>
     </Scrollbars>
   );

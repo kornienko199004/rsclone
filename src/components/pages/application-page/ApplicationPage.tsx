@@ -10,10 +10,10 @@ import SingleNote from './single-note/SingleNote';
 
 const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
-  console.log(`${path} + apppage`);
   // @ts-ignore
   return (
     <>
+      {/* @ts-ignore */}
       <Navbar />
       <Main>
         <Switch>
@@ -35,7 +35,7 @@ const ApplicationPage = (match: any) => {
           <Route render={() => <h1>Page not found</h1>} />
         </Switch>
       </Main>
-      <Sidebar getUserData="test" />
+      <Sidebar />
     </>
   );
 };

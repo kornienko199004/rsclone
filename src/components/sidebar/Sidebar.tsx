@@ -135,4 +135,4 @@ const Sidebar: React.FC<Props> = ({ getUserData }: Props) => {
   );
 };
 
-export default connect(null, getUserData)(Sidebar);
+export default connect(null, { getUserData })(Sidebar);

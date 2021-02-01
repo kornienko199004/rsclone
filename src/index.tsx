@@ -14,7 +14,7 @@ export interface IInitialState {
     isLoggedIn: boolean,
     notes: [],
     noteBody: IPage[],
-    focusComponentPath: (string | number)[]
+    focusComponentPath?: { [k: string]: (string | number)[] },
     userData: {
         username: string | null,
         email: string | null,
@@ -30,7 +30,6 @@ const initialState : IInitialState = {
   },
   notes: [],
   noteBody: [],
-  focusComponentPath: [0],
   shortcuts: [],
 };
 

@@ -70,4 +70,4 @@ declare module '*.module.sass' {
     export default classes;
 }
 
-declare module 'react-graph-network';
+declare module 'react-graph-vis';

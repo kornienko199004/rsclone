@@ -19,7 +19,7 @@ export interface UpdateUserRequest {
     email?: string,
     name?: string,
     password?: string,
-    shortcuts?: string | null
+    shortcuts?: string[]
 }
 
 export interface CreateUserRequest {
@@ -182,7 +182,7 @@ export default class RSCloneService {
       return this.getResource(`/api/note/${id}`, options);
     }
 
-    deleteNote = async (id: string) => {
+    deleteNote = async (id: string | number) => {
       const options = {
         method: 'DELETE',
         headers: {
