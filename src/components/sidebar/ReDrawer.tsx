@@ -11,6 +11,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import GraphNavigation from './GraphNavigation';
 import { UserData } from './Sidebar';
+import ShortcutsList from '../pages/application-page/shorcuts/ShortcutList';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   link: {
@@ -47,6 +48,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   listIcon: {
     minWidth: '44px',
+  },
+  listItemWithoutLink: {
+    cursor: 'default',
+    flexDirection: 'column',
+    alignItems: 'start',
+  },
+  listItemShortcutsTitleContainer: {
+    display: 'flex',
   },
 }));
 
@@ -118,8 +127,8 @@ const ReDrawer = (
           </ListItem>
         </Link>
         <Divider className={classes.divider} />
-        <Link component={RouterLink} to="/app/shortcut" className={classes.link}>
-          <ListItem button className={classes.linkItem}>
+        <ListItem className={classes.listItemWithoutLink}>
+          <div className={classes.listItemShortcutsTitleContainer}>
             <ListItemIcon classes={{
               root: classes.listIcon,
             }}
@@ -132,8 +141,9 @@ const ReDrawer = (
                 primary: classes.listItemText,
               }}
             />
-          </ListItem>
-        </Link>
+          </div>
+          <ShortcutsList />
+        </ListItem>
       </List>
     </div>
   );

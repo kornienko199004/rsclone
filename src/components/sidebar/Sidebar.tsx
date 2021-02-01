@@ -1,5 +1,7 @@
 import React, {
-  useState, useEffect,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
 import {
   makeStyles, Theme, createStyles,
@@ -9,10 +11,11 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import './sidebar.scss';
-import { useSelector } from 'react-redux';
-import withRSCloneService from '../hoc-helper/withRSCloneService';
+import { useSelector, connect } from 'react-redux';
 import ReDrawer from './ReDrawer';
 import { IInitialState } from '../../index';
+import RSCloneServiceContext from '../rsCloneServiceContext';
+import { getUserData } from '../../store/actionsCreators/actionsCreators';
 
 const drawerWidth = 240;
 
@@ -86,17 +89,28 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export type UserData = {
     username: string | null,
     email: string | null
+    shortcuts?: string[],
 }
 
-const Sidebar = () => {
+type Props = {
+  // eslint-disable-next-line no-unused-vars
+  getUserData: any
+}
+
+// eslint-disable-next-line no-shadow
+const Sidebar: React.FC<Props> = ({ getUserData }: Props) => {
   const [open, setOpen] = useState(true);
   const data = useSelector((state: IInitialState) => state.userData);
-  console.log(data);
   const [userData, setUserData] = useState<UserData>(data);
+  const service = useContext(RSCloneServiceContext);
   const classes = useStyles();
 
   useEffect(() => {
-    console.log(userData);
+    const takeUserData = async () => {
+      const userShortcuts = await service.getUser().then((res) => res.shortcuts);
+      getUserData(userShortcuts);
+    };
+    takeUserData();
   }, []);
 
   const toggleSidebar = (): void => {
@@ -121,4 +135,4 @@ const Sidebar = () => {
   );
 };
 
-export default withRSCloneService(Sidebar);
+export default connect(null, getUserData)(Sidebar);

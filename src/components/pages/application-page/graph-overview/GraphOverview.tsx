@@ -64,7 +64,6 @@ const Graph = (props: any) => {
     <div className="graph-overview" style={{ height: '80vh' }}>
       {notes && (
         <NoteGraph
-          viewBox="40% 400% 100% 100%"
           NodeComponent={Node}
           nodeDistance={300}
           zoomDepth={3}

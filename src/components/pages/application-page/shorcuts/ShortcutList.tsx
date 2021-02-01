@@ -1,11 +1,15 @@
 import React from 'react';
 import './shortcutList.scss';
+import { connect } from 'react-redux';
 
 const ShortcutsList = () => (
   <div className="shortcut-container">
-    <h1>ShortcutsList</h1>
-    <h2>ShortcutsList</h2>
+    выфвыф
   </div>
 );
 
-export default ShortcutsList;
+const mapStateToProps = (state: any) => ({
+  shortcuts: state.shortcuts,
+});
+
+export default connect(mapStateToProps)(ShortcutsList);
