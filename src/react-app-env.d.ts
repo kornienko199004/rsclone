@@ -71,3 +71,4 @@ declare module '*.module.sass' {
 }
 
 declare module 'react-graph-vis';
+declare module 'react-export-excel';

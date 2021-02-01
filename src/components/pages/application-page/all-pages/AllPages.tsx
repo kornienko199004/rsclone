@@ -18,6 +18,7 @@ import {
 } from '@material-ui/data-grid';
 import Button from '@material-ui/core/Button';
 import DateRangeOutlinedIcon from '@material-ui/icons/DateRangeOutlined';
+// import GetAppIcon from '@material-ui/icons/GetApp';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Tooltip } from '@material-ui/core';
 import {
@@ -33,6 +34,7 @@ import CustomizedMenus from './menu';
 import SearchInput from './search';
 import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
 import AlertDialog from './alertDialog';
+import Download from './excel';
 
 const useStyles = makeStyles({
   root: {
@@ -104,14 +106,23 @@ const AllPages = () => {
   const [calendarText, setCalendarText] = useState('Hide daily notes');
 
   const service = useContext(RSCloneServiceContext);
-  useEffect(() => {
+  useEffect((): () => void => {
+    let cleanupFunction = false;
     const getInfo = async () => {
-      const res = await service.getNotes();
-      await setAllInfo(getRows(res.DATA));
-      await setRows(getRows(res.DATA));
+      try {
+        const res = await service.getNotes();
+        const info = await getRows(res.DATA);
+        if (!cleanupFunction) {
+          setAllInfo(info);
+          setRows(info);
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
     };
     getInfo();
-  }, [allInfo, rows]);
+    return () => cleanupFunction = true;
+  }, [state, notBeingDeleted, DisplayDailyNotes, selectedValue, isVisible, calendarText]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -141,6 +152,9 @@ const AllPages = () => {
             deleteRows={deleteRows}
             isVisible={isVisible}
           />
+          <Tooltip title="Export the table" arrow>
+            <Download rows={rows} className="btn" />
+          </Tooltip>
         </div>
         <div className="r-group">
           <SearchInput rowsInfo={[rows, setRows]} initialRows={allInfo} />
