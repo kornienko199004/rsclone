@@ -27,10 +27,30 @@
 .readonly-wrapper {
   padding-top: 1px;
   width: 100%;
+  cursor: text;
 }
 
 .save-button-wrapper {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.note__title-link {
+  font: inherit;
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-link {
+  color: #106BA3;
+  text-decoration: none;
+}
+
+.page-link:hover {
+  text-decoration: underline;
+}
+
+.parents-list__children--hidden {
+  display: none;
 }

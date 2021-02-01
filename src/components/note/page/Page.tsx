@@ -1,13 +1,13 @@
-/* eslint-disable react/no-danger-with-children */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
+import { Link } from 'react-router-dom';
 import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { IPage } from '../../../models/notes.model';
+import { IAstElement, IPage } from '../../../models/notes.model';
 import './page.scss';
 
 // eslint-disable-next-line import/extensions
@@ -22,6 +22,7 @@ import {
 } from '../../../store/actionsCreators/actionsCreators';
 import { selectNote } from '../../../store/utils';
 import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
+import { generateAst, getHtmlMarkup, getLinkContent } from '../../../helpers/notes.helper';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
@@ -43,6 +44,7 @@ const mapDispatchToProps = {
 function Page(props: any) {
   const {
     content,
+    note,
     notes,
     pagePath,
     currentPage,
@@ -63,7 +65,7 @@ function Page(props: any) {
   let textInput: HTMLTextAreaElement | null = null;
 
   if (
-    JSON.stringify(currentPage.pagePath)
+    JSON.stringify({ [noteTitle]: currentPage.pagePath })
       === JSON.stringify(focusComponentPath)
     && !editorMode
   ) {
@@ -71,10 +73,16 @@ function Page(props: any) {
   }
 
   useEffect(() => {
-    if (JSON.stringify(currentPage.pagePath) === JSON.stringify(focusComponentPath) && textInput) {
+    if (
+      JSON.stringify({ [noteTitle]: currentPage.pagePath }) === JSON.stringify(focusComponentPath)
+      && textInput
+    ) {
       (textInput as HTMLTextAreaElement).focus();
       (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
         .value.length;
+      (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
+        .value.length;
+      return;
     }
     if (editorMode && textInput) {
       textInput.focus();
@@ -85,6 +93,7 @@ function Page(props: any) {
   useEffect(() => {
     if (textInput) {
       textInput.selectionStart = inputCursorPosition;
+      // textInput.focus();
       textInput.selectionEnd = inputCursorPosition;
     }
   }, [inputCursorPosition]);
@@ -136,6 +145,7 @@ function Page(props: any) {
             pagePath={item.pagePath}
             currentPage={item}
             list={arr}
+            note={note}
             textInputHeight={item.textInputHeight}
             noteTitle={noteTitle}
           />
@@ -152,6 +162,10 @@ function Page(props: any) {
 
     currentPageLink.content = value;
     currentPageLink.textInputHeight = (textInput as HTMLTextAreaElement).clientHeight;
+    const pageLinks = value.match(/\[\[(.*?)\]]/g);
+    props.updateContent(body, {
+      noteTitle, pageLinks, content: value, currentNote: note, currentPage,
+    });
   };
 
   const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -161,8 +175,8 @@ function Page(props: any) {
     }
 
     onUpdateContent(e.target.value);
-    const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
-    props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
+    // const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
+    // props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -218,15 +232,6 @@ function Page(props: any) {
     setNestedPagesVisibility(!showNestedPages);
   };
 
-  const getHtmlMarkup = (str: string) => {
-    function replacer(match: any, p1: any, offset: any, string: any) {
-      const newString = string.replace(p1, `<a href="/">${p1}</a>`);
-      return `[[<a href="/app/note/${p1}">${p1}</a>]]`;
-    }
-    const newStr = str.replace(/\[\[(.*?)\]]/g, replacer);
-    return newStr;
-  };
-
   return (
     <div className="page-container">
       <div className="current-page__controls">
@@ -265,10 +270,14 @@ function Page(props: any) {
             onClick={(e: any) => {
               const offset = e.clientX - e.target.getBoundingClientRect().x;
               setEditorMode(true);
-              setCursorPosition(offset / 7.5);
+              // setCursorPosition(offset / 7.5);
+              if (textInput) {
+                textInput.focus();
+              }
             }}
-            content={getHtmlMarkup(pageContent)}
-          />
+          >
+            {getHtmlMarkup(generateAst(pageContent))}
+          </TemplateReadOnly>
         )}
       </div>
       <div

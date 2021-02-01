@@ -1,0 +1,29 @@
+.parents-list {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.title,
+.parents-list__title {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+.parents-list__link {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 20px;
+}
+
+.parents-list__children {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.parents-list__row {
+  display: flex;
+  padding-left: 10px;
+  margin-bottom: 5px;
+  background-color: hsl(204,33%,97%);
+}
