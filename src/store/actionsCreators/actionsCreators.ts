@@ -11,7 +11,11 @@ import {
   UPDATE_NOTE_BODY,
   USER_LOGGED_IN,
   UPDATE_CONTENT,
-  USER_LOGGED_OUT, GET_USER_DATA, ADD_SHORTCUT,
+  USER_LOGGED_OUT,
+  GET_USER_DATA,
+  ADD_SHORTCUT,
+  CLOSE_SIDEBAR,
+  OPEN_SIDEBAR,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -396,6 +400,14 @@ const addShortcut = (data: string) => ({
   payload: data,
 });
 
+const onCloseSidebar = () => ({
+  type: CLOSE_SIDEBAR,
+});
+
+const onOpenSidebar = () => ({
+  type: OPEN_SIDEBAR,
+});
+
 export {
   removePage,
   addNeighbor,
@@ -409,4 +421,6 @@ export {
   userLoggedOut,
   getUserData,
   addShortcut,
+  onCloseSidebar,
+  onOpenSidebar,
 };

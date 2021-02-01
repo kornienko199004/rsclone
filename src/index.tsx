@@ -19,7 +19,8 @@ export interface IInitialState {
         username: string | null,
         email: string | null,
     },
-    shortcuts: string[]
+    shortcuts: string[],
+    sidebarIsOpen: boolean
 }
 
 const initialState : IInitialState = {
@@ -31,6 +32,7 @@ const initialState : IInitialState = {
   notes: [],
   noteBody: [],
   shortcuts: [],
+  sidebarIsOpen: true,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);

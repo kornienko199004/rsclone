@@ -8,7 +8,7 @@ import {
   // UPDATE_CONTENT_RECEIVED,
   // UPDATE_CONTENT,
   ADD_SHORTCUT,
-  USER_LOGGED_OUT, GET_USER_DATA,
+  USER_LOGGED_OUT, GET_USER_DATA, OPEN_SIDEBAR, CLOSE_SIDEBAR,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -65,6 +65,10 @@ function reducer(state: any, action: any) {
       return { ...state, shortcuts: action.payload };
     case ADD_SHORTCUT:
       return { ...state, shortcuts: [...state.shortcuts, action.payload] };
+    case OPEN_SIDEBAR:
+      return { ...state, sidebarIsOpen: true };
+    case CLOSE_SIDEBAR:
+      return { ...state, sidebarIsOpen: false };
     default:
       return state;
   }

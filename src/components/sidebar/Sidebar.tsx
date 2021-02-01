@@ -15,7 +15,7 @@ import { useSelector, connect } from 'react-redux';
 import ReDrawer from './ReDrawer';
 import { IInitialState } from '../../index';
 import RSCloneServiceContext from '../rsCloneServiceContext';
-import { getUserData } from '../../store/actionsCreators/actionsCreators';
+import { getUserData, onCloseSidebar, onOpenSidebar } from '../../store/actionsCreators/actionsCreators';
 
 const drawerWidth = 240;
 
@@ -95,10 +95,12 @@ export type UserData = {
 type Props = {
   // eslint-disable-next-line no-unused-vars
   getUserData: any
+  onCloseSidebar: any,
+  onOpenSidebar: any
 }
 
 // eslint-disable-next-line no-shadow
-const Sidebar: React.FC<Props> = ({ getUserData }: Props) => {
+const Sidebar: React.FC<Props> = ({ getUserData, onCloseSidebar, onOpenSidebar }: Props) => {
   const [open, setOpen] = useState(true);
   const data = useSelector((state: IInitialState) => state.userData);
   const [userData, setUserData] = useState<UserData>(data);
@@ -114,6 +116,8 @@ const Sidebar: React.FC<Props> = ({ getUserData }: Props) => {
   }, []);
 
   const toggleSidebar = (): void => {
+    // eslint-disable-next-line no-unused-expressions
+    open ? onCloseSidebar() : onOpenSidebar();
     setOpen(!open);
   };
 
@@ -135,4 +139,4 @@ const Sidebar: React.FC<Props> = ({ getUserData }: Props) => {
   );
 };
 
-export default connect(null, { getUserData })(Sidebar);
+export default connect(null, { getUserData, onCloseSidebar, onOpenSidebar })(Sidebar);
