@@ -2,7 +2,6 @@
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 // import { update } from 'lodash';
-import { Link } from 'react-router-dom';
 import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';

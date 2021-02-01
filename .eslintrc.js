@@ -23,7 +23,7 @@ module.exports = {
       'error', { packageDir: './' },
     ],
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint/eslint-plugin'],
   rules: {
     'import/extensions': [
       'error',
