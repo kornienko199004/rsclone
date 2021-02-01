@@ -51,7 +51,6 @@ const updateNoteParents = (
   note: INote, title: string, content: string, currentPage: IPage,
 ): IParent[] => {
   // [...(note.parents || []), { pageLink: noteTitle, content: [content] }]
-  console.log('updateNoteParents', note);
   if (!note.parents) {
     return [{
       pageLink: title,

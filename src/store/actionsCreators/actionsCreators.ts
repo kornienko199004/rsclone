@@ -11,6 +11,7 @@ import {
   UPDATE_NOTE_BODY,
   USER_LOGGED_IN,
   UPDATE_CONTENT,
+  SET_CURRENT_NOTE,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -265,7 +266,7 @@ function changeFocusElement(
     if (pageId > 0) {
       newFocusPath = [...pagePath.slice(0, -1), pageId - 1];
     } else {
-      newFocusPath = [...pagePath.slice(0, -2)];
+      newFocusPath = pagePath.length > 1 ? [...pagePath.slice(0, -2)] : [...pagePath];
     }
   } else if (pageId >= list.length - 1) {
     newFocusPath = [...pagePath];
@@ -375,6 +376,13 @@ function addNote(note: INote) {
   };
 }
 
+function setCurrentNote(note: INote) {
+  return {
+    type: SET_CURRENT_NOTE,
+    note,
+  };
+}
+
 const userLoggedIn = (data: any) => ({
   type: USER_LOGGED_IN,
   userData: {
@@ -394,4 +402,5 @@ export {
   addNote,
   userLoggedIn,
   setFocusElement,
+  setCurrentNote,
 };
