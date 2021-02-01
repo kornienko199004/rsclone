@@ -152,9 +152,7 @@ const AllPages = () => {
             deleteRows={deleteRows}
             isVisible={isVisible}
           />
-          <Tooltip title="Export the table" arrow>
-            <Download rows={rows} className="btn" />
-          </Tooltip>
+          <Download rows={rows} className="btn" />
         </div>
         <div className="r-group">
           <SearchInput rowsInfo={[rows, setRows]} initialRows={allInfo} />

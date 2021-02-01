@@ -5,7 +5,7 @@ import React from 'react';
 import ReactExport from 'react-export-excel';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import './allPages.scss';
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
 const { ExcelFile } = ReactExport;
@@ -26,7 +26,11 @@ class Download extends React.Component<any> {
       <ExcelFile
         type="button"
         element={(
-          <StyledButton><GetAppIcon className="btn" /></StyledButton>
+          <Tooltip title="Export the table" arrow>
+            <StyledButton>
+              <GetAppIcon className="btn" />
+            </StyledButton>
+          </Tooltip>
         )}
       >
         <ExcelSheet data={rows} name="Notes">
