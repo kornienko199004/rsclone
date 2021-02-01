@@ -18,7 +18,8 @@ import {
   levelUp,
   updateContent,
   addChild,
-  changeFocusElement, // @ts-ignore
+  changeFocusElement,
+  setFocusElement,
 } from '../../../store/actionsCreators/actionsCreators';
 import { selectNote } from '../../../store/utils';
 import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
@@ -39,6 +40,7 @@ const mapDispatchToProps = {
   updateContent,
   addChild,
   changeFocusElement,
+  setFocusElement,
 };
 
 function Page(props: any) {
@@ -61,14 +63,16 @@ function Page(props: any) {
   const [inputCursorPosition, setCursorPosition] = useState(0);
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
   const [editorMode, setEditorMode] = useState(false);
+  const [textInput, setTextInput] = useState<HTMLTextAreaElement | null>(null);
 
-  let textInput: HTMLTextAreaElement | null = null;
+  // let textInput: HTMLTextAreaElement | null = null;
 
   if (
     JSON.stringify({ [noteTitle]: currentPage.pagePath })
       === JSON.stringify(focusComponentPath)
     && !editorMode
   ) {
+    console.log('etEditorMode(true)');
     setEditorMode(true);
   }
 
@@ -88,7 +92,56 @@ function Page(props: any) {
       textInput.focus();
     }
     autosize(textInput as HTMLTextAreaElement);
-  }, [editorMode]);
+  }, [textInput]);
+
+  // useEffect(() => {
+  //   // if (editorMode) {
+  //   //   textInput =
+  //   // }
+  //   // editorMode ? (
+  //   //   <textarea
+  //   //     className="text-input"
+  //   //     style={{ height: `${textInputHeight}px` }}
+  //   //     ref={(textarea: HTMLTextAreaElement) => {
+  //   //       textInput = textarea;
+  //   //     }}
+  //   //     value={pageContent}
+  //   //     onBlur={onBlur}
+  //   //     onChange={onChangeContent}
+  //   //     onKeyDown={onEnterPressHandler}
+  //   //   />
+  //   // ) : (
+  //   //   <TemplateReadOnly
+  //   //     onClick={(e: any) => {
+  //   //       const offset = e.clientX - e.target.getBoundingClientRect().x;
+  //   //       setEditorMode(true);
+  //   //       // props.setFocusElement({ currentPage, noteTitle });
+  //   //       // setCursorPosition(offset / 7.5);
+  //   //       if (textInput) {
+  //   //         textInput.focus();
+  //   //       }
+  //   //     }}
+  //   //   >
+  //   //     {getHtmlMarkup(generateAst(pageContent))}
+  //   //   </TemplateReadOnly>
+  //   // )
+  //   if (
+  //     JSON.stringify({ [noteTitle]: currentPage.pagePath }) ==
+  // = JSON.stringify(focusComponentPath)
+  //     && textInput
+  //   ) {
+  //     (textInput as HTMLTextAreaElement).focus();
+  //     (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
+  //       .value.length;
+  //     (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
+  //       .value.length;
+  //     return;
+  //   }
+  //   if (editorMode && textInput) {
+  //     textInput.focus();
+  //   }
+  //   autosize(textInput as HTMLTextAreaElement);
+  // }, [editorMode]);
 
   useEffect(() => {
     if (textInput) {
@@ -261,7 +314,8 @@ function Page(props: any) {
             className="text-input"
             style={{ height: `${textInputHeight}px` }}
             ref={(textarea: HTMLTextAreaElement) => {
-              textInput = textarea;
+              // textInput = textarea;
+              setTextInput(textarea);
             }}
             value={pageContent}
             onBlur={onBlur}
@@ -273,10 +327,11 @@ function Page(props: any) {
             onClick={(e: any) => {
               const offset = e.clientX - e.target.getBoundingClientRect().x;
               setEditorMode(true);
+              // props.setFocusElement({ currentPage, noteTitle });
               // setCursorPosition(offset / 7.5);
-              if (textInput) {
-                textInput.focus();
-              }
+              // if (textInput) {
+              //   textInput.focus();
+              // }
             }}
           >
             {getHtmlMarkup(generateAst(pageContent))}

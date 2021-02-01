@@ -280,6 +280,19 @@ function changeFocusElement(
   };
 }
 
+function setFocusElement(
+  params: { currentPage: IPage; list: IPage[]; noteTitle: string },
+) {
+  const { currentPage, noteTitle } = params;
+  const { pagePath } = currentPage;
+
+  return {
+    type: CHANGE_FOCUS_ELEMENT,
+    title: noteTitle,
+    focusComponentPath: { [noteTitle]: pagePath },
+  };
+}
+
 // function updateContent(body: any, params: { noteTitle: string }) {
 //   const { noteTitle } = params;
 //   return {
@@ -380,4 +393,5 @@ export {
   changeFocusElement,
   addNote,
   userLoggedIn,
+  setFocusElement,
 };
