@@ -18,7 +18,8 @@ export interface UpdateNoteRequest {
 export interface UpdateUserRequest {
     email?: string,
     name?: string,
-    password?: string
+    password?: string,
+    shortcuts?: string[]
 }
 
 export interface CreateUserRequest {
@@ -35,6 +36,14 @@ export interface LogInUserRequest {
 export type UserData = {
     email: string,
     username: string,
+    shortcuts: string[],
+}
+
+export type PasswordData = {
+    // eslint-disable-next-line camelcase
+    old_password: string,
+    // eslint-disable-next-line camelcase
+    new_password: string,
 }
 
 const getAuthToken = (): string => {
@@ -118,6 +127,7 @@ export default class RSCloneService {
       return {
         email: res.email,
         username: res.name,
+        shortcuts: res.shortcuts,
       };
     }
 
@@ -172,7 +182,7 @@ export default class RSCloneService {
       return this.getResource(`/api/note/${id}`, options);
     }
 
-    deleteNote = async (id: string) => {
+    deleteNote = async (id: string | number) => {
       const options = {
         method: 'DELETE',
         headers: {
@@ -210,5 +220,17 @@ export default class RSCloneService {
         },
       };
       return this.getResource(`/api/note/daily/${id}`, options);
+    }
+
+    userUpdatePassword = async (data: PasswordData) => {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+        body: JSON.stringify(data),
+      };
+      return this.getResource('/api/user/me/password', options);
     }
 }

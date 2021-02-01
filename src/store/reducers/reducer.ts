@@ -7,6 +7,8 @@ import {
   ADD_NOTE, USER_LOGGED_IN, SET_CURRENT_NOTE,
   // UPDATE_CONTENT_RECEIVED,
   // UPDATE_CONTENT,
+  ADD_SHORTCUT,
+  USER_LOGGED_OUT, GET_USER_DATA, OPEN_SIDEBAR, CLOSE_SIDEBAR,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -59,9 +61,16 @@ function reducer(state: any, action: any) {
       return { ...state, currentNote: action.note };
     case USER_LOGGED_IN:
       return { ...state, isLoggedIn: true, userData: action.userData };
-    case 'USER_LOGGED_OUT':
-      return { ...state, isLoggedIn: false };
-
+    case USER_LOGGED_OUT:
+      return { ...state, isLoggedIn: action.isLoggedIn };
+    case GET_USER_DATA:
+      return { ...state, shortcuts: action.payload };
+    case ADD_SHORTCUT:
+      return { ...state, shortcuts: [...state.shortcuts, action.payload] };
+    case OPEN_SIDEBAR:
+      return { ...state, sidebarIsOpen: true };
+    case CLOSE_SIDEBAR:
+      return { ...state, sidebarIsOpen: false };
     default:
       return state;
   }

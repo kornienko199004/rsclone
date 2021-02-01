@@ -4,6 +4,7 @@ const DEFAULT_TEXT_INPUT_HEIGHT = 24;
 const DEFAULT_PAGE_ID = 0;
 
 const selectNote = (title: string, list: INote[]): INote | null => {
+  console.log(list);
   const note = list.find((item: INote) => item.title === title);
   return note || null;
 };

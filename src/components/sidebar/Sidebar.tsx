@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   makeStyles, Theme, createStyles,
 } from '@material-ui/core/styles';
 import {
-  List, ListItem, ListItemText,
-  Drawer, ListItemIcon, Divider, fade, Link,
+  Drawer, fade,
 } from '@material-ui/core';
-import DateRange from '@material-ui/icons/DateRange';
-import BubbleChart from '@material-ui/icons/BubbleChart';
-import Grade from '@material-ui/icons/Grade';
-import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import MenuIcon from '@material-ui/icons/Menu';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import './sidebar.scss';
-import { Link as RouterLink } from 'react-router-dom';
-import GraphNavigation from './GraphNavigation';
-import withRSCloneService from '../hoc-helper/withRSCloneService';
+import { useSelector, connect } from 'react-redux';
+import ReDrawer from './ReDrawer';
+import { IInitialState } from '../../index';
 import RSCloneServiceContext from '../rsCloneServiceContext';
+import { getUserData, onCloseSidebar, onOpenSidebar } from '../../store/actionsCreators/actionsCreators';
 
 const drawerWidth = 240;
 
@@ -88,126 +86,40 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-const Sidebar = () => {
+export type UserData = {
+    username: string | null,
+    email: string | null
+    shortcuts?: string[],
+}
+
+type Props = {
+  // eslint-disable-next-line no-unused-vars
+  getUserData: any
+  onCloseSidebar: any,
+  onOpenSidebar: any
+}
+
+// eslint-disable-next-line no-shadow
+const Sidebar: React.FC<Props> = ({ getUserData, onCloseSidebar, onOpenSidebar }: Props) => {
   const [open, setOpen] = useState(true);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [username, setUserName] = useState<string | null>(null);
+  const data = useSelector((state: IInitialState) => state.userData);
+  const [userData, setUserData] = useState<UserData>(data);
   const service = useContext(RSCloneServiceContext);
   const classes = useStyles();
 
   useEffect(() => {
-    const fetchName = async () => {
-      const userData = await service.getUser();
-      setUserName(userData.username);
+    const takeUserData = async () => {
+      const userShortcuts = await service.getUser().then((res) => res.shortcuts);
+      getUserData(userShortcuts);
     };
-    fetchName();
-  }, [username]);
+    takeUserData();
+  }, []);
 
   const toggleSidebar = (): void => {
+    // eslint-disable-next-line no-unused-expressions
+    open ? onCloseSidebar() : onOpenSidebar();
     setOpen(!open);
   };
-
-  const onItemSelected = () => {
-    console.log("Yep, i'm selected");
-  };
-
-  const onOpenMenu = (event: React.MouseEvent<any>) => {
-    console.log(event);
-    setAnchorEl(event.currentTarget);
-  };
-  const onCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const ReDrawer = ({ name }: { name: string | null; }) => (
-    <div>
-      <MenuOpenIcon className={classes.hideButton} htmlColor="#5c7080" onClick={toggleSidebar} aria-controls="simple-menu" aria-haspopup="true" />
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
-      <div onClick={onOpenMenu} role="button" tabIndex={0}>
-        <GraphNavigation name={name} />
-      </div>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={onCloseMenu}
-      >
-        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
-        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
-        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
-        <MenuItem onClick={onCloseMenu}>Test</MenuItem>
-      </Menu>
-
-      <div className={classes.toolbar} />
-      <List className={classes.link}>
-        <Link component={RouterLink} to="/app" className={classes.link}>
-          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-            <ListItemIcon classes={{
-              root: classes.listIcon,
-            }}
-            >
-              <DateRange htmlColor="#5c7080" />
-            </ListItemIcon>
-            <ListItemText
-              primary="DAILY NOTES"
-              classes={{
-                primary: classes.listItemText,
-              }}
-            />
-          </ListItem>
-        </Link>
-        <Link component={RouterLink} to="/app/graph" className={classes.link}>
-          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-            <ListItemIcon classes={{
-              root: classes.listIcon,
-            }}
-            >
-              <BubbleChart htmlColor="#5c7080" />
-            </ListItemIcon>
-            <ListItemText
-              primary="GRAPH OVERVIEW"
-              classes={{
-                primary: classes.listItemText,
-              }}
-            />
-          </ListItem>
-        </Link>
-        <Link component={RouterLink} to="/app/pages" className={classes.link}>
-          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-            <ListItemIcon classes={{
-              root: classes.listIcon,
-            }}
-            >
-              <MenuIcon htmlColor="#5c7080" />
-            </ListItemIcon>
-            <ListItemText
-              primary="ALL PAGES"
-              classes={{
-                primary: classes.listItemText,
-              }}
-            />
-          </ListItem>
-        </Link>
-        <Divider className={classes.divider} />
-        <Link component={RouterLink} to="/app/shortcut" className={classes.link}>
-          <ListItem button onClick={onItemSelected} className={classes.linkItem}>
-            <ListItemIcon classes={{
-              root: classes.listIcon,
-            }}
-            >
-              <Grade htmlColor="#5c7080" />
-            </ListItemIcon>
-            <ListItemText
-              primary="SHORTCUTS"
-              classes={{
-                primary: classes.listItemText,
-              }}
-            />
-          </ListItem>
-        </Link>
-      </List>
-    </div>
-  );
 
   if (!open) {
     return <MenuIcon onClick={toggleSidebar} htmlColor="#5c7080" className={classes.showButton} />;
@@ -221,10 +133,10 @@ const Sidebar = () => {
         variant="permanent"
         open
       >
-        <ReDrawer name={username} />
+        <ReDrawer userData={userData} toggleSideBar={toggleSidebar} setUserData={setUserData} />
       </Drawer>
     </nav>
   );
 };
 
-export default withRSCloneService(Sidebar);
+export default connect(null, { getUserData, onCloseSidebar, onOpenSidebar })(Sidebar);

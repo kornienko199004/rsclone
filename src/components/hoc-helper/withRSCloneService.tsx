@@ -1,9 +1,7 @@
 import React from 'react';
 import RSCloneService from '../rsCloneServiceContext';
 
-// Пример в Sidebar компоненте
-
-const withRSCloneService = (Wrapped: React.FunctionComponent) => (props: any) => (
+const withRSCloneService = (Wrapped: React.FC<{ location: any }>) => (props: any) => (
   <RSCloneService.Consumer>
     {
         // eslint-disable-next-line react/jsx-props-no-spreading
