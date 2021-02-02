@@ -1,14 +1,21 @@
 /* eslint-disable no-case-declarations */
 // @ts-ignore
 // import { updateNoteByTitle } from '../utils';
+// import shortid from 'shortid';
 import {
   CHANGE_FOCUS_ELEMENT,
   UPDATE_NOTE_BODY,
-  ADD_NOTE, USER_LOGGED_IN, SET_CURRENT_NOTE,
+  SET_CURRENT_NOTE,
+  ADD_NOTE,
+  USER_LOGGED_IN,
   // UPDATE_CONTENT_RECEIVED,
   // UPDATE_CONTENT,
   ADD_SHORTCUT,
-  USER_LOGGED_OUT, GET_USER_DATA, OPEN_SIDEBAR, CLOSE_SIDEBAR,
+  USER_LOGGED_OUT,
+  GET_USER_DATA,
+  OPEN_SIDEBAR,
+  CLOSE_SIDEBAR,
+  OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -67,10 +74,16 @@ function reducer(state: any, action: any) {
       return { ...state, shortcuts: action.payload };
     case ADD_SHORTCUT:
       return { ...state, shortcuts: [...state.shortcuts, action.payload] };
+    case REMOVE_SHORTCUT:
+      return { ...state, shortcuts: action.payload };
     case OPEN_SIDEBAR:
       return { ...state, sidebarIsOpen: true };
     case CLOSE_SIDEBAR:
       return { ...state, sidebarIsOpen: false };
+    case OPEN_RIGHT_SIDEBAR:
+      return { ...state, rightSidebarIsOpen: action.payload };
+    case CLOSE_RIGHT_SIDEBAR:
+      return { ...state, rightSidebarIsOpen: action.payload };
     default:
       return state;
   }

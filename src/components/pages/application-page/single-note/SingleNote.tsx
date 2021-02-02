@@ -14,10 +14,11 @@ import ParentsList from '../../../note/parentsLIst/ParentsList';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
+  sidebarIsOpen: state.sidebarIsOpen,
 });
 
 const SingleNote = (props: any) => {
-  const { match } = props;
+  const { match, sidebarIsOpen } = props;
   const { params } = match;
   const { name } = params;
   const service = new RSCloneService();
@@ -81,12 +82,11 @@ const SingleNote = (props: any) => {
         autoHeightMin={500}
         autoHeightMax="80vh"
         style={{
-          width: 'calc(100% - 240px)', marginLeft: '240px',
+          width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
         }}
       >
         <div className="daily-container">
           {note}
-          {/* <h2>Single Note</h2> */}
         </div>
         <div>
           <ParentsList note={singleNote} />

@@ -80,7 +80,7 @@ const DailyNotes = (props:
   const onScrollStop = (values: any) => {
     if (!scrollEnd) {
       const { scrollTop, scrollHeight, clientHeight } = values.srcElement;
-      const pad = 1;
+      const pad = 50;
       const t = ((scrollTop + pad) / (scrollHeight - clientHeight));
       if (t > 1) {
         onScrollEnd();
@@ -110,7 +110,7 @@ const DailyNotes = (props:
       autoHeightMin={500}
       autoHeightMax="80vh"
       style={{
-        width: sidebarIsOpen ? 'calc(100% - 240px)' : '0', marginLeft: sidebarIsOpen ? '240px' : '0',
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
       }}
       onScroll={onScrollStop}
     >

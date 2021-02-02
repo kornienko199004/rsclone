@@ -17,6 +17,8 @@ import {
   ADD_SHORTCUT,
   CLOSE_SIDEBAR,
   OPEN_SIDEBAR,
+  CLOSE_RIGHT_SIDEBAR,
+  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -421,12 +423,28 @@ const addShortcut = (data: string) => ({
   payload: data,
 });
 
+const removeShortcut = (data: string[]) => ({
+  type: REMOVE_SHORTCUT,
+  payload: data,
+});
+
 const onCloseSidebar = () => ({
   type: CLOSE_SIDEBAR,
 });
 
 const onOpenSidebar = () => ({
   type: OPEN_SIDEBAR,
+});
+
+const onCloseRightSidebar = () => ({
+  type: CLOSE_RIGHT_SIDEBAR,
+  payload: false,
+
+});
+
+const onOpenRightSidebar = () => ({
+  type: OPEN_RIGHT_SIDEBAR,
+  payload: true,
 });
 
 export {
@@ -446,4 +464,7 @@ export {
   onOpenSidebar,
   setFocusElement,
   setCurrentNote,
+  onCloseRightSidebar,
+  onOpenRightSidebar,
+  removeShortcut,
 };
