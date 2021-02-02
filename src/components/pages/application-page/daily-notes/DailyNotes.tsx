@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import './dailyNotes.scss';
@@ -13,11 +14,12 @@ import { getEmptyNote, selectNote } from '../../../../store/utils';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
+  sidebarIsOpen: state.sidebarIsOpen,
 });
 
-// eslint-disable-next-line no-unused-vars
-const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
-  const { notes } = props;
+const DailyNotes = (props:
+  { notes: INote[], addNote(note: INote): void, sidebarIsOpen: boolean }) => {
+  const { notes, sidebarIsOpen } = props;
   const service = new RSCloneService();
   const todayTitle: string = getDayTitle();
   let scrollEnd = false;
@@ -108,7 +110,7 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
       autoHeightMin={500}
       autoHeightMax="80vh"
       style={{
-        width: 'calc(100% - 240px)', marginLeft: '240px',
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '0', marginLeft: sidebarIsOpen ? '240px' : '0',
       }}
       onScroll={onScrollStop}
     >
