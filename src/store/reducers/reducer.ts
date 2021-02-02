@@ -15,7 +15,7 @@ import {
   GET_USER_DATA,
   OPEN_SIDEBAR,
   CLOSE_SIDEBAR,
-  OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER,
+  OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER, SET_NOTIFICATION,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -86,6 +86,9 @@ function reducer(state: any, action: any) {
       return { ...state, rightSidebarIsOpen: action.payload };
     case TOGGLE_LOADER:
       return { ...state, isLoading: action.payload };
+    case SET_NOTIFICATION: {
+      return { ...state, notification: action.payload };
+    }
     default:
       return state;
   }

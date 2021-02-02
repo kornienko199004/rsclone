@@ -9,7 +9,7 @@ import { INote, IPage } from '../../models/notes.model';
 import { selectNote } from '../../store/utils';
 import RSCloneService from '../../services/RSClone.service';
 import './note.scss';
-import { setCurrentNote } from '../../store/actionsCreators/actionsCreators';
+import { setCurrentNote, setNotification } from '../../store/actionsCreators/actionsCreators';
 
 class Note extends React.Component {
   service: RSCloneService;
@@ -45,8 +45,11 @@ class Note extends React.Component {
     });
     try {
       await this.service.updateNote(currentNote, id);
+      // eslint-disable-next-line no-shadow
+      const { setNotification } = (this.props as any);
+      setNotification({ body: 'The note was saved', title: '', type: 'success' });
     } catch (e) {
-      // this.isSaving = false;
+      setNotification({ body: e, title: '', type: 'error' });
     }
     this.setState({
       isSaving: false,
@@ -117,6 +120,7 @@ class Note extends React.Component {
 
 const mapDispatchToProps = {
   setCurrentNote,
+  setNotification,
 };
 
 const mapStateToProps = (state: any, props: any) => ({

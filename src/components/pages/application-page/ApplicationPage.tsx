@@ -10,6 +10,7 @@ import Sidebar from '../../sidebar/Sidebar';
 import DailyNotes from './daily-notes/DailyNotes';
 import SingleNote from './single-note/SingleNote';
 import Rightbar from '../../rightbar/Rightbar';
+import Notification from './notification/Notification';
 import { IInitialState } from '../../../index';
 import './applicationPage.scss';
 
@@ -52,6 +53,7 @@ const ApplicationPage = (match: any) => {
         />
       </div>
       )}
+      <Notification />
     </>
   );
 };

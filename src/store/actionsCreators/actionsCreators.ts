@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { getEmptyNote, updateNoteParents } from '../utils';
 import RSCloneService from '../../services/RSClone.service';
-import { INote, IPage } from '../../models/notes.model';
+import { INote, INotification, IPage } from '../../models/notes.model';
 import {
   ADD_NOTE,
   CHANGE_FOCUS_ELEMENT,
@@ -18,7 +18,7 @@ import {
   CLOSE_SIDEBAR,
   OPEN_SIDEBAR,
   CLOSE_RIGHT_SIDEBAR,
-  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER,
+  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER, SET_NOTIFICATION,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -452,6 +452,11 @@ const toggleLoader = (isLoading: boolean) => ({
   payload: isLoading,
 });
 
+const setNotification = (notification: INotification) => ({
+  type: SET_NOTIFICATION,
+  payload: notification,
+});
+
 export {
   removePage,
   addNeighbor,
@@ -473,4 +478,5 @@ export {
   onOpenRightSidebar,
   removeShortcut,
   toggleLoader,
+  setNotification,
 };
