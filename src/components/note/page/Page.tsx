@@ -174,11 +174,11 @@ function Page(props: any) {
       onBecomeChild();
     }
     if (e.key === 'Enter') {
+      e.preventDefault();
       if (
         (contentValue && contentValue.length > 0)
         || currentPage.pagePath.length === 1
       ) {
-        e.preventDefault();
         onUpdateContent(contentValue);
         onAddNeighbor();
         return;
