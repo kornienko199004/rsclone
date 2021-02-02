@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => createStyles({
   },
 }));
 
-interface ILoginForm {
+type ILoginForm = {
     email: string,
     password: string
 }

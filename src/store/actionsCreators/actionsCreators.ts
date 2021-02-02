@@ -11,6 +11,13 @@ import {
   UPDATE_NOTE_BODY,
   USER_LOGGED_IN,
   UPDATE_CONTENT,
+  USER_LOGGED_OUT,
+  GET_USER_DATA,
+  ADD_SHORTCUT,
+  CLOSE_SIDEBAR,
+  OPEN_SIDEBAR,
+  CLOSE_RIGHT_SIDEBAR,
+  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -362,12 +369,61 @@ function addNote(note: INote) {
   };
 }
 
-const userLoggedIn = (data: any) => ({
-  type: USER_LOGGED_IN,
-  userData: {
-    username: data.user.name,
-    email: data.user.email,
-  },
+const userLoggedIn = (data: any) => {
+  localStorage.setItem('username', data.user.name);
+  localStorage.setItem('email', data.user.email);
+
+  return {
+    type: USER_LOGGED_IN,
+    userData: {
+      username: data.user.name,
+      email: data.user.email,
+    },
+  };
+};
+
+const userLoggedOut = () => {
+  localStorage.removeItem('username');
+  localStorage.removeItem('email');
+  localStorage.removeItem('auth-token');
+  return {
+    type: USER_LOGGED_OUT,
+    isLoggedIn: false,
+  };
+};
+
+const getUserData = (data: any) => ({
+  type: GET_USER_DATA,
+  payload: data,
+});
+
+const addShortcut = (data: string) => ({
+  type: ADD_SHORTCUT,
+  payload: data,
+});
+
+const removeShortcut = (data: string[]) => ({
+  type: REMOVE_SHORTCUT,
+  payload: data,
+});
+
+const onCloseSidebar = () => ({
+  type: CLOSE_SIDEBAR,
+});
+
+const onOpenSidebar = () => ({
+  type: OPEN_SIDEBAR,
+});
+
+const onCloseRightSidebar = () => ({
+  type: CLOSE_RIGHT_SIDEBAR,
+  payload: false,
+
+});
+
+const onOpenRightSidebar = () => ({
+  type: OPEN_RIGHT_SIDEBAR,
+  payload: true,
 });
 
 export {
@@ -380,4 +436,12 @@ export {
   changeFocusElement,
   addNote,
   userLoggedIn,
+  userLoggedOut,
+  getUserData,
+  addShortcut,
+  onCloseSidebar,
+  onOpenSidebar,
+  onCloseRightSidebar,
+  onOpenRightSidebar,
+  removeShortcut,
 };

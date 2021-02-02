@@ -10,20 +10,31 @@ import { IPage } from './models/notes.model';
 
 // const rsCloneService = new RSCloneService();
 
-const initialState : {
+export interface IInitialState {
     isLoggedIn: boolean,
     notes: [],
     noteBody: IPage[],
     focusComponentPath?: { [k: string]: (string | number)[] },
-    userData: {username: string, email: string}
-} = {
+    userData: {
+        username: string | null,
+        email: string | null,
+    },
+    shortcuts: string[],
+    sidebarIsOpen: boolean,
+    rightSidebarIsOpen: boolean
+}
+
+const initialState : IInitialState = {
   isLoggedIn: !!localStorage.getItem('auth-token'),
   userData: {
-    username: '',
-    email: '',
+    username: localStorage.getItem('username'),
+    email: localStorage.getItem('email'),
   },
   notes: [],
   noteBody: [],
+  shortcuts: [],
+  sidebarIsOpen: true,
+  rightSidebarIsOpen: false,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);
