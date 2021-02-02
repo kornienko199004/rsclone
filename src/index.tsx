@@ -20,7 +20,8 @@ export interface IInitialState {
         email: string | null,
     },
     shortcuts: string[],
-    sidebarIsOpen: boolean
+    sidebarIsOpen: boolean,
+    rightSidebarIsOpen: boolean
 }
 
 const initialState : IInitialState = {
@@ -33,6 +34,7 @@ const initialState : IInitialState = {
   noteBody: [],
   shortcuts: [],
   sidebarIsOpen: true,
+  rightSidebarIsOpen: false,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);
