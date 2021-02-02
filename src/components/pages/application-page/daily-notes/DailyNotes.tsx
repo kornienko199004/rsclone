@@ -8,7 +8,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
 import { getDayTitle } from '../../../../helpers/notes.helper';
-import { addNote } from '../../../../store/actionsCreators/actionsCreators';
+import { addNote, toggleLoader } from '../../../../store/actionsCreators/actionsCreators';
 import Note from '../../../note/Note';
 import { getEmptyNote, selectNote } from '../../../../store/utils';
 
@@ -18,7 +18,10 @@ const mapStateToProps = (state: any) => ({
 });
 
 const DailyNotes = (props:
-  { notes: INote[], addNote(note: INote): void, sidebarIsOpen: boolean }) => {
+  { notes: INote[],
+    addNote(note: INote): void,
+    toggleLoader(isLoading: boolean): void,
+    sidebarIsOpen: boolean }) => {
   const { notes, sidebarIsOpen } = props;
   const service = new RSCloneService();
   const todayTitle: string = getDayTitle();
@@ -30,6 +33,7 @@ const DailyNotes = (props:
 
   if (!todayNote && !init) {
     setInit(true);
+    props.toggleLoader(true);
   }
 
   if (todayNote
@@ -54,6 +58,7 @@ const DailyNotes = (props:
           }
 
           props.addNote(note);
+          props.toggleLoader(false);
         }
 
         setNotes([...(notesList || []), note]);
@@ -121,6 +126,9 @@ const DailyNotes = (props:
   );
 };
 
-const mapDispatchToProps = { addNote };
+const mapDispatchToProps = {
+  addNote,
+  toggleLoader,
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DailyNotes));

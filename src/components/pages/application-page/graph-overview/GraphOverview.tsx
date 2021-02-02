@@ -2,10 +2,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
 import React, { useContext, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import './graphOverview.scss';
 import Graph from 'react-graph-vis';
 import { Redirect, withRouter } from 'react-router-dom';
 import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
+import { toggleLoader } from '../../../../store/actionsCreators/actionsCreators';
 
 interface ModificationNote {
   _id: string;
@@ -50,16 +52,22 @@ const getNodes = async (res: Note[]) => {
 const height = (window.innerHeight || document.documentElement.clientHeight
 || document.body.clientHeight) - 100;
 
-const myGraph = () => {
+// eslint-disable-next-line no-unused-vars
+const myGraph = (props: { toggleLoader(isLoading: boolean): void }) => {
   const [notes, setNotes] = useState(null as any);
   const [link, setLink] = useState('');
   const service = useContext(RSCloneServiceContext);
+
+  if (!notes) {
+    props.toggleLoader(true);
+  }
 
   useEffect(() => {
     const getInfo = async () => {
       const res = await service.getNotes();
       const graphData = await getNodes(res.DATA);
       setNotes(graphData);
+      props.toggleLoader(false);
     };
     getInfo();
   }, []);
@@ -113,4 +121,10 @@ const myGraph = () => {
       )
   );
 };
-export default withRouter(myGraph);
+
+const mapDispatchToProps = {
+  toggleLoader,
+};
+
+// export default withRouter(myGraph);
+export default withRouter(connect(null, mapDispatchToProps)(myGraph));

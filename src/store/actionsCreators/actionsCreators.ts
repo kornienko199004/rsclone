@@ -18,7 +18,7 @@ import {
   CLOSE_SIDEBAR,
   OPEN_SIDEBAR,
   CLOSE_RIGHT_SIDEBAR,
-  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
+  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -447,6 +447,11 @@ const onOpenRightSidebar = () => ({
   payload: true,
 });
 
+const toggleLoader = (isLoading: boolean) => ({
+  type: TOGGLE_LOADER,
+  payload: isLoading,
+});
+
 export {
   removePage,
   addNeighbor,
@@ -467,4 +472,5 @@ export {
   onCloseRightSidebar,
   onOpenRightSidebar,
   removeShortcut,
+  toggleLoader,
 };

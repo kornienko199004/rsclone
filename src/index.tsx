@@ -22,7 +22,8 @@ export interface IInitialState {
     },
     shortcuts: string[],
     sidebarIsOpen: boolean,
-    rightSidebarIsOpen: boolean
+    rightSidebarIsOpen: boolean,
+    isLoading: boolean;
 }
 
 const initialState : IInitialState = {
@@ -37,6 +38,7 @@ const initialState : IInitialState = {
   shortcuts: [],
   sidebarIsOpen: true,
   rightSidebarIsOpen: false,
+  isLoading: false,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);
