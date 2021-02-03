@@ -78,7 +78,6 @@ const UserSettings: React.FC<Props> = ({ userData, setUserData } : Props) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget.name;
-    console.log(form);
 
     switch (form) {
       case 'username':
@@ -103,7 +102,6 @@ const UserSettings: React.FC<Props> = ({ userData, setUserData } : Props) => {
         break;
       default:
         if (passwordData.new_password === passwordData.confirm) {
-          console.log(passwordData);
           try {
             service.userUpdatePassword({
               // eslint-disable-next-line camelcase
