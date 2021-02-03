@@ -6,13 +6,11 @@
     margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
-    span {
-      font-size: 30px;
-    }
 
     .r-group {
       .btn {
         color: #5c7080;
+
       }
       .calendar {
         color: rgb(168, 33, 33);
@@ -22,6 +20,8 @@
     .l-group {
       .btn {
         color: #b1bcc4;
+        margin: 0;
+        padding: 0;
       }
     }
   }

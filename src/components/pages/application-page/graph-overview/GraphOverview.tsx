@@ -49,8 +49,8 @@ const getNodes = async (res: Note[]) => {
   });
 };
 
-const height = (window.innerHeight || document.documentElement.clientHeight
-  || document.body.clientHeight) - 100;
+const height = ((window.innerHeight || document.documentElement.clientHeight
+|| document.body.clientHeight) - 100).toString();
 
 const myGraph = () => {
   const [notes, setNotes] = useState(null as any);

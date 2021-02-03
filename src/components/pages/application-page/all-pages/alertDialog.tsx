@@ -46,7 +46,7 @@ export default function AlertDialog({ selected, deleteRows, isVisible }: any) {
         </Tooltip>
       )
       : (
-        <div>
+        <span>
           <Tooltip title="Delete selected pages" arrow>
             <StyledButton>
               <DeleteOutlineIcon
@@ -104,7 +104,7 @@ export default function AlertDialog({ selected, deleteRows, isVisible }: any) {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </span>
       )
   );
 }

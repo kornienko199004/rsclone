@@ -9,6 +9,7 @@ import { INote, IPage } from '../../models/notes.model';
 import { selectNote } from '../../store/utils';
 import RSCloneService from '../../services/RSClone.service';
 import './note.scss';
+import { setCurrentNote } from '../../store/actionsCreators/actionsCreators';
 
 class Note extends React.Component {
   service: RSCloneService;
@@ -29,6 +30,7 @@ class Note extends React.Component {
 
     const { notes, title } = (this.props as any);
     this.currentNote = selectNote(title, notes);
+    props.setCurrentNote(this.currentNote);
   }
 
   getPagesComponents() {
@@ -49,13 +51,10 @@ class Note extends React.Component {
     this.setState({
       isSaving: false,
     });
-    console.log('the note was saved');
   }
 
   titleClick(e: (React.MouseEvent | React.KeyboardEvent)) {
     e.preventDefault();
-    console.log(e);
-    console.log(this);
     const { title, history } = (this.props as any);
     history.push(`/app/note/${title}`);
   }
@@ -86,7 +85,6 @@ class Note extends React.Component {
     const contentFromRedux: any[] = this.currentNote
       ? this.currentNote.body.map(this.renderPage.bind(this, title))
       : null;
-
     return (
       <div className="note-container">
         <h1 className="note__title">
@@ -117,10 +115,14 @@ class Note extends React.Component {
   }
 }
 
+const mapDispatchToProps = {
+  setCurrentNote,
+};
+
 const mapStateToProps = (state: any, props: any) => ({
   ...props,
   notes: state.notes,
   body: state.body,
 });
 
-export default withRouter(connect(mapStateToProps)(Note));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Note));

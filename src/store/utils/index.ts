@@ -4,7 +4,6 @@ const DEFAULT_TEXT_INPUT_HEIGHT = 24;
 const DEFAULT_PAGE_ID = 0;
 
 const selectNote = (title: string, list: INote[]): INote | null => {
-  console.log(list);
   const note = list.find((item: INote) => item.title === title);
   return note || null;
 };
@@ -52,7 +51,6 @@ const updateNoteParents = (
   note: INote, title: string, content: string, currentPage: IPage,
 ): IParent[] => {
   // [...(note.parents || []), { pageLink: noteTitle, content: [content] }]
-  console.log('updateNoteParents', note);
   if (!note.parents) {
     return [{
       pageLink: title,
