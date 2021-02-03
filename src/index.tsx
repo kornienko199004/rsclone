@@ -6,14 +6,15 @@ import thunkMiddleware from 'redux-thunk';
 import './index.css';
 import App from './components/app/App';
 import reducer from './store/reducers/reducer';
-import { IPage } from './models/notes.model';
+import { INote, INotification, IPage } from './models/notes.model';
 
 // const rsCloneService = new RSCloneService();
 
 export interface IInitialState {
     isLoggedIn: boolean,
     notes: [],
-    noteBody: IPage[],
+    body: IPage[],
+    currentNote: INote | null;
     focusComponentPath?: { [k: string]: (string | number)[] },
     userData: {
         username: string | null,
@@ -21,7 +22,9 @@ export interface IInitialState {
     },
     shortcuts: string[],
     sidebarIsOpen: boolean,
-    rightSidebarIsOpen: boolean
+    rightSidebarIsOpen: boolean,
+    isLoading: boolean;
+    notification: INotification | null;
 }
 
 const initialState : IInitialState = {
@@ -30,11 +33,14 @@ const initialState : IInitialState = {
     username: localStorage.getItem('username'),
     email: localStorage.getItem('email'),
   },
+  currentNote: null,
   notes: [],
-  noteBody: [],
+  body: [],
   shortcuts: [],
   sidebarIsOpen: true,
   rightSidebarIsOpen: false,
+  isLoading: false,
+  notification: null,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);

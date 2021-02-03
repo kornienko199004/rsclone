@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { getEmptyNote, updateNoteParents } from '../utils';
 import RSCloneService from '../../services/RSClone.service';
-import { INote, IPage } from '../../models/notes.model';
+import { INote, INotification, IPage } from '../../models/notes.model';
 import {
   ADD_NOTE,
   CHANGE_FOCUS_ELEMENT,
@@ -11,13 +11,14 @@ import {
   UPDATE_NOTE_BODY,
   USER_LOGGED_IN,
   UPDATE_CONTENT,
+  SET_CURRENT_NOTE,
   USER_LOGGED_OUT,
   GET_USER_DATA,
   ADD_SHORTCUT,
   CLOSE_SIDEBAR,
   OPEN_SIDEBAR,
   CLOSE_RIGHT_SIDEBAR,
-  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
+  OPEN_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER, SET_NOTIFICATION,
 } from '../actions/actions';
 // import { onUserLoggedInType } from '../../components/home/LoginFrom';
 
@@ -272,7 +273,7 @@ function changeFocusElement(
     if (pageId > 0) {
       newFocusPath = [...pagePath.slice(0, -1), pageId - 1];
     } else {
-      newFocusPath = [...pagePath.slice(0, -2)];
+      newFocusPath = pagePath.length > 1 ? [...pagePath.slice(0, -2)] : [...pagePath];
     }
   } else if (pageId >= list.length - 1) {
     newFocusPath = [...pagePath];
@@ -284,6 +285,19 @@ function changeFocusElement(
     type: CHANGE_FOCUS_ELEMENT,
     title: noteTitle,
     focusComponentPath: { [noteTitle]: newFocusPath },
+  };
+}
+
+function setFocusElement(
+  params: { currentPage: IPage; list: IPage[]; noteTitle: string },
+) {
+  const { currentPage, noteTitle } = params;
+  const { pagePath } = currentPage;
+
+  return {
+    type: CHANGE_FOCUS_ELEMENT,
+    title: noteTitle,
+    focusComponentPath: { [noteTitle]: pagePath },
   };
 }
 
@@ -369,6 +383,13 @@ function addNote(note: INote) {
   };
 }
 
+function setCurrentNote(note: INote) {
+  return {
+    type: SET_CURRENT_NOTE,
+    note,
+  };
+}
+
 const userLoggedIn = (data: any) => {
   localStorage.setItem('username', data.user.name);
   localStorage.setItem('email', data.user.email);
@@ -418,11 +439,22 @@ const onOpenSidebar = () => ({
 const onCloseRightSidebar = () => ({
   type: CLOSE_RIGHT_SIDEBAR,
   payload: false,
+
 });
 
 const onOpenRightSidebar = () => ({
   type: OPEN_RIGHT_SIDEBAR,
   payload: true,
+});
+
+const toggleLoader = (isLoading: boolean) => ({
+  type: TOGGLE_LOADER,
+  payload: isLoading,
+});
+
+const setNotification = (notification: INotification) => ({
+  type: SET_NOTIFICATION,
+  payload: notification,
 });
 
 export {
@@ -440,7 +472,11 @@ export {
   addShortcut,
   onCloseSidebar,
   onOpenSidebar,
+  setFocusElement,
+  setCurrentNote,
   onCloseRightSidebar,
   onOpenRightSidebar,
   removeShortcut,
+  toggleLoader,
+  setNotification,
 };

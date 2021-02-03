@@ -1,5 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Navbar from '../../navbar/Navbar';
 import Main from '../../containers/main/Main';
 import Graph from './graph-overview/GraphOverview';
@@ -8,10 +10,13 @@ import Sidebar from '../../sidebar/Sidebar';
 import DailyNotes from './daily-notes/DailyNotes';
 import SingleNote from './single-note/SingleNote';
 import Rightbar from '../../rightbar/Rightbar';
+import Notification from './notification/Notification';
+import { IInitialState } from '../../../index';
+import './applicationPage.scss';
 
 const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
-
+  const isLoading = useSelector<IInitialState>((state) => state.isLoading);
   // @ts-ignore
   return (
     <>
@@ -39,6 +44,15 @@ const ApplicationPage = (match: any) => {
       </Main>
       <Sidebar />
       <Rightbar />
+      {isLoading && (
+      <div className="overlay">
+        <CircularProgress
+          size={100}
+          className="spinner"
+        />
+      </div>
+      )}
+      <Notification />
     </>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import './dailyNotes.scss';
@@ -7,17 +8,21 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
 import { getDayTitle } from '../../../../helpers/notes.helper';
-import { addNote } from '../../../../store/actionsCreators/actionsCreators';
+import { addNote, toggleLoader } from '../../../../store/actionsCreators/actionsCreators';
 import Note from '../../../note/Note';
 import { getEmptyNote, selectNote } from '../../../../store/utils';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
+  sidebarIsOpen: state.sidebarIsOpen,
 });
 
-// eslint-disable-next-line no-unused-vars
-const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
-  const { notes } = props;
+const DailyNotes = (props:
+  { notes: INote[],
+    addNote(note: INote): void,
+    toggleLoader(isLoading: boolean): void,
+    sidebarIsOpen: boolean }) => {
+  const { notes, sidebarIsOpen } = props;
   const service = new RSCloneService();
   const todayTitle: string = getDayTitle();
   let scrollEnd = false;
@@ -27,6 +32,17 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
   const todayNote = selectNote(todayTitle, notes);
 
   if (!todayNote && !init) {
+    setInit(true);
+    props.toggleLoader(true);
+  }
+
+  if (todayNote
+      && notesList.findIndex((item: INote) => item.title === todayTitle) !== 0 && !init) {
+    setInit(true);
+  }
+
+  if (todayNote
+      && notesList.findIndex((item: INote) => item.title === todayTitle) !== 0 && !init) {
     setInit(true);
   }
 
@@ -47,6 +63,7 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
           }
 
           props.addNote(note);
+          props.toggleLoader(false);
         }
 
         setNotes([...(notesList || []), note]);
@@ -71,14 +88,11 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
   };
 
   const onScrollStop = (values: any) => {
-    // console.log('values render view', values);
     if (!scrollEnd) {
       const { scrollTop, scrollHeight, clientHeight } = values.srcElement;
-      const pad = 1; // 100px of the bottom
-      // t will be greater than 1 if we are about to reach the bottom
+      const pad = 50;
       const t = ((scrollTop + pad) / (scrollHeight - clientHeight));
       if (t > 1) {
-        // setScrollEnd(true);
         onScrollEnd();
       }
     }
@@ -106,7 +120,7 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
       autoHeightMin={500}
       autoHeightMax="80vh"
       style={{
-        width: 'calc(100% - 240px)', marginLeft: '240px',
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
       }}
       onScroll={onScrollStop}
     >
@@ -117,6 +131,9 @@ const DailyNotes = (props: { notes: INote[], addNote(note: INote): void }) => {
   );
 };
 
-const mapDispatchToProps = { addNote };
+const mapDispatchToProps = {
+  addNote,
+  toggleLoader,
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DailyNotes));
