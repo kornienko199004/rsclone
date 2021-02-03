@@ -16,7 +16,6 @@ const rsCloneService = new RSCloneService();
 
 function App() {
   const isLoggedIn = useSelector((state: any) => state.isLoggedIn);
-  console.log(isLoggedIn);
 
   return (
     <RSCloneServiceContext.Provider value={rsCloneService}>

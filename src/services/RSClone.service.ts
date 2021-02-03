@@ -1,3 +1,5 @@
+import config from '../config';
+
 export interface NoteInfo {
     id: number,
     name: string
@@ -56,7 +58,7 @@ const getAuthToken = (): string => {
 
 export default class RSCloneService {
     getResource = async (url: string, options: object) => {
-      const response = await fetch(`${url}`, options);
+      const response = await fetch(`${config.baseUrl}${url}`, options);
       if (!response.ok) {
         throw new Error(`Could not fetch ${url}, received ${response.status}`);
       }
@@ -67,7 +69,6 @@ export default class RSCloneService {
     }
 
     login = async (data: LogInUserRequest) => {
-      console.log('request');
       const options = {
         method: 'POST',
         headers: {

@@ -1,21 +1,18 @@
 /* eslint-disable no-case-declarations */
 // @ts-ignore
-// import { updateNoteByTitle } from '../utils';
-// import shortid from 'shortid';
 import {
   CHANGE_FOCUS_ELEMENT,
   UPDATE_NOTE_BODY,
   SET_CURRENT_NOTE,
   ADD_NOTE,
   USER_LOGGED_IN,
-  // UPDATE_CONTENT_RECEIVED,
-  // UPDATE_CONTENT,
   ADD_SHORTCUT,
   USER_LOGGED_OUT,
   GET_USER_DATA,
   OPEN_SIDEBAR,
   CLOSE_SIDEBAR,
   OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER, SET_NOTIFICATION,
+  CLEAR_NOTIFICATION,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -88,6 +85,9 @@ function reducer(state: any, action: any) {
       return { ...state, isLoading: action.payload };
     case SET_NOTIFICATION: {
       return { ...state, notification: action.payload };
+    }
+    case CLEAR_NOTIFICATION: {
+      return { ...state, notification: null };
     }
     default:
       return state;
