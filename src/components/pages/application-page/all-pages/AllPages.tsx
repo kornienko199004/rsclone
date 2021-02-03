@@ -25,6 +25,8 @@ import {
   makeStyles,
   withStyles,
 } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   getRows,
   changeColumns,
@@ -35,6 +37,7 @@ import SearchInput from './search';
 import RSCloneServiceContext from '../../../rsCloneServiceContext/index';
 import AlertDialog from './alertDialog';
 import Download from './excel';
+import { IInitialState } from '../../../../index';
 
 const useStyles = makeStyles({
   root: {
@@ -104,6 +107,7 @@ const AllPages = () => {
   const [selectedValue, setSelectedValue] = useState([] as any);
   const [isVisible, setIsVisible] = useState(false);
   const [calendarText, setCalendarText] = useState('Hide daily notes');
+  const sidebarIsOpen = useSelector<IInitialState>((reduxState) => reduxState.sidebarIsOpen);
 
   const service = useContext(RSCloneServiceContext);
   useEffect((): () => void => {
@@ -144,93 +148,112 @@ const AllPages = () => {
 
   const classes = useStyles();
   return (
-    <div className="all-pages-container">
-      <div className="service">
-        <div className="l-group">
-          <AlertDialog
-            selected={[selectedValue, setSelectedValue]}
-            deleteRows={deleteRows}
-            isVisible={isVisible}
-          />
-          <Download rows={rows} className="btn" />
-        </div>
-        <div className="r-group">
-          <SearchInput rowsInfo={[rows, setRows]} initialRows={allInfo} />
-          <Tooltip title={calendarText} arrow>
-            <StyledButton>
-              <DateRangeOutlinedIcon
-                className={`btn ${DisplayDailyNotes ? '' : 'calendar'}`}
-                onClick={() => {
-                  const curr = DisplayDailyNotes;
-                  if (!curr) {
-                    setRows(allInfo);
-                    setCalendarText('Hide daily notes');
-                  } else {
-                    const w = hideDailyNotes(rows);
-                    setRows(w);
-                    setCalendarText('Show daily notes');
-                  }
-                  setDisplayDailyNotes(!curr);
-                }}
-              />
-            </StyledButton>
-          </Tooltip>
-          <CustomizedMenus
-            state={state}
-            handleChange={handleChange}
-          />
-        </div>
-      </div>
+    <Scrollbars
+      autoHeight
+      autoHeightMin={500}
+      autoHeightMax="80vh"
+      style={{
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%',
+        marginLeft: sidebarIsOpen ? '240px' : '0',
+      }}
+    >
       <div
-        style={{ display: 'flex', width: '100%' }}
+        className="all-pages-container"
+        // style={{
+        //   width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%',
+        //   marginLeft: sidebarIsOpen ? '270px' : '30px',
+        // }}
       >
-        {(rows && notBeingDeleted)
-          ? ((link)
-            ? <Redirect to={link} />
-            : <DataGrid
+        <div className="service">
+          <div className="l-group">
+            <AlertDialog
+              selected={[selectedValue, setSelectedValue]}
+              deleteRows={deleteRows}
+              isVisible={isVisible}
+            />
+            <Download rows={rows} className="btn" />
+          </div>
+          <div className="r-group">
+            <SearchInput rowsInfo={[rows, setRows]} initialRows={allInfo} />
+            <Tooltip title={calendarText} arrow>
+              <StyledButton>
+                <DateRangeOutlinedIcon
+                  className={`btn ${DisplayDailyNotes ? '' : 'calendar'}`}
+                  onClick={() => {
+                    const curr = DisplayDailyNotes;
+                    if (!curr) {
+                      setRows(allInfo);
+                      setCalendarText('Hide daily notes');
+                    } else {
+                      const w = hideDailyNotes(rows);
+                      setRows(w);
+                      setCalendarText('Show daily notes');
+                    }
+                    setDisplayDailyNotes(!curr);
+                  }}
+                />
+              </StyledButton>
+            </Tooltip>
+            <CustomizedMenus
+              state={state}
+              handleChange={handleChange}
+            />
+          </div>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            height: '100vh',
+          }}
+        >
+          {(rows && notBeingDeleted)
+            ? ((link)
+              ? <Redirect to={link} />
+              : <DataGrid
+                  density="compact"
+                  className={classes.root}
+                  disableColumnMenu
+                  autoHeight
+                // @ts-ignore
+                  rows={rows}
+                  columns={columns}
+                  disableSelectionOnClick
+                  checkboxSelection
+                  onRowClick={(param: RowParams) => {
+                    setLink(`/app/note/${param.row.title}`);
+                  }}
+                  onRowSelected={(param: RowSelectedParams) => {
+                    selected = selectedValue;
+                    if (param.isSelected) {
+                      selected.push(param);
+                    } else {
+                      const index: number = selected
+                        .findIndex((item) => item.data.id === param.data.id);
+                      selected.splice(index, 1);
+                    }
+                    setSelectedValue(selected);
+                    if (selectedValue.length !== 0) {
+                      setIsVisible(true);
+                    } else {
+                      setIsVisible(false);
+                    }
+                  }}
+              />) : <DataGrid
                 density="compact"
                 className={classes.root}
-                disableColumnMenu
-                autoHeight
-              // @ts-ignore
-                rows={rows}
+                disableColumnMenu={true}
+                autoHeight={true}
+                rows={[]}
                 columns={columns}
-                disableSelectionOnClick
                 checkboxSelection
-                onRowClick={(param: RowParams) => {
-                  setLink(`/app/note/${param.row.title}`);
+                components={{
+                  loadingOverlay: CustomLoadingOverlay,
                 }}
-                onRowSelected={(param: RowSelectedParams) => {
-                  selected = selectedValue;
-                  if (param.isSelected) {
-                    selected.push(param);
-                  } else {
-                    const index: number = selected
-                      .findIndex((item) => item.data.id === param.data.id);
-                    selected.splice(index, 1);
-                  }
-                  setSelectedValue(selected);
-                  if (selectedValue.length !== 0) {
-                    setIsVisible(true);
-                  } else {
-                    setIsVisible(false);
-                  }
-                }}
-            />) : <DataGrid
-              density="compact"
-              className={classes.root}
-              disableColumnMenu={true}
-              autoHeight={true}
-              rows={[]}
-              columns={columns}
-              checkboxSelection
-              components={{
-                loadingOverlay: CustomLoadingOverlay,
-              }}
-              loading
-            />}
+                loading
+              />}
+        </div>
       </div>
-    </div>
+    </Scrollbars>
   );
 };
 export default withRouter(AllPages);
