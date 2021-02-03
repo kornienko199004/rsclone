@@ -10,7 +10,17 @@ import { userLoggedIn } from '../../store/actionsCreators/actionsCreators';
 
 const useStyles = makeStyles(() => createStyles({
   textField: {
-    padding: '7px',
+    padding: '7px 15px 27px 15px',
+  },
+  button: {
+    marginLeft: '14px',
+    marginRight: '14px',
+    '&:hover': {
+      backgroundColor: '#8689b1',
+    },
+  },
+  title: {
+    marginTop: '-35px',
   },
 }));
 
@@ -59,11 +69,16 @@ const LoginForm = ({ onUserLoggedIn }: { onUserLoggedIn: any }) => {
   };
 
   return (
-    <form className="registration" onSubmit={onSubmitForm}>
-      <TextField name="email" className={classes.textField} onChange={onInputChange} label="e-mail" variant="outlined" type="email" required />
-      <TextField name="password" className={classes.textField} onChange={onInputChange} label="password" variant="outlined" type="password" required />
-      <Button type="submit" variant="outlined">Sign In</Button>
-    </form>
+    <>
+      <h1 className={classes.title}>
+        Sign In
+      </h1>
+      <form className="registration" onSubmit={onSubmitForm}>
+        <TextField name="email" className={classes.textField} onChange={onInputChange} label="e-mail" variant="outlined" type="email" required />
+        <TextField name="password" className={classes.textField} onChange={onInputChange} label="password" variant="outlined" type="password" required />
+        <Button type="submit" variant="outlined" classes={{ outlined: classes.button }}>Sign In</Button>
+      </form>
+    </>
   );
 };
 
