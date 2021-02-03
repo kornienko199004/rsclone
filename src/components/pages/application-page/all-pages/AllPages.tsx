@@ -126,7 +126,7 @@ const AllPages = () => {
     };
     getInfo();
     return () => cleanupFunction = true;
-  }, [allInfo, rows]);
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState({ ...state, [event.target.name]: event.target.checked });
