@@ -77,7 +77,6 @@ const myGraph = (props: { toggleLoader(isLoading: boolean): void }) => {
     || document.body.clientWidth;
   const graphWidth = sidebarIsOpen ? width - 270 : width;
   const marginLeft = sidebarIsOpen ? 270 : 0;
-  console.log(sidebarIsOpen);
 
   const options = {
     autoResize: true,

@@ -69,7 +69,6 @@ export default class RSCloneService {
     }
 
     login = async (data: LogInUserRequest) => {
-      console.log('request');
       const options = {
         method: 'POST',
         headers: {
