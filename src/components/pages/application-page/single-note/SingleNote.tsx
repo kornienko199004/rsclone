@@ -4,6 +4,7 @@ import './singleNote.scss';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { CircularProgress } from '@material-ui/core';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
 import { addNote } from '../../../../store/actionsCreators/actionsCreators';
@@ -13,17 +14,20 @@ import ParentsList from '../../../note/parentsLIst/ParentsList';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
+  sidebarIsOpen: state.sidebarIsOpen,
 });
 
 const SingleNote = (props: any) => {
-  const { match } = props;
+  const { match, sidebarIsOpen } = props;
   const { params } = match;
   const { name } = params;
   const service = new RSCloneService();
 
   const [singleNote, setNote] = useState<INote | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   if (singleNote && singleNote.title !== name) {
+    setLoading(true);
     setNote(null);
   }
 
@@ -43,6 +47,7 @@ const SingleNote = (props: any) => {
 
         setNote(note);
         props.addNote(note);
+        setLoading(false);
       }
     };
 
@@ -63,22 +68,31 @@ const SingleNote = (props: any) => {
   }
 
   return (
-    <Scrollbars
-      autoHeight
-      autoHeightMin={500}
-      autoHeightMax="80vh"
-      style={{
-        width: 'calc(100% - 240px)', marginLeft: '240px',
-      }}
-    >
-      <div className="daily-container">
-        {note || 'loading'}
-        {/* <h2>Single Note</h2> */}
-      </div>
-      <div>
-        <ParentsList note={singleNote} />
-      </div>
-    </Scrollbars>
+    <>
+      {isLoading && (
+        <div className="overlay">
+          <CircularProgress
+            size={100}
+            className="spinner"
+          />
+        </div>
+      )}
+      <Scrollbars
+        autoHeight
+        autoHeightMin={500}
+        autoHeightMax="80vh"
+        style={{
+          width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
+        }}
+      >
+        <div className="daily-container">
+          {note}
+        </div>
+        <div>
+          <ParentsList note={singleNote} />
+        </div>
+      </Scrollbars>
+    </>
   );
 };
 

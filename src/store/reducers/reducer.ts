@@ -5,6 +5,7 @@
 import {
   CHANGE_FOCUS_ELEMENT,
   UPDATE_NOTE_BODY,
+  SET_CURRENT_NOTE,
   ADD_NOTE,
   USER_LOGGED_IN,
   // UPDATE_CONTENT_RECEIVED,
@@ -63,6 +64,8 @@ function reducer(state: any, action: any) {
         updatedNotes = [...updatedNotes, action.note];
       }
       return { ...state, notes: updatedNotes };
+    case SET_CURRENT_NOTE:
+      return { ...state, currentNote: action.note };
     case USER_LOGGED_IN:
       return { ...state, isLoggedIn: true, userData: action.userData };
     case USER_LOGGED_OUT:

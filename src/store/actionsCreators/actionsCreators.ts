@@ -11,6 +11,7 @@ import {
   UPDATE_NOTE_BODY,
   USER_LOGGED_IN,
   UPDATE_CONTENT,
+  SET_CURRENT_NOTE,
   USER_LOGGED_OUT,
   GET_USER_DATA,
   ADD_SHORTCUT,
@@ -272,7 +273,7 @@ function changeFocusElement(
     if (pageId > 0) {
       newFocusPath = [...pagePath.slice(0, -1), pageId - 1];
     } else {
-      newFocusPath = [...pagePath.slice(0, -2)];
+      newFocusPath = pagePath.length > 1 ? [...pagePath.slice(0, -2)] : [...pagePath];
     }
   } else if (pageId >= list.length - 1) {
     newFocusPath = [...pagePath];
@@ -284,6 +285,19 @@ function changeFocusElement(
     type: CHANGE_FOCUS_ELEMENT,
     title: noteTitle,
     focusComponentPath: { [noteTitle]: newFocusPath },
+  };
+}
+
+function setFocusElement(
+  params: { currentPage: IPage; list: IPage[]; noteTitle: string },
+) {
+  const { currentPage, noteTitle } = params;
+  const { pagePath } = currentPage;
+
+  return {
+    type: CHANGE_FOCUS_ELEMENT,
+    title: noteTitle,
+    focusComponentPath: { [noteTitle]: pagePath },
   };
 }
 
@@ -369,6 +383,13 @@ function addNote(note: INote) {
   };
 }
 
+function setCurrentNote(note: INote) {
+  return {
+    type: SET_CURRENT_NOTE,
+    note,
+  };
+}
+
 const userLoggedIn = (data: any) => {
   localStorage.setItem('username', data.user.name);
   localStorage.setItem('email', data.user.email);
@@ -441,6 +462,8 @@ export {
   addShortcut,
   onCloseSidebar,
   onOpenSidebar,
+  setFocusElement,
+  setCurrentNote,
   onCloseRightSidebar,
   onOpenRightSidebar,
   removeShortcut,
