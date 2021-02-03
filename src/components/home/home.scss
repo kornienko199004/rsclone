@@ -52,6 +52,7 @@
   }
 
   &__footer {
+    position: relative;
     font-family: Roboto, sans-serif;
     color: #afafaf;
     height: 8vh;
@@ -60,6 +61,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &-logo_link {
+
+      & > img {
+        position: absolute;
+        bottom: 16px;
+        right: 55px;
+        height: 34px;
+        width: 90px;
+        opacity: 0.7;
+      }
+    }
 
     &-createdBy {
       display: flex;

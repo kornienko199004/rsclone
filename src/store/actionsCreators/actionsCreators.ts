@@ -418,7 +418,6 @@ const onOpenSidebar = () => ({
 const onCloseRightSidebar = () => ({
   type: CLOSE_RIGHT_SIDEBAR,
   payload: false,
-
 });
 
 const onOpenRightSidebar = () => ({
