@@ -1,13 +1,12 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from 'react';
-import './singleNote.scss';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { CircularProgress } from '@material-ui/core';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
-import { addNote } from '../../../../store/actionsCreators/actionsCreators';
+import { addNote, toggleLoader } from '../../../../store/actionsCreators/actionsCreators';
 import Note from '../../../note/Note';
 import { getEmptyNote } from '../../../../store/utils';
 import ParentsList from '../../../note/parentsLIst/ParentsList';
@@ -24,14 +23,14 @@ const SingleNote = (props: any) => {
   const service = new RSCloneService();
 
   const [singleNote, setNote] = useState<INote | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
 
   if (singleNote && singleNote.title !== name) {
-    setLoading(true);
+    props.toggleLoader(true);
     setNote(null);
   }
 
   useEffect(() => {
+    props.toggleLoader(true);
     const getNote = async () => {
       let note: INote | null = singleNote;
 
@@ -47,7 +46,7 @@ const SingleNote = (props: any) => {
 
         setNote(note);
         props.addNote(note);
-        setLoading(false);
+        props.toggleLoader(false);
       }
     };
 
@@ -68,34 +67,27 @@ const SingleNote = (props: any) => {
   }
 
   return (
-    <>
-      {isLoading && (
-        <div className="overlay">
-          <CircularProgress
-            size={100}
-            className="spinner"
-          />
-        </div>
-      )}
-      <Scrollbars
-        autoHeight
-        autoHeightMin={500}
-        autoHeightMax="80vh"
-        style={{
-          width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
-        }}
-      >
-        <div className="daily-container">
-          {note}
-        </div>
-        <div>
-          <ParentsList note={singleNote} />
-        </div>
-      </Scrollbars>
-    </>
+    <Scrollbars
+      autoHeight
+      autoHeightMin={500}
+      autoHeightMax="80vh"
+      style={{
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
+      }}
+    >
+      <div className="daily-container">
+        {note}
+      </div>
+      <div>
+        <ParentsList note={singleNote} />
+      </div>
+    </Scrollbars>
   );
 };
 
-const mapDispatchToProps = { addNote };
+const mapDispatchToProps = {
+  addNote,
+  toggleLoader,
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SingleNote));

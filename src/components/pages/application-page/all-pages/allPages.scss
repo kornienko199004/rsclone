@@ -1,6 +1,8 @@
 .all-pages-container {
-  margin: 0px 30px;
+  // margin: 0px 30px;
+  padding: 0 30px;
   width: 100%;
+  box-sizing: border-box;
 
   .service {
     margin-bottom: 15px;

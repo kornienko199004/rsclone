@@ -6,7 +6,7 @@ import thunkMiddleware from 'redux-thunk';
 import './index.css';
 import App from './components/app/App';
 import reducer from './store/reducers/reducer';
-import { INote, IPage } from './models/notes.model';
+import { INote, INotification, IPage } from './models/notes.model';
 
 // const rsCloneService = new RSCloneService();
 
@@ -22,7 +22,9 @@ export interface IInitialState {
     },
     shortcuts: string[],
     sidebarIsOpen: boolean,
-    rightSidebarIsOpen: boolean
+    rightSidebarIsOpen: boolean,
+    isLoading: boolean;
+    notification: INotification | null;
 }
 
 const initialState : IInitialState = {
@@ -37,6 +39,8 @@ const initialState : IInitialState = {
   shortcuts: [],
   sidebarIsOpen: true,
   rightSidebarIsOpen: false,
+  isLoading: false,
+  notification: null,
 };
 
 const composedEnhancer = applyMiddleware(thunkMiddleware);
