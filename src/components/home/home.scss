@@ -10,6 +10,7 @@
     width: 100%;
     background-color: #394b59;
     height: 6vh;
+    padding-bottom: 8px;
 
     &-login {
       position: absolute;
@@ -52,6 +53,7 @@
   }
 
   &__footer {
+    padding-bottom: 15px;
     position: relative;
     font-family: Roboto, sans-serif;
     color: #afafaf;

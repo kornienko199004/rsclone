@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux'; // @ts-ignore
+import { useSelector, useDispatch } from 'react-redux'; // @ts-ignore
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import { IInitialState } from '../../../../index';
 import { INotification } from '../../../../models/notes.model';
+import { CLEAR_NOTIFICATION } from '../../../../store/actions/actions';
 
 const Notification = () => {
   const notification = useSelector<IInitialState>((state) => state.notification);
   const [message, setMessage] = useState<any>(null);
   const [show, setShow] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   if (notification && !show) {
     setMessage(notification);
@@ -39,6 +41,7 @@ const Notification = () => {
       const toastr = (message as INotification);
       setShow(false);
       getNotification(toastr);
+      dispatch({ type: CLEAR_NOTIFICATION });
     }
   }, [show]);
 
