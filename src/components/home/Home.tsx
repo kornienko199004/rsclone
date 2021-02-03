@@ -8,6 +8,7 @@ import Modal from '@material-ui/core/Modal';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import roamGroup from './assets/Roam-Group-min.png';
 import hujakIcon from './assets/HujakHujakProd.png';
+import logo from './assets/rs_school_js.svg';
 import RegistrationForm from './RegistrationForm';
 import LoginForm from './LoginFrom';
 
@@ -140,6 +141,9 @@ const Home = () => {
             </div>
           </div>
         </div>
+        <a className="home__footer-logo_link" href="https://rs.school/js/" target="_blank" rel="noreferrer">
+          <img src={logo} alt="footer logo" />
+        </a>
       </div>
     </div>
   );

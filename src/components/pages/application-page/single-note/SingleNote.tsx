@@ -1,22 +1,23 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect, useState } from 'react';
-import './singleNote.scss';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import RSCloneService from '../../../../services/RSClone.service';
 import { INote } from '../../../../models/notes.model';
-import { addNote } from '../../../../store/actionsCreators/actionsCreators';
+import { addNote, toggleLoader } from '../../../../store/actionsCreators/actionsCreators';
 import Note from '../../../note/Note';
 import { getEmptyNote } from '../../../../store/utils';
 import ParentsList from '../../../note/parentsLIst/ParentsList';
 
 const mapStateToProps = (state: any) => ({
   notes: state.notes,
+  sidebarIsOpen: state.sidebarIsOpen,
 });
 
 const SingleNote = (props: any) => {
-  const { match } = props;
+  const { match, sidebarIsOpen } = props;
   const { params } = match;
   const { name } = params;
   const service = new RSCloneService();
@@ -24,10 +25,12 @@ const SingleNote = (props: any) => {
   const [singleNote, setNote] = useState<INote | null>(null);
 
   if (singleNote && singleNote.title !== name) {
+    props.toggleLoader(true);
     setNote(null);
   }
 
   useEffect(() => {
+    props.toggleLoader(true);
     const getNote = async () => {
       let note: INote | null = singleNote;
 
@@ -43,6 +46,7 @@ const SingleNote = (props: any) => {
 
         setNote(note);
         props.addNote(note);
+        props.toggleLoader(false);
       }
     };
 
@@ -68,12 +72,11 @@ const SingleNote = (props: any) => {
       autoHeightMin={500}
       autoHeightMax="80vh"
       style={{
-        width: 'calc(100% - 240px)', marginLeft: '240px',
+        width: sidebarIsOpen ? 'calc(100% - 240px)' : '100%', marginLeft: sidebarIsOpen ? '240px' : '0',
       }}
     >
       <div className="daily-container">
-        {note || 'loading'}
-        {/* <h2>Single Note</h2> */}
+        {note}
       </div>
       <div>
         <ParentsList note={singleNote} />
@@ -82,6 +85,9 @@ const SingleNote = (props: any) => {
   );
 };
 
-const mapDispatchToProps = { addNote };
+const mapDispatchToProps = {
+  addNote,
+  toggleLoader,
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SingleNote));

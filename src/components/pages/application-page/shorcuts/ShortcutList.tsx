@@ -7,7 +7,6 @@ import { IInitialState } from '../../../../index';
 const ShortcutsList: React.FC = () => {
   // @ts-ignore
   const shortcuts: string[] = useSelector<IInitialState>((state) => state.shortcuts);
-  console.log(shortcuts);
 
   return (
     <div className="shortcut-container">

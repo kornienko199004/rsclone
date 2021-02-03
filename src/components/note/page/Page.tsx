@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
-// import { update } from 'lodash';
 import autosize from 'autosize';
 import { ArrowDropDown, ArrowRight } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
-import { IAstElement, IPage } from '../../../models/notes.model';
+import { IPage } from '../../../models/notes.model';
 import './page.scss';
 
 // eslint-disable-next-line import/extensions
@@ -17,15 +15,17 @@ import {
   levelUp,
   updateContent,
   addChild,
-  changeFocusElement, // @ts-ignore
+  changeFocusElement,
+  setFocusElement,
 } from '../../../store/actionsCreators/actionsCreators';
 import { selectNote } from '../../../store/utils';
 import TemplateReadOnly from '../pageReadOnly/PageReadOnly';
-import { generateAst, getHtmlMarkup, getLinkContent } from '../../../helpers/notes.helper';
+import { generateAst, getHtmlMarkup } from '../../../helpers/notes.helper';
 
 const mapStateToProps = (state: any, ownProps: any) => ({
   notes: state.notes,
   body: state.body,
+  currentNote: state.currentNote,
   focusComponentPath: state.focusComponentPath,
   ...ownProps,
 });
@@ -38,6 +38,7 @@ const mapDispatchToProps = {
   updateContent,
   addChild,
   changeFocusElement,
+  setFocusElement,
 };
 
 function Page(props: any) {
@@ -59,40 +60,13 @@ function Page(props: any) {
   const [pageContent, setContent] = useState(content);
   const [inputCursorPosition, setCursorPosition] = useState(0);
   const [showNestedPages, setNestedPagesVisibility] = useState(true);
-  const [editorMode, setEditorMode] = useState(false);
 
   let textInput: HTMLTextAreaElement | null = null;
-
-  if (
-    JSON.stringify({ [noteTitle]: currentPage.pagePath })
-      === JSON.stringify(focusComponentPath)
-    && !editorMode
-  ) {
-    setEditorMode(true);
-  }
+  let editor: any = null;
 
   useEffect(() => {
-    if (
-      JSON.stringify({ [noteTitle]: currentPage.pagePath }) === JSON.stringify(focusComponentPath)
-      && textInput
-    ) {
-      (textInput as HTMLTextAreaElement).focus();
-      (textInput as HTMLTextAreaElement).selectionEnd = (textInput as HTMLTextAreaElement)
-        .value.length;
-      (textInput as HTMLTextAreaElement).selectionStart = (textInput as HTMLTextAreaElement)
-        .value.length;
-      return;
-    }
-    if (editorMode && textInput) {
-      textInput.focus();
-    }
-    autosize(textInput as HTMLTextAreaElement);
-  }, [editorMode]);
-
-  useEffect(() => {
-    if (textInput) {
+    if (textInput && inputCursorPosition !== 0) {
       textInput.selectionStart = inputCursorPosition;
-      // textInput.focus();
       textInput.selectionEnd = inputCursorPosition;
     }
   }, [inputCursorPosition]);
@@ -124,6 +98,9 @@ function Page(props: any) {
       return;
     }
 
+    if (currentPage.pagePath.length === 1 && currentPage.pagePath[0] === 0) {
+      return;
+    }
     props.removePage(body, { currentPage, noteTitle });
   };
 
@@ -168,19 +145,16 @@ function Page(props: any) {
   };
 
   const onBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    setEditorMode(false);
     if (e.target.value === content) {
       return;
     }
 
     onUpdateContent(e.target.value);
-    // const pageLinks = e.target.value.match(/\[\[(.*?)\]]/g);
-    // props.updateContent(body, { noteTitle, pageLinks, content: e.target.value });
   };
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const str: string = (e.target as HTMLTextAreaElement).value;
-    const { selectionStart } = e.nativeEvent.target as HTMLTextAreaElement;
+    const { selectionStart, selectionEnd } = e.nativeEvent.target as HTMLTextAreaElement;
     if (str && (e.nativeEvent as InputEvent).data === '[') {
       const newStrArr = str.split('');
       newStrArr.splice(selectionStart, 0, ']');
@@ -188,6 +162,7 @@ function Page(props: any) {
       setCursorPosition(selectionStart);
     } else {
       setContent(str);
+      setCursorPosition(selectionEnd);
     }
     autosize(textInput as HTMLTextAreaElement);
   };
@@ -200,6 +175,7 @@ function Page(props: any) {
       onBecomeChild();
     }
     if (e.key === 'Enter') {
+      e.preventDefault();
       if (
         (contentValue && contentValue.length > 0)
         || currentPage.pagePath.length === 1
@@ -217,11 +193,13 @@ function Page(props: any) {
     }
 
     if (e.key === 'ArrowUp') {
+      e.preventDefault();
       onUpdateContent(contentValue);
       onChangeFocusElement('up');
     }
 
     if (e.key === 'ArrowDown') {
+      e.preventDefault();
       onUpdateContent(contentValue);
       onChangeFocusElement();
     }
@@ -230,6 +208,42 @@ function Page(props: any) {
   const toggleNestedPagesVisibility = () => {
     setNestedPagesVisibility(!showNestedPages);
   };
+  if (
+    JSON.stringify({ [noteTitle]: currentPage.pagePath })
+      === JSON.stringify(focusComponentPath)) {
+    editor = (
+      <textarea
+        className="text-input"
+        style={{ height: `${textInputHeight}px` }}
+        ref={(textarea: HTMLTextAreaElement) => {
+          textInput = textarea;
+          if (textInput && inputCursorPosition === 0) {
+            textInput.focus();
+            textInput.selectionStart = textInput.value.length;
+            textInput.selectionEnd = textInput.selectionStart;
+            autosize(textInput as HTMLTextAreaElement);
+          } else if (textInput && inputCursorPosition > 0) {
+            textInput.focus();
+          }
+        }}
+        value={pageContent}
+        onBlur={onBlur}
+        onChange={onChangeContent}
+        onKeyDown={onEnterPressHandler}
+      />
+    );
+  } else {
+    editor = (
+      <TemplateReadOnly
+        onClick={() => {
+          // const offset = e.clientX - e.target.getBoundingClientRect().x;
+          props.setFocusElement({ currentPage, noteTitle });
+        }}
+      >
+        {getHtmlMarkup(generateAst(pageContent))}
+      </TemplateReadOnly>
+    );
+  }
 
   return (
     <div className="page-container">
@@ -252,32 +266,7 @@ function Page(props: any) {
           </button>
           <span className="open-page" />
         </span>
-        {editorMode ? (
-          <textarea
-            className="text-input"
-            style={{ height: `${textInputHeight}px` }}
-            ref={(textarea: HTMLTextAreaElement) => {
-              textInput = textarea;
-            }}
-            value={pageContent}
-            onBlur={onBlur}
-            onChange={onChangeContent}
-            onKeyDown={onEnterPressHandler}
-          />
-        ) : (
-          <TemplateReadOnly
-            onClick={(e: any) => {
-              const offset = e.clientX - e.target.getBoundingClientRect().x;
-              setEditorMode(true);
-              // setCursorPosition(offset / 7.5);
-              if (textInput) {
-                textInput.focus();
-              }
-            }}
-          >
-            {getHtmlMarkup(generateAst(pageContent))}
-          </TemplateReadOnly>
-        )}
+        {editor}
       </div>
       <div
         className={`nestedPages ${

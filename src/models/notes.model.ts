@@ -42,3 +42,5 @@ export interface IParent {
 }
 
 export interface IAstElement { type: string; content: string }
+
+export interface INotification { type: string; title: string; body: string }

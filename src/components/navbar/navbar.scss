@@ -1,13 +1,11 @@
 .header {
   display: flex;
-  width: 350px;
   right: 0;
   top: 0;
   justify-content: center;
   align-items: center;
   margin-top: 10px;
   position: absolute;
-  margin-right: 30px;
 
   &__button {
     padding: 0;

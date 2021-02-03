@@ -1,5 +1,5 @@
 import React, {
-  SetStateAction, useContext, useEffect, useState,
+  SetStateAction, useContext, useEffect,
 } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import './navbar.scss';
@@ -33,16 +33,13 @@ const Navbar = (
     location: { pathname },
     onAddShortcut,
     // eslint-disable-next-line no-shadow
-    onCloseRightSidebar,
-    // eslint-disable-next-line no-shadow
     onOpenRightSidebar,
     onRemoveShortcut,
   } :
     {
       location: {pathname: string},
       onAddShortcut: Dispatch<SetStateAction<any>>,
-      onCloseRightSidebar: Dispatch<SetStateAction<any>>,
-      onOpenRightSidebar: Dispatch<SetStateAction<any>>,
+      onOpenRightSidebar: () => void,
       onRemoveShortcut: Dispatch<SetStateAction<any>>,
     },
 ) => {
@@ -50,7 +47,6 @@ const Navbar = (
   const service = useContext(RSCloneServiceContext);
   const shortcuts: string[] | null = useSelector<
     IInitialState, Array<string>>((state) => state.shortcuts);
-  const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (shortcuts.length !== 0) {
@@ -74,11 +70,7 @@ const Navbar = (
     return false;
   };
 
-  const onClickSidebar = () => {
-    setOpen(true);
-    // eslint-disable-next-line no-unused-expressions
-    open ? onOpenRightSidebar(true) : onCloseRightSidebar(false);
-  };
+  const onClickSidebar = () => (onOpenRightSidebar());
 
   return (
     <div className="header">
@@ -92,8 +84,8 @@ const Navbar = (
             <IconButton className={classes.calendar} onClick={onFavourite}>
               <StarOutlineIcon className="header__favourite" />
             </IconButton>
-            <IconButton className={classes.calendar}>
-              <DeviceHubIcon className="header__favourite" onClick={onClickSidebar} />
+            <IconButton className={classes.calendar} onClick={onClickSidebar}>
+              <DeviceHubIcon className="header__favourite" />
             </IconButton>
           </>
         )

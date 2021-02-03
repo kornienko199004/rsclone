@@ -5,6 +5,7 @@
 import {
   CHANGE_FOCUS_ELEMENT,
   UPDATE_NOTE_BODY,
+  SET_CURRENT_NOTE,
   ADD_NOTE,
   USER_LOGGED_IN,
   // UPDATE_CONTENT_RECEIVED,
@@ -14,7 +15,7 @@ import {
   GET_USER_DATA,
   OPEN_SIDEBAR,
   CLOSE_SIDEBAR,
-  OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT,
+  OPEN_RIGHT_SIDEBAR, CLOSE_RIGHT_SIDEBAR, REMOVE_SHORTCUT, TOGGLE_LOADER, SET_NOTIFICATION,
 } from '../actions/actions';
 import { INote } from '../../models/notes.model';
 
@@ -63,6 +64,8 @@ function reducer(state: any, action: any) {
         updatedNotes = [...updatedNotes, action.note];
       }
       return { ...state, notes: updatedNotes };
+    case SET_CURRENT_NOTE:
+      return { ...state, currentNote: action.note };
     case USER_LOGGED_IN:
       return { ...state, isLoggedIn: true, userData: action.userData };
     case USER_LOGGED_OUT:
@@ -81,6 +84,11 @@ function reducer(state: any, action: any) {
       return { ...state, rightSidebarIsOpen: action.payload };
     case CLOSE_RIGHT_SIDEBAR:
       return { ...state, rightSidebarIsOpen: action.payload };
+    case TOGGLE_LOADER:
+      return { ...state, isLoading: action.payload };
+    case SET_NOTIFICATION: {
+      return { ...state, notification: action.payload };
+    }
     default:
       return state;
   }
