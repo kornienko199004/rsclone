@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/rs-clone-wars/static/css/main.852291d8.chunk.css",
+    "main.js": "/rs-clone-wars/static/js/main.9ac21c73.chunk.js",
+    "main.js.map": "/rs-clone-wars/static/js/main.9ac21c73.chunk.js.map",
+    "runtime-main.js": "/rs-clone-wars/static/js/runtime-main.14e9b05f.js",
+    "runtime-main.js.map": "/rs-clone-wars/static/js/runtime-main.14e9b05f.js.map",
+    "static/css/2.0270e13b.chunk.css": "/rs-clone-wars/static/css/2.0270e13b.chunk.css",
+    "static/js/2.4d343099.chunk.js": "/rs-clone-wars/static/js/2.4d343099.chunk.js",
+    "static/js/2.4d343099.chunk.js.map": "/rs-clone-wars/static/js/2.4d343099.chunk.js.map",
+    "index.html": "/rs-clone-wars/index.html",
+    "static/css/2.0270e13b.chunk.css.map": "/rs-clone-wars/static/css/2.0270e13b.chunk.css.map",
+    "static/css/main.852291d8.chunk.css.map": "/rs-clone-wars/static/css/main.852291d8.chunk.css.map",
+    "static/js/2.4d343099.chunk.js.LICENSE.txt": "/rs-clone-wars/static/js/2.4d343099.chunk.js.LICENSE.txt",
+    "static/media/HujakHujakProd.6d379f3d.png": "/rs-clone-wars/static/media/HujakHujakProd.6d379f3d.png",
+    "static/media/Roam-Group-min.c6c7267c.png": "/rs-clone-wars/static/media/Roam-Group-min.c6c7267c.png",
+    "static/media/index.css": "/rs-clone-wars/static/media/notification.c5d9251e.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.14e9b05f.js",
+    "static/css/2.0270e13b.chunk.css",
+    "static/js/2.4d343099.chunk.js",
+    "static/css/main.852291d8.chunk.css",
+    "static/js/main.9ac21c73.chunk.js"
+  ]
+}
