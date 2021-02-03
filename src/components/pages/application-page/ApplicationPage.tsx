@@ -16,7 +16,6 @@ import './applicationPage.scss';
 
 const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
-  const rightSidebarIsOpen = useSelector<IInitialState>((state) => state.rightSidebarIsOpen);
   const isLoading = useSelector<IInitialState>((state) => state.isLoading);
   const sidebarIsOpen = useSelector<IInitialState>((state) => state.sidebarIsOpen);
   // @ts-ignore
@@ -45,7 +44,7 @@ const ApplicationPage = (match: any) => {
         </Switch>
       </Main>
       <Sidebar />
-      {rightSidebarIsOpen ? <Rightbar /> : null}
+      <Rightbar />
       {isLoading && (
       <div className="overlay">
         <CircularProgress
