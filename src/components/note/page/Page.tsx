@@ -154,7 +154,7 @@ function Page(props: any) {
 
   const onChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const str: string = (e.target as HTMLTextAreaElement).value;
-    const { selectionStart } = e.nativeEvent.target as HTMLTextAreaElement;
+    const { selectionStart, selectionEnd } = e.nativeEvent.target as HTMLTextAreaElement;
     if (str && (e.nativeEvent as InputEvent).data === '[') {
       const newStrArr = str.split('');
       newStrArr.splice(selectionStart, 0, ']');
@@ -162,6 +162,7 @@ function Page(props: any) {
       setCursorPosition(selectionStart);
     } else {
       setContent(str);
+      setCursorPosition(selectionEnd);
     }
     autosize(textInput as HTMLTextAreaElement);
   };
@@ -221,6 +222,8 @@ function Page(props: any) {
             textInput.selectionStart = textInput.value.length;
             textInput.selectionEnd = textInput.selectionStart;
             autosize(textInput as HTMLTextAreaElement);
+          } else if (textInput && inputCursorPosition > 0) {
+            textInput.focus();
           }
         }}
         value={pageContent}
