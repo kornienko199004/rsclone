@@ -18,6 +18,7 @@ const ApplicationPage = (match: any) => {
   const { match: { path } } = match;
   const rightSidebarIsOpen = useSelector<IInitialState>((state) => state.rightSidebarIsOpen);
   const isLoading = useSelector<IInitialState>((state) => state.isLoading);
+  const sidebarIsOpen = useSelector<IInitialState>((state) => state.sidebarIsOpen);
   // @ts-ignore
   return (
     <>
@@ -50,6 +51,7 @@ const ApplicationPage = (match: any) => {
         <CircularProgress
           size={100}
           className="spinner"
+          style={{ marginRight: sidebarIsOpen ? '240px' : '0' }}
         />
       </div>
       )}
