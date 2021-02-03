@@ -25,6 +25,7 @@ const SingleNote = (props: any) => {
   const [singleNote, setNote] = useState<INote | null>(null);
 
   if (singleNote && singleNote.title !== name) {
+    props.toggleLoader(true);
     setNote(null);
   }
 

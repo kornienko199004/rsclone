@@ -41,6 +41,11 @@ const DailyNotes = (props:
     setInit(true);
   }
 
+  if (todayNote
+      && notesList.findIndex((item: INote) => item.title === todayTitle) !== 0 && !init) {
+    setInit(true);
+  }
+
   useEffect(() => {
     if (init) {
       const getNote = async () => {
