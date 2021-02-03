@@ -11,7 +11,14 @@ import { userLoggedIn } from '../../store/actionsCreators/actionsCreators';
 
 const useStyles = makeStyles(() => createStyles({
   textField: {
-    padding: '7px',
+    padding: '7px 15px 27px 15px',
+  },
+  button: {
+    marginLeft: '14px',
+    marginRight: '14px',
+    '&:hover': {
+      backgroundColor: '#8689b1',
+    },
   },
 }));
 
@@ -22,7 +29,7 @@ interface IRegistrationForm {
 }
 
 const RegistrationForm = (
-  { isLoggedIn, onUserLoggedIn } : {isLoggedIn: boolean, onUserLoggedIn: any},
+  { onUserLoggedIn } : {onUserLoggedIn: any},
 ) => {
   const classes = useStyles();
   const [data, setData] = useState<IRegistrationForm>({
@@ -47,7 +54,6 @@ const RegistrationForm = (
     event.preventDefault();
 
     service.createUser(data).then(async () => {
-      console.log(isLoggedIn);
       await service.login(data)
         .then(async (userData: object) => {
           onUserLoggedIn(userData);
@@ -57,12 +63,17 @@ const RegistrationForm = (
   };
 
   return (
-    <form className="registration" onSubmit={onSubmitForm}>
-      <TextField name="name" className={classes.textField} onChange={onInputChange} label="username" variant="outlined" required />
-      <TextField name="email" className={classes.textField} onChange={onInputChange} label="e-mail" variant="outlined" type="email" required />
-      <TextField name="password" className={classes.textField} onChange={onInputChange} label="password" variant="outlined" type="password" required />
-      <Button type="submit" variant="outlined">Register</Button>
-    </form>
+    <>
+      <h1>
+        Sign Up
+      </h1>
+      <form className="registration" onSubmit={onSubmitForm}>
+        <TextField name="name" className={classes.textField} onChange={onInputChange} label="username" variant="outlined" required />
+        <TextField name="email" className={classes.textField} onChange={onInputChange} label="e-mail" variant="outlined" type="email" required />
+        <TextField name="password" className={classes.textField} onChange={onInputChange} label="password" variant="outlined" type="password" required />
+        <Button type="submit" variant="outlined" classes={{ outlined: classes.button }}>Sign Up</Button>
+      </form>
+    </>
   );
 };
 
