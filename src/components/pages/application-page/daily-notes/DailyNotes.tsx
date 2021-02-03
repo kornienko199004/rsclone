@@ -66,7 +66,7 @@ const DailyNotes = (props:
           props.toggleLoader(false);
         }
 
-        setNotes([...(notesList || []), note]);
+        setNotes([note]);
       };
 
       getNote();

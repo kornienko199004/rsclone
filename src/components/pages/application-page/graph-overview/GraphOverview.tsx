@@ -86,7 +86,7 @@ const myGraph = (props: { toggleLoader(isLoading: boolean): void }) => {
     nodes: {
       color: '#3f51b5',
       fixed: false,
-      font: '18px BlinkMacSystemFont #000000',
+      font: '13px sans-serif #000000',
       shape: 'dot',
     },
     edges: {
