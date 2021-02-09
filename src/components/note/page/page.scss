@@ -1,0 +1,75 @@
+.content {
+  border: 1px solid black;
+}
+
+.nestedPages {
+  position: relative;
+  padding-left: 5px;
+  margin-left: 25px;
+  border-left: 1px solid #BFCCD6;
+}
+
+.open-page {
+  display: flex;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  background-position: 20% 60%;
+  background-image: url("data:image/svg+xml;utf8,<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg enable-background=\"new 0 0 29.107 29.107\" version=\"1.1\" viewBox=\"0 0 29.107 29.107\" xml:space=\"preserve\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.554,0C6.561,0,0,6.562,0,14.552c0,7.996,6.561,14.555,14.554,14.555c7.996,0,14.553-6.559,14.553-14.555     C29.106,6.562,22.55,0,14.554,0z\"/></svg>");
+}
+
+.current-page__controls {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.open-page__wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.text-input {
+  padding: 0;
+  padding-top: 1px;
+  height: 24px;
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.nested-pages-button {
+  padding: 0;
+  padding-top: 3px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.nested-pages-button--hidden {
+  opacity: 0;
+  cursor: default;
+}
+
+.nested-pages-button--show {
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.nestedPages--hidden {
+  display: none;
+}
+
+.page-container {
+  width: 100%;
+}

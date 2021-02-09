@@ -1,0 +1,41 @@
+.all-pages-container {
+  // margin: 0px 30px;
+  padding: 0 30px;
+  width: 100%;
+  box-sizing: border-box;
+
+  .service {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+
+    .r-group {
+      .btn {
+        color: #5c7080;
+
+      }
+      .calendar {
+        color: rgb(168, 33, 33);
+      }
+      display: flex;
+    }
+    .l-group {
+      .btn {
+        color: #b1bcc4;
+        margin: 0;
+        padding: 0;
+      }
+    }
+  }
+}
+.dialog{
+  max-width: 450px;
+  margin: auto;
+  justify-content: center;
+}
+.list-item {
+  border-radius: 10px;
+  padding: 1px;
+  margin: 1px;
+  background-color:  #5c708025;
+}
