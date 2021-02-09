@@ -30,3 +30,11 @@ const dev = {
   baseUrl: '',
 }
 ```
+
+## Technical Stack
+
+1. React
+1. React-routing
+1. Redux
+1. Material-ui
+1. React-graph-vis
